@@ -161,6 +161,7 @@ public class ProceduralCityGenerator : MonoBehaviour
     int targetNumCities = 3;
 
     // Update is called once per frame
+    [Obsolete]
     void Update()
     {
         if (ConstructionState == 0 && Input.GetKeyDown("space"))
@@ -259,6 +260,7 @@ public class ProceduralCityGenerator : MonoBehaviour
 
 
     //Generates public buildings and accommodation for the initial population
+    [Obsolete]
     void InitiateCity()
     {
         //find the boundary of the city
@@ -1162,6 +1164,7 @@ public class ProceduralCityGenerator : MonoBehaviour
 
     bool randomCosts = false;
 
+    [Obsolete]
     private float[,] CalculateBuildingCosts(float maxDistToCenter, float bestDistToCenter, float WeightDistToCenter, float WeightSlope, float WeightWaterProximity, float height = 3, float WeightPrivacy = -1, float WeightView = -1, float WeightSunExposure = -1)
     {
 
@@ -1324,6 +1327,7 @@ public class ProceduralCityGenerator : MonoBehaviour
         return score;
     }
 
+    [Obsolete]
     private float[,] CheckSceneryScores(float height)
     {
         float t_start = Time.realtimeSinceStartup;
@@ -1553,6 +1557,7 @@ public class ProceduralCityGenerator : MonoBehaviour
         return bestPos;
     }
 
+    [Obsolete]
     private void BuildMosque()
     {
         Vector3 mosquePosition = CityCorePosition;
@@ -1900,6 +1905,7 @@ public class ProceduralCityGenerator : MonoBehaviour
         return cube;
     }
 
+    [Obsolete]
     private bool BuildHouse(int numPeople)
     {
         Vector3 housePosition = CityCorePosition;
@@ -2093,6 +2099,7 @@ public class ProceduralCityGenerator : MonoBehaviour
             return GridInsideCity(x - CityBoundaryMin.x, y - CityBoundaryMin.y);
     }
 
+    [Obsolete]
     private bool BuildHouse(float size)
     {
         Vector3 housePosition = CityCorePosition;
@@ -2117,6 +2124,7 @@ public class ProceduralCityGenerator : MonoBehaviour
 
     }
 
+    [Obsolete]
     private void BuildMadrasah()
     {
         Vector3 madrasahPosition = CityCorePosition;
@@ -2149,7 +2157,7 @@ public class ProceduralCityGenerator : MonoBehaviour
 
     }
 
-
+    [Obsolete]
     private void BuildCarsi()
     {
         Vector3 carsiPosition = CityCorePosition;
@@ -2176,6 +2184,7 @@ public class ProceduralCityGenerator : MonoBehaviour
 
     }
 
+    [Obsolete]
     private void BuildHamam()
     {
         //find the suitable place
@@ -2371,13 +2380,11 @@ public class ProceduralCityGenerator : MonoBehaviour
                 {
                     for (int jj = j - nc; jj <= j + nc; jj++)
                     {
-                        float priScore = 0;
                         float secScore = -0.4f * AccessibilityInScores[ii, jj] + 0.5f * VisibilityScores[ii, jj];
                         float susScore = 0.5f * WaterProximityScores[ii, jj] + 0.5f * ClimateScores[ii, jj];
                         float socScore = 0.2f * VisibilityScores[ii, jj] + 0.0f * AccessibilityOutScores[ii, jj] + 0.2f * AccessibilityInScores[ii, jj] + 0.5f * AccessibilityWithinScores[ii, jj];
                         //float socScore = 0.7f * AccessibilityWithinScores[ii, jj];
                         float ecoScore = 0.3f * AccessibilityInScores[ii, jj] + 0.2f * AccessibilityOutScores[ii, jj]; ;
-                        float beaScore = 0;
                         if (AvoidWater)
                         {
                             securityScores[regionIndex] = secScore * (1 - WaterOccupation[ii, jj]);
@@ -3040,7 +3047,6 @@ public class ProceduralCityGenerator : MonoBehaviour
     {
         WaterProximityScores = new float[hmw / ScoreSamplingScale, hmh / ScoreSamplingScale];
         float[,,] alphas = CityTerrain.terrainData.GetAlphamaps(0, 0, CityTerrain.terrainData.alphamapWidth, CityTerrain.terrainData.alphamapHeight);
-        float maxwaterproximityscore = 10f;
         for (int di = 0; di < hmw / ScoreSamplingScale; di++)
         {
             for (int dj = 0; dj < hmh / ScoreSamplingScale; dj++)
@@ -3181,6 +3187,7 @@ public class ProceduralCityGenerator : MonoBehaviour
         return scores;
     }
 
+    [Obsolete]
     public float CheckSceneryScore(Vector3 position)
     {
 
@@ -3360,7 +3367,6 @@ public class ProceduralCityGenerator : MonoBehaviour
         Vector2 currentPos = new Vector2(sourcePos.x + 1f, sourcePos.y);
         Vector2 currentDir = new Vector2(1, 0);
         float currentHeight = CityTerrain.terrainData.GetInterpolatedHeight(currentPos.x / (hmw - 1.0f), currentPos.y / (hmh - 1.0f));
-        float currentWidth = 2f;
         bool stopped = false;
         float[,,] alphas = CityTerrain.terrainData.GetAlphamaps(0, 0, CityTerrain.terrainData.alphamapWidth, CityTerrain.terrainData.alphamapHeight);
         int i = 0;

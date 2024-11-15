@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RegionInformation : MonoBehaviour {
+public class RegionInformation : MonoBehaviour
+{
 
     public float DistToCenter;
     public float Slope;
@@ -21,14 +22,16 @@ public class RegionInformation : MonoBehaviour {
     public int Accommodates;
 
     // Use this for initialization
-    void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    void Start()
+    {
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
 
     internal void CopyInformationFrom(RegionInformation ri2)
     {
@@ -46,7 +49,7 @@ public class RegionInformation : MonoBehaviour {
         WeightSunExposure = ri2.WeightSunExposure;
         Height = ri2.Height;
         Accommodates = ri2.Accommodates;
-        
+
 
     }
 }
