@@ -1,0 +1,5 @@
+{
+   "error_message" : "Invalid request. Invalid 'locations' parameter.",
+   "results" : [],
+   "status" : "INVALID_REQUEST"
+}
