@@ -610,7 +610,7 @@ public class PCHouse : PCBuilding
         //For determining number of accommodated 
         GameObject cityBuilder = GameObject.Find("CityBuilder");
         ProceduralCityGenerator pcg = cityBuilder.GetComponent<ProceduralCityGenerator>();
-        float accommodationRate = pcg.getAccommodationRate();
+        float accommodationRate = pcg.GetAccommodationRate();
         if (accommodationRate > 1) accommodationRate = 1f;
         if (accommodationRate < 0) accommodationRate = 0f;
 
@@ -788,7 +788,7 @@ public class PCHouse : PCBuilding
         //For determining number of accommodated 
         GameObject cityBuilder = GameObject.Find("CityBuilder");
         ProceduralCityGenerator pcg = cityBuilder.GetComponent<ProceduralCityGenerator>();
-        float accommodationRate = pcg.getAccommodationRate();
+        float accommodationRate = pcg.GetAccommodationRate();
         if (accommodationRate > 1) accommodationRate = 1f;
         if (accommodationRate < 0) accommodationRate = 0f;
 

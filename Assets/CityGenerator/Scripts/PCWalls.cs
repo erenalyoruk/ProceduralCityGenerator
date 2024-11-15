@@ -94,20 +94,14 @@ public class PCWalls : PCBuilding
                     newSegment = points[i] - wallPoints[wallPoints.Count - 1];
                     lastSegment = wallPoints[wallPoints.Count - 1] - wallPoints[wallPoints.Count - 2];
                 }
-                //add new segment
+
                 wallPoints.Add(points[i]);
-
-
             }
 
             model = new GameObject("CityWalls");
             for (int i = 0; i < wallPoints.Count - 1; i++)
             {
                 HouseWall(wallPoints[i], wallPoints[i + 1], false, false);
-                //GameObject wallSegment = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                //wallSegment.transform.SetParent(wallGO.transform, false);
-                //wallSegment.transform.localPosition = wallPoints[i];
-
             }
         }
     }

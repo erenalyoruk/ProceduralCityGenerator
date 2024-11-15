@@ -853,12 +853,10 @@ public class PCBedesten : PCBuilding
         m.uv = texCoords;
         m.triangles = faces;
 
-        //adjustTexture
         Renderer houseWallRenderer = overTheDoor.GetComponent<Renderer>();
         houseWallRenderer.material.SetTexture("_MainTex", texture);
         houseWallRenderer.material.SetTextureScale("_MainTex", new Vector2((to - from).magnitude / 4f, 3f));
         houseWallRenderer.material.SetTextureOffset("_MainTex", new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
-        //houseWallRenderer.material.SetColor("_Color", Color.white * UnityEngine.Random.Range(0.6f, 1));
 
         overTheDoor.transform.SetParent(model.transform, false);
 
@@ -884,12 +882,10 @@ public class PCBedesten : PCBuilding
         overDoor.transform.SetParent(model.transform, false);
         overDoor.transform.localScale = (new Vector3((to - from).magnitude, outerWallHeight / 3, outerWallThickness));
 
-        //adjustTexture
         Renderer houseWallRenderer = overDoor.GetComponent<Renderer>();
         houseWallRenderer.material.SetTexture("_MainTex", texture);
         houseWallRenderer.material.SetTextureScale("_MainTex", new Vector2((to - from).magnitude / 4f, 0.6f));
         houseWallRenderer.material.SetTextureOffset("_MainTex", new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
-        //houseWallRenderer.material.SetColor("_Color", Color.white * colorDarkening);
 
         overDoor.transform.localPosition = (from + to + towardsIn * outerWallThickness + 10f * Vector3.up * outerWallHeight / 6f) / 2f;
         overDoor.transform.Rotate(Vector3.up, Vector3.SignedAngle(dir, Vector3.right, Vector3.up));
