@@ -17,11 +17,11 @@ public class PCMosque : PCBuilding
     int colorStyle = 1;
     private float colorDarkening = 0.7f;
 
-    public PCMosque(Vector3 position, float size, float height, string buildingName, Texture t, Texture domeT):base(buildingName)
+    public PCMosque(Vector3 position, float size, float height, string buildingName, Texture t, Texture domeT) : base(buildingName)
     {
         texture = t;
         domeTexture = domeT;
-        GenerateModel(position,size,height);
+        GenerateModel(position, size, height);
 
 
 
@@ -33,27 +33,27 @@ public class PCMosque : PCBuilding
         model.transform.position = position;
         model.transform.localScale /= ProceduralCityGenerator.ScaleFactor;
         model.transform.Rotate(Vector3.up, 73);
-        
+
 
         GameObject mosqueWalls1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
         mosqueWalls1.transform.SetParent(model.transform, false);
-        mosqueWalls1.transform.localScale = (new Vector3(size, height/2, 1));
-        mosqueWalls1.transform.localPosition = new Vector3(0, 0, size/2 - 0.5f);
+        mosqueWalls1.transform.localScale = (new Vector3(size, height / 2, 1));
+        mosqueWalls1.transform.localPosition = new Vector3(0, 0, size / 2 - 0.5f);
 
         GameObject mosqueWalls2 = GameObject.CreatePrimitive(PrimitiveType.Cube);
         mosqueWalls2.transform.SetParent(model.transform, false);
-        mosqueWalls2.transform.localScale = (new Vector3(size, height / 2, 1)) ;
-        mosqueWalls2.transform.localPosition = new Vector3(0, 0, -size/2 + 0.5f);
+        mosqueWalls2.transform.localScale = (new Vector3(size, height / 2, 1));
+        mosqueWalls2.transform.localPosition = new Vector3(0, 0, -size / 2 + 0.5f);
 
         GameObject mosqueWalls3 = GameObject.CreatePrimitive(PrimitiveType.Cube);
         mosqueWalls3.transform.SetParent(model.transform, false);
         mosqueWalls3.transform.localScale = (new Vector3(1, height / 2, size));
-        mosqueWalls3.transform.localPosition = new Vector3(-size/2 + 0.5f, 0,0);
+        mosqueWalls3.transform.localPosition = new Vector3(-size / 2 + 0.5f, 0, 0);
 
         GameObject mosqueWalls4 = GameObject.CreatePrimitive(PrimitiveType.Cube);
         mosqueWalls4.transform.SetParent(model.transform, false);
         mosqueWalls4.transform.localScale = (new Vector3(1, height / 2, size));
-        mosqueWalls4.transform.localPosition = new Vector3(size/2 - 0.5f, 0, 0);
+        mosqueWalls4.transform.localPosition = new Vector3(size / 2 - 0.5f, 0, 0);
 
 
         /*GameObject mosqueMasjid = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -63,8 +63,8 @@ public class PCMosque : PCBuilding
 
         GameObject mosqueDomeBase = GameObject.CreatePrimitive(PrimitiveType.Cube);
         mosqueDomeBase.transform.SetParent(model.transform, false);
-        mosqueDomeBase.transform.localScale = (new Vector3(size * 0.35f, 2, size * 0.2f)) ;
-        mosqueDomeBase.transform.localPosition = new Vector3(size * 0.25f, 9, 0) ;
+        mosqueDomeBase.transform.localScale = (new Vector3(size * 0.35f, 2, size * 0.2f));
+        mosqueDomeBase.transform.localPosition = new Vector3(size * 0.25f, 9, 0);
 
         //new additions
         houseWallThickness = 1.0f;
@@ -73,9 +73,9 @@ public class PCMosque : PCBuilding
         outerWallHeight = 2f;
         edgeSize = size;
 
-        Vector3 lowerLeft = new Vector3(0.05f*size, 0, -size*0.35f);
+        Vector3 lowerLeft = new Vector3(0.05f * size, 0, -size * 0.35f);
         Vector3 upperLeft = new Vector3(0.05f * size, 0, size * 0.35f);
-        Vector3 lowerRight = lowerLeft + new Vector3(0.4f*size, 0, 0);
+        Vector3 lowerRight = lowerLeft + new Vector3(0.4f * size, 0, 0);
         Vector3 upperRight = upperLeft + new Vector3(0.4f * size, 0, 0);
 
         int numTreesI = ((int)(edgeSize / 6));
@@ -86,16 +86,16 @@ public class PCMosque : PCBuilding
             {
                 if (UnityEngine.Random.value > 0.6f)
                 {
-                    Vector3 TreePos = -Vector3.forward*size*0.5f 
-                        +  (Vector3.forward * edgeSize / numTreesJ) * (0.9f*(tj + UnityEngine.Random.value) + 0.05f) 
-                        -  (0.5f*Vector3.right * edgeSize / numTreesI) * (0.09f*(ti + UnityEngine.Random.value) + 0.05f);
+                    Vector3 TreePos = -Vector3.forward * size * 0.5f
+                        + (Vector3.forward * edgeSize / numTreesJ) * (0.9f * (tj + UnityEngine.Random.value) + 0.05f)
+                        - (0.5f * Vector3.right * edgeSize / numTreesI) * (0.09f * (ti + UnityEngine.Random.value) + 0.05f);
                     TreePos = model.transform.TransformPoint(TreePos);
                     pcg.MakeTree(new Vector2(TreePos.x, TreePos.z));
                 }
             }
         }
 
-        BottomBuffer(lowerLeft+new Vector3(-0.2f,0,-0.2f), lowerRight + new Vector3(0.2f, 0, -0.2f), upperRight + new Vector3(0.2f, 0, 0.2f), upperLeft + new Vector3(-0.2f, 0, 0.2f));
+        BottomBuffer(lowerLeft + new Vector3(-0.2f, 0, -0.2f), lowerRight + new Vector3(0.2f, 0, -0.2f), upperRight + new Vector3(0.2f, 0, 0.2f), upperLeft + new Vector3(-0.2f, 0, 0.2f));
 
         Vector3 heightVector = new Vector3(0, 0, 0);
         numFloors = 2;
@@ -104,13 +104,13 @@ public class PCMosque : PCBuilding
             //bottom wall of the house
             HouseWall(heightVector + lowerRight, heightVector + upperRight, false, true); //right side
             //left(inside/courtyard) wall of the house
-            HouseWall(heightVector + upperLeft, heightVector + lowerLeft, i==0, true); //left side
+            HouseWall(heightVector + upperLeft, heightVector + lowerLeft, i == 0, true); //left side
             //top wall of the house
             HouseWall(heightVector + upperRight, heightVector + upperLeft, false, true);
             HouseWall(heightVector + lowerLeft, heightVector + lowerRight, false, true);
-            
+
             MiddleBuffer(heightVector + lowerLeft, heightVector + lowerRight, heightVector + upperRight, heightVector + upperLeft);
-            
+
             heightVector.y += 4;
         }
 
@@ -121,17 +121,17 @@ public class PCMosque : PCBuilding
         Mesh m = mosqueDome.GetComponent<MeshFilter>().mesh;
         Vector3[] vertices = m.vertices;
         for (int i = 0; i < vertices.Length; i++)
-            if(vertices[i].y < -0.05) vertices[i] = new Vector3(0,0,0);
+            if (vertices[i].y < -0.05) vertices[i] = new Vector3(0, 0, 0);
         m.vertices = vertices;
         mosqueDome.transform.SetParent(model.transform, false);
-        mosqueDome.transform.localScale = (new Vector3(size, size, size)) * 0.35f ;
-        mosqueDome.transform.localPosition = new Vector3(size*0.25f, 9, 0) ;
+        mosqueDome.transform.localScale = (new Vector3(size, size, size)) * 0.35f;
+        mosqueDome.transform.localPosition = new Vector3(size * 0.25f, 9, 0);
 
         GameObject mosqueHalfDome1 = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         mosqueHalfDome1.GetComponent<MeshFilter>().mesh.vertices = vertices;
         mosqueHalfDome1.transform.SetParent(model.transform, false);
-        mosqueHalfDome1.transform.localScale = (new Vector3(size, size, size)) * 0.15f ;
-        mosqueHalfDome1.transform.localPosition = new Vector3(size * 0.275f, 8, size*0.25f) ;
+        mosqueHalfDome1.transform.localScale = (new Vector3(size, size, size)) * 0.15f;
+        mosqueHalfDome1.transform.localPosition = new Vector3(size * 0.275f, 8, size * 0.25f);
 
         GameObject mosqueHalfDome2 = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         mosqueHalfDome2.GetComponent<MeshFilter>().mesh.vertices = vertices;
@@ -147,7 +147,7 @@ public class PCMosque : PCBuilding
 
         Renderer houseWallRenderer = mosqueWalls1.GetComponent<Renderer>();
         houseWallRenderer.material.SetTexture("_MainTex", texture);
-        houseWallRenderer.material.SetTextureScale("_MainTex", new Vector2(size / 4f, height/4));
+        houseWallRenderer.material.SetTextureScale("_MainTex", new Vector2(size / 4f, height / 4));
         houseWallRenderer.material.SetTextureOffset("_MainTex", new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
         houseWallRenderer.material.SetFloat("_Glossiness", .0f);
 
@@ -220,11 +220,11 @@ public class PCMosque : PCBuilding
         mosqueDomeBase4.transform.Rotate(Vector3.up, 135f);
 
         pcg.AddSceneryRegion(model.transform, Vector3.up * height / 2, new Vector3(size, height, size));
-        pcg.AddEmptyRegion(model.transform, Vector3.up * height, new Vector3(size, height*0.25f, size));
+        pcg.AddEmptyRegion(model.transform, Vector3.up * height, new Vector3(size, height * 0.25f, size));
 
     }
 
-    
+
 
     private void MiddleBuffer(Vector3 bl, Vector3 br, Vector3 tr, Vector3 tl)
     {

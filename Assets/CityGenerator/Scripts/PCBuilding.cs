@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PCBuilding {
+public class PCBuilding
+{
 
     public Vector2Int entranceGrid;//keeps the grid
     public GameObject model;
@@ -29,7 +30,7 @@ public class PCBuilding {
     }
 
     public PCBuilding(Vector3 position, float size, float height, string buildingName)
-    { 
+    {
         GenerateModel(position, size, height);
         entranceGrid = new Vector2Int();
     }
@@ -38,7 +39,7 @@ public class PCBuilding {
     {
         model = GameObject.CreatePrimitive(PrimitiveType.Cube);
         model.transform.position = position;
-        model.transform.localScale = (new Vector3(size, height*2, size)) / ProceduralCityGenerator.ScaleFactor;
+        model.transform.localScale = (new Vector3(size, height * 2, size)) / ProceduralCityGenerator.ScaleFactor;
         model.transform.Rotate(Vector3.up, UnityEngine.Random.value * 90);
 
 
@@ -53,7 +54,7 @@ public class PCBuilding {
         pr.transform.SetParent(model.transform);
         pr.transform.localScale = new Vector3((ur + lr - ul - ll).magnitude / 2, (ur - lr + ul - ll).magnitude / 2, 1);
         pr.transform.localPosition = (ur + lr + ul + ll) / 4;
-        
+
         Vector3 upVector = ur - lr + ul - ll;
         upVector.Normalize();
         Vector3 horVector = ur + lr - ul - ll;

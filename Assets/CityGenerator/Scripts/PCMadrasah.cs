@@ -10,19 +10,19 @@ public class PCMadrasah : PCBuilding
     private float windowWidth;
     Texture roofTexture;
 
-    public PCMadrasah(Vector3 position, float size, float height, string buildingName):base(buildingName)
+    public PCMadrasah(Vector3 position, float size, float height, string buildingName) : base(buildingName)
     {
         //GenerateModel(position,size,height);
 
     }
-    public PCMadrasah(Vector3 position, float size, float height, string buildingName, Texture t, Texture rt) : base(buildingName,t)
+    public PCMadrasah(Vector3 position, float size, float height, string buildingName, Texture t, Texture rt) : base(buildingName, t)
     {
         outerWallHeight = 6;
         outerWallThickness = 0.8f;
         doorWidth = 0.8f;
         mainDoorWidth = 4;
         windowWidth = 0.6f;
-        texOffset = new Vector2(0,0);
+        texOffset = new Vector2(0, 0);
         roofTexture = rt;
         GenerateModel(position, size, height);
     }
@@ -56,10 +56,10 @@ public class PCMadrasah : PCBuilding
 
 
         float t = outerWallThickness;
-        InnerWall(upperRight + Vector3.left * 4 + Vector3.back* 6, lowerRight + Vector3.left * 4 + Vector3.forward * t);
+        InnerWall(upperRight + Vector3.left * 4 + Vector3.back * 6, lowerRight + Vector3.left * 4 + Vector3.forward * t);
         InnerWall(lowerLeft + Vector3.right * 4 - Vector3.back * t, upperLeft + Vector3.right * 4 - Vector3.forward * 6);
-        Wall(upperLeft + Vector3.right * 6 - Vector3.forward * 6, upperRight + Vector3.left * 6 + Vector3.back * 6,true,true);
-        Wall(upperLeft + Vector3.right * 6 - Vector3.forward * 6 + Vector3.up*3.3f, upperRight + Vector3.left * 6 + Vector3.back * 6 + Vector3.up * 3.3f, false,true);
+        Wall(upperLeft + Vector3.right * 6 - Vector3.forward * 6, upperRight + Vector3.left * 6 + Vector3.back * 6, true, true);
+        Wall(upperLeft + Vector3.right * 6 - Vector3.forward * 6 + Vector3.up * 3.3f, upperRight + Vector3.left * 6 + Vector3.back * 6 + Vector3.up * 3.3f, false, true);
         Wall(upperLeft + Vector3.right * 6 - Vector3.forward * t, upperLeft + Vector3.right * 6 - Vector3.forward * (6 - t));
         Wall(upperRight - Vector3.right * 6 - Vector3.forward * (6 - t), upperRight - Vector3.right * 6 - Vector3.forward * t);
         Wall(upperLeft + Vector3.right * 6 - Vector3.forward * t + Vector3.up * 3.3f, upperLeft + Vector3.right * 6 - Vector3.forward * (6 - t) + Vector3.up * 3.3f);
@@ -67,7 +67,7 @@ public class PCMadrasah : PCBuilding
 
         ArcWall(upperRight + Vector3.left * 6 + Vector3.back * 6, lowerRight + Vector3.left * 6 + Vector3.forward * t, 3, 0.5f, 2);
         ArcWall(lowerLeft + Vector3.right * 6 - Vector3.back * t, upperLeft + Vector3.right * 6 - Vector3.forward * 6, 3, 0.5f, 2);
-        
+
         //right ceiling
         HorizontalBuffer(lowerRight + Vector3.left * 6 + Vector3.forward * t + Vector3.up * 3.3f,
                          lowerRight + Vector3.left * t + Vector3.forward * t + Vector3.up * 3.3f,
@@ -105,13 +105,13 @@ public class PCMadrasah : PCBuilding
 
         int numRooms = Mathf.RoundToInt((to - from).magnitude / 4);
 
-        for(int i = 0; i < numRooms; i++)
+        for (int i = 0; i < numRooms; i++)
         {
             Wall(from + i * (to - from) / numRooms, from + (i + 0.5f) * (to - from) / numRooms, false, true);
             Wall(from + (i + 0.5f) * (to - from) / numRooms, from + (i + 1f) * (to - from) / numRooms, true);
         }
     }
-    
+
     private void HorizontalBuffer(Vector3 bl, Vector3 br, Vector3 tr, Vector3 tl, float thickness)
     {
         GameObject bottomWall = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -125,7 +125,7 @@ public class PCMadrasah : PCBuilding
 
         bottomWall.transform.SetParent(model.transform, false);
         bottomWall.transform.localScale = new Vector3((br - bl).magnitude, thickness, (tr - br).magnitude);
-        bottomWall.transform.localPosition = (bl + br + tr + tl) / 4f + new Vector3(0, -thickness/2, 0);
+        bottomWall.transform.localPosition = (bl + br + tr + tl) / 4f + new Vector3(0, -thickness / 2, 0);
     }
 
 
@@ -151,7 +151,7 @@ public class PCMadrasah : PCBuilding
             wall.transform.localPosition = (from + to + towardsIn * outerWallThickness + Vector3.up * outerWallHeight) / 2f;
             wall.transform.Rotate(Vector3.up, Vector3.SignedAngle(dir, Vector3.right, Vector3.up));
         }
-        else if(mainDoor)
+        else if (mainDoor)
         {
             if ((to - from).magnitude <= mainDoorWidth)
             {
@@ -247,8 +247,8 @@ public class PCMadrasah : PCBuilding
         MakeElongatedCube(WindowCornersUpperLeft, WindowCornersUpperRight, 0.15f);
         MakeElongatedCube(WindowCornersUpperLeft, WindowCornersLowerLeft, 0.15f);
         MakeElongatedCube(WindowCornersUpperRight, WindowCornersLowerRight, 0.15f);*/
-        MakeElongatedCube((2*WindowCornersUpperRight + WindowCornersUpperLeft) / 3, (2*WindowCornersLowerRight + WindowCornersLowerLeft) / 3, 0.05f);
-        MakeElongatedCube((WindowCornersUpperRight + 2*WindowCornersUpperLeft) / 3, (WindowCornersLowerRight + 2* WindowCornersLowerLeft) / 3, 0.05f);
+        MakeElongatedCube((2 * WindowCornersUpperRight + WindowCornersUpperLeft) / 3, (2 * WindowCornersLowerRight + WindowCornersLowerLeft) / 3, 0.05f);
+        MakeElongatedCube((WindowCornersUpperRight + 2 * WindowCornersUpperLeft) / 3, (WindowCornersLowerRight + 2 * WindowCornersLowerLeft) / 3, 0.05f);
         MakeElongatedCube(WindowCornersLowerLeft / 3f + WindowCornersUpperLeft * 2f / 3, WindowCornersLowerRight / 3f + WindowCornersUpperRight * 2f / 3f, 0.05f);
         MakeElongatedCube(WindowCornersLowerLeft * 2f / 3f + WindowCornersUpperLeft / 3f, WindowCornersLowerRight * 2f / 3f + WindowCornersUpperRight / 3f, 0.05f);
     }
@@ -306,8 +306,8 @@ public class PCMadrasah : PCBuilding
         //make the front face
         Mesh m = arcWall.GetComponent<MeshFilter>().mesh;
 
-        int arcSamples = 7; 
-        Vector3[] vertices = new Vector3[4*(8+arcSamples)+16];
+        int arcSamples = 7;
+        Vector3[] vertices = new Vector3[4 * (8 + arcSamples) + 16];
         Vector3[] normals = new Vector3[vertices.Length];
         Vector2[] texCoords = new Vector2[vertices.Length];
 
@@ -318,10 +318,10 @@ public class PCMadrasah : PCBuilding
         vertices[7 + arcSamples] = to + Vector3.up * height;
         vertices[6 + arcSamples] = to;
         vertices[5 + arcSamples] = to - dir * thickness / 2;
-        vertices[4 + arcSamples] = vertices[5+arcSamples] + Vector3.up * columnHeight;
+        vertices[4 + arcSamples] = vertices[5 + arcSamples] + Vector3.up * columnHeight;
 
         Vector3 arcCenter = (to + from) / 2 + Vector3.up * columnHeight / 2;
-        float endAngle = Mathf.Atan(columnHeight/((to-from).magnitude-thickness));
+        float endAngle = Mathf.Atan(columnHeight / ((to - from).magnitude - thickness));
         float startAngle = Mathf.PI - endAngle;
         float angleStep = (endAngle - startAngle) / (arcSamples + 1);
 
@@ -339,17 +339,17 @@ public class PCMadrasah : PCBuilding
             texCoords[i] = new Vector2(xdif / (to - from).magnitude, ydif / height);
         }
 
-        int[] faces = new int[2*3*(6+arcSamples)+(8+arcSamples)*2*3];
-        for (int i = 2; i <= 3 + (arcSamples+1)/2; i++)
+        int[] faces = new int[2 * 3 * (6 + arcSamples) + (8 + arcSamples) * 2 * 3];
+        for (int i = 2; i <= 3 + (arcSamples + 1) / 2; i++)
         {
             faces[(i - 2) * 3] = 0;
             faces[(i - 2) * 3 + 1] = i;
-            faces[(i - 2) * 3 + 2] = i-1;
+            faces[(i - 2) * 3 + 2] = i - 1;
         }
         for (int i = 3 + (arcSamples + 1) / 2; i <= 5 + arcSamples; i++)
         {
             faces[(i - 1) * 3] = arcSamples + 7;
-            faces[(i - 1) * 3 + 1] = i+1;
+            faces[(i - 1) * 3 + 1] = i + 1;
             faces[(i - 1) * 3 + 2] = i;
         }
         faces[(arcSamples + 5) * 3] = 0;
@@ -358,24 +358,24 @@ public class PCMadrasah : PCBuilding
 
         //make the inner face
         int voffset = 8 + arcSamples;
-        for(int i = 0; i < voffset; i++)
+        for (int i = 0; i < voffset; i++)
         {
             vertices[i + voffset] = vertices[i] + towardsIn * thickness;
             normals[i + voffset] = normals[i] * -1;
             texCoords[i + voffset] = texCoords[i];
         }
-        
+
         int foffset = 6 + arcSamples;
         for (int i = 0; i < foffset; i++)
         {
-            faces[3*(i+foffset)] = faces[3*i] + voffset;
+            faces[3 * (i + foffset)] = faces[3 * i] + voffset;
             faces[3 * (i + foffset) + 1] = faces[3 * i + 2] + voffset;
             faces[3 * (i + foffset) + 2] = faces[3 * i + 1] + voffset;
         }
 
         //make the 3rd dim
         int additional = 0;
-        for(int i = 0; i <= 1; i++)
+        for (int i = 0; i <= 1; i++)
         {
             vertices[2 * voffset + i] = vertices[i];
             vertices[3 * voffset + i + 8] = vertices[voffset + i];
@@ -405,7 +405,7 @@ public class PCMadrasah : PCBuilding
             texCoords[3 * voffset + i + 8 + additional] = texCoords[i];
         }
         additional++;
-        for (int i = 3; i <= 4+arcSamples; i++)
+        for (int i = 3; i <= 4 + arcSamples; i++)
         {
             vertices[2 * voffset + i + additional] = vertices[i];
             vertices[3 * voffset + i + 8 + additional] = vertices[voffset + i];
@@ -417,7 +417,7 @@ public class PCMadrasah : PCBuilding
             texCoords[3 * voffset + i + 8 + additional] = texCoords[i];
         }
         additional++;
-        for (int i = 4+arcSamples; i <= 5 + arcSamples; i++)
+        for (int i = 4 + arcSamples; i <= 5 + arcSamples; i++)
         {
             vertices[2 * voffset + i + additional] = vertices[i];
             vertices[3 * voffset + i + 8 + additional] = vertices[voffset + i];
@@ -449,7 +449,7 @@ public class PCMadrasah : PCBuilding
         additional++;
         for (int i = 7 + arcSamples; i <= 8 + arcSamples; i++)
         {
-            vertices[2 * voffset + i + additional] = vertices[(i% voffset)];
+            vertices[2 * voffset + i + additional] = vertices[(i % voffset)];
             vertices[3 * voffset + i + 8 + additional] = vertices[voffset + (i % voffset)];
             normals[2 * voffset + i + additional] = Vector3.up;
             normals[3 * voffset + i + 8 + additional] = Vector3.up;
@@ -459,7 +459,7 @@ public class PCMadrasah : PCBuilding
 
         int faceIndex = foffset * 2;
         additional = 0;
-        for(int i = 0; i < 15 + arcSamples; i++)
+        for (int i = 0; i < 15 + arcSamples; i++)
         {
             if (i == 1 || i == 3 || i == 5 || i == arcSamples + 7 || i == arcSamples + 7 || i == arcSamples + 9 || i == arcSamples + 11 || i == arcSamples + 13)
             {
@@ -487,7 +487,7 @@ public class PCMadrasah : PCBuilding
         //houseWallRenderer.material.SetColor("_Color", Color.white * UnityEngine.Random.Range(0.6f, 1));
 
         arcWall.transform.SetParent(model.transform, false);
-        
+
     }
 
     private void MainDoor(Vector3 from, Vector3 to)
@@ -496,15 +496,15 @@ public class PCMadrasah : PCBuilding
         dir.Normalize();
         Vector3 towardsIn = Vector3.Cross(dir, Vector3.up);
 
-        Wall(from + towardsIn*3, from - towardsIn * 1);
+        Wall(from + towardsIn * 3, from - towardsIn * 1);
         Wall(to - towardsIn, to + towardsIn * 3);
-        HorizontalBuffer(from + towardsIn * 3.2f + Vector3.up * (outerWallHeight+0.5f) - dir*0.2f, 
-                        from - towardsIn * 1.2f + Vector3.up * (outerWallHeight + 0.5f) - dir * 0.2f, 
-                        to - towardsIn * 1.2f + Vector3.up * (outerWallHeight + 0.5f) + dir * 0.2f, 
+        HorizontalBuffer(from + towardsIn * 3.2f + Vector3.up * (outerWallHeight + 0.5f) - dir * 0.2f,
+                        from - towardsIn * 1.2f + Vector3.up * (outerWallHeight + 0.5f) - dir * 0.2f,
+                        to - towardsIn * 1.2f + Vector3.up * (outerWallHeight + 0.5f) + dir * 0.2f,
                         to + towardsIn * 3.2f + Vector3.up * (outerWallHeight + 0.5f) + dir * 0.2f, 1);
         ArcWallUnit(from + dir * outerWallThickness + towardsIn * 1, to - dir * outerWallThickness + towardsIn * 1, 3, 0.5f, 2);
-        OverTheDoor(from + dir * outerWallThickness - towardsIn * 1 + Vector3.up*3, 
-            to - dir * outerWallThickness - towardsIn * 1 + Vector3.up * 3, 2, outerWallHeight-3);
+        OverTheDoor(from + dir * outerWallThickness - towardsIn * 1 + Vector3.up * 3,
+            to - dir * outerWallThickness - towardsIn * 1 + Vector3.up * 3, 2, outerWallHeight - 3);
 
         MakeMinaret(from - dir * 0.8f - towardsIn * (0.6f), outerWallHeight * 1.5f, 0.6f);
         MakeMinaret(to + dir * 0.8f - towardsIn * (0.6f), outerWallHeight * 1.5f, 0.6f);
@@ -515,22 +515,22 @@ public class PCMadrasah : PCBuilding
     {
         GameObject minaret = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
         minaret.transform.SetParent(model.transform, false);
-        minaret.transform.localScale = (new Vector3(2*radius, height/2, 2*radius));
-        minaret.transform.localPosition = pos + Vector3.up*height/2;
+        minaret.transform.localScale = (new Vector3(2 * radius, height / 2, 2 * radius));
+        minaret.transform.localPosition = pos + Vector3.up * height / 2;
 
         GameObject minaretTop = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         minaretTop.transform.SetParent(model.transform, false);
-        minaretTop.transform.localScale = (new Vector3(2 * radius, 2*radius, 2 * radius));
+        minaretTop.transform.localScale = (new Vector3(2 * radius, 2 * radius, 2 * radius));
         minaretTop.transform.localPosition = pos + Vector3.up * height;
 
         Renderer renderer = minaret.GetComponent<Renderer>();
         renderer.material.SetTexture("_MainTex", texture);
-        renderer.material.SetTextureScale("_MainTex", new Vector2(height / 10f, 2*height));
+        renderer.material.SetTextureScale("_MainTex", new Vector2(height / 10f, 2 * height));
         renderer.material.SetTextureOffset("_MainTex", new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
 
         renderer = minaretTop.GetComponent<Renderer>();
         renderer.material.SetTexture("_MainTex", texture);
-        renderer.material.SetTextureScale("_MainTex", new Vector2(height /5f, height /5));
+        renderer.material.SetTextureScale("_MainTex", new Vector2(height / 5f, height / 5));
         renderer.material.SetTextureOffset("_MainTex", new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
 
 
@@ -551,7 +551,7 @@ public class PCMadrasah : PCBuilding
         overTheDoor.AddComponent<MeshFilter>();
         overTheDoor.AddComponent<MeshRenderer>();
         overTheDoor.GetComponent<Renderer>().sharedMaterial = diffuse;
-        
+
         //make the front face
         Mesh m = overTheDoor.GetComponent<MeshFilter>().mesh;
 
@@ -564,13 +564,13 @@ public class PCMadrasah : PCBuilding
         corners[1] = from + towardsIn * depth;
         corners[2] = to;
         corners[3] = to + towardsIn * depth;
-        corners[4] = from + Vector3.up*height;
+        corners[4] = from + Vector3.up * height;
         corners[5] = from + towardsIn * depth + Vector3.up * height;
         corners[6] = to + Vector3.up * height;
         corners[7] = to + towardsIn * depth + Vector3.up * height;
         corners[8] = corners[4] * 0.5f + corners[6] * 0.5f - Vector3.up * height * 0.2f;
 
-        int[] faces = new int[14*3];
+        int[] faces = new int[14 * 3];
 
         int fc = 0;
         int voffset = 0;
@@ -604,7 +604,7 @@ public class PCMadrasah : PCBuilding
         normals[voffset + 3] = Vector3.up;
         texCoords[voffset + 0] = new Vector2(0, 0);
         texCoords[voffset + 1] = new Vector2(depth / height, 0);
-        texCoords[voffset + 2] = new Vector2(0, (to-from).magnitude/height);
+        texCoords[voffset + 2] = new Vector2(0, (to - from).magnitude / height);
         texCoords[voffset + 3] = new Vector2(depth / height, (to - from).magnitude / height);
         faces[fc++] = voffset + 0; faces[fc++] = voffset + 2; faces[fc++] = voffset + 1;
         faces[fc++] = voffset + 1; faces[fc++] = voffset + 2; faces[fc++] = voffset + 3;
@@ -680,7 +680,7 @@ public class PCMadrasah : PCBuilding
         normals[voffset + 2] = n;
         texCoords[voffset + 0] = new Vector2(0, 0);
         texCoords[voffset + 1] = new Vector2(0, 0.8f);
-        texCoords[voffset + 2] = new Vector2(depth/height, 0);
+        texCoords[voffset + 2] = new Vector2(depth / height, 0);
         faces[fc++] = voffset + 0; faces[fc++] = voffset + 1; faces[fc++] = voffset + 2;
 
         voffset += 3;
@@ -695,7 +695,7 @@ public class PCMadrasah : PCBuilding
         normals[voffset + 1] = n;
         normals[voffset + 2] = n;
         texCoords[voffset + 0] = new Vector2(0, 0);
-        texCoords[voffset + 1] = new Vector2(depth/height, 0);
+        texCoords[voffset + 1] = new Vector2(depth / height, 0);
         texCoords[voffset + 2] = new Vector2(0, 0.8f);
         faces[fc++] = voffset + 0; faces[fc++] = voffset + 1; faces[fc++] = voffset + 2;
 
@@ -717,7 +717,7 @@ public class PCMadrasah : PCBuilding
 
 
         m.vertices = vertices;
-        m.normals = normals;    
+        m.normals = normals;
         m.uv = texCoords;
         m.triangles = faces;
 

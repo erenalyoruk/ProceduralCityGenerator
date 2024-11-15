@@ -6,7 +6,8 @@ using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
 
-public class ProceduralCityGenerator : MonoBehaviour {
+public class ProceduralCityGenerator : MonoBehaviour
+{
 
     public Terrain CityTerrain;
 
@@ -77,7 +78,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
     private int CityAccessibilityApproach = 2; //1 Floyd, 2 Euler distance
     private float[,] CityCoreAccessibilityTable;
     private Vector2Int[,] CityCoreAccessibilityPath;
-    public float[,] CityWaterProximityTable; 
+    public float[,] CityWaterProximityTable;
     public float[,] EuclideanWaterProximityTable;
     public enum Occupation { Free, Walkable, Buildable, Occupied };
     public Occupation[,] CityOccupation;//0 Free, 1 Walkable, 2 Buildable
@@ -92,7 +93,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
     const int TreeChannel = 1;
     const int WaterChannel = 2;
     const int RockChannel = 3;
-    private float overlap = 0.2f; 
+    private float overlap = 0.2f;
 
     private const int WaterNearbyThreshold = 100; //meters, highest proximity score, score = 1 until that
     private const int WaterFarAwayThreshold = 1000; //meters, lowest proximity score, score = 0 after that
@@ -125,7 +126,8 @@ public class ProceduralCityGenerator : MonoBehaviour {
         hmw = CityTerrain.terrainData.heightmapResolution;
         hmh = CityTerrain.terrainData.heightmapResolution;
         FindHighestPoint();
-        if (FirstTime){
+        if (FirstTime)
+        {
             ClearMap();
             for (int i = 0; i < 5; i++)
             {
@@ -159,7 +161,8 @@ public class ProceduralCityGenerator : MonoBehaviour {
     int targetNumCities = 3;
 
     // Update is called once per frame
-    void Update() {
+    void Update()
+    {
         if (ConstructionState == 0 && Input.GetKeyDown("space"))
         {
             ConstructionState++;
@@ -187,7 +190,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
             }
             ConstructionState++;
         }
-        if (ConstructionState == 2 )
+        if (ConstructionState == 2)
         {
             elapsed += Time.deltaTime;
             if (elapsed > 1f && ballCount < 0)
@@ -238,7 +241,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
             BuildCityWalls();
             ConstructionState++;
         }
-        if(ConstructionState == 4)
+        if (ConstructionState == 4)
         {
             GenerateCityTrees(200);
             ConstructionState++;
@@ -248,7 +251,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
                 ConstructionState = 0;
                 accommodated = 0;
             }
-                
+
         }
 
 
@@ -282,7 +285,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
 
         beginning = Time.realtimeSinceStartup;
         CalculateAccessibilityWithinCity();
-        Debug.Log("accessibility table filled in: " + (Time.realtimeSinceStartup-beginning));
+        Debug.Log("accessibility table filled in: " + (Time.realtimeSinceStartup - beginning));
 
         beginning = Time.realtimeSinceStartup;
         CalculateWaterProximityWithinCity();
@@ -290,7 +293,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
 
         //initiate roads parent
         roads = new GameObject("roads");
-        
+
         //initiate tree parent object
         trees = new GameObject("trees");
 
@@ -319,7 +322,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
         beginning = Time.realtimeSinceStartup;
         CalculateDistanceToCityCore();
         Debug.Log("dist to city core table filled in: " + (Time.realtimeSinceStartup - beginning));
-        
+
         MakeMainRoads(4);
         //MakeRoadGrids(40);
         CalculateDistanceToCityCore();
@@ -389,9 +392,9 @@ public class ProceduralCityGenerator : MonoBehaviour {
                     Vector3 from3 = new Vector3(i + CityBoundaryMin.x + 0.5f, 0f, j + CityBoundaryMin.y - 0.5f);
                     Vector3 from4 = new Vector3(i + CityBoundaryMin.x + 0.5f, 0f, j + CityBoundaryMin.y + 0.5f);
                     Vector3 from5 = new Vector3(i + CityBoundaryMin.x, 0f, j + CityBoundaryMin.y);
-                    
+
                     float fromHeight1 = CityTerrain.SampleHeight(from1);
-                    from1.y = fromHeight1+0.01f;
+                    from1.y = fromHeight1 + 0.01f;
                     float fromHeight2 = CityTerrain.SampleHeight(from2);
                     from2.y = fromHeight2 + 0.01f;
                     float fromHeight3 = CityTerrain.SampleHeight(from3);
@@ -414,7 +417,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
                         //riRenderer.material.SetColor("_Color", Color.black);
                         if (convertToWalkable)
                         {
-                            if(RoadExists(i,j))
+                            if (RoadExists(i, j))
                                 CityOccupation[i, j] = Occupation.Walkable;
                             else
                                 CityOccupation[i, j] = Occupation.Free;
@@ -423,7 +426,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
                     }
 
                 }
-                
+
             }
         }
     }
@@ -431,19 +434,19 @@ public class ProceduralCityGenerator : MonoBehaviour {
     private void MakeRoadGrids(float seperation)
     {
         int stepx = Mathf.RoundToInt(seperation / ScaleFactor);
-        int stepy = Mathf.RoundToInt((seperation/ScaleFactor)*(seperation/ScaleFactor)/(stepx));
-        for (int i = 1; i < cw - 1; i+=stepx)
+        int stepy = Mathf.RoundToInt((seperation / ScaleFactor) * (seperation / ScaleFactor) / (stepx));
+        for (int i = 1; i < cw - 1; i += stepx)
         {
             for (int j = 1; j < ch - 1; j += stepy)
             {
                 Debug.Log("making grid between " + i + ", " + j);
                 //horizontal
-                if((CityOccupation[i,j] == Occupation.Free || CityOccupation[i, j] == Occupation.Walkable)
-                    && GridInsideCity(i+stepx, j) )
+                if ((CityOccupation[i, j] == Occupation.Free || CityOccupation[i, j] == Occupation.Walkable)
+                    && GridInsideCity(i + stepx, j))
                 {
                     bool allPossible = true;
-                    for(int k = i; k <= i+stepx; k++)
-                        if(CityOccupation[k, j] != Occupation.Free && CityOccupation[k, j] != Occupation.Walkable)
+                    for (int k = i; k <= i + stepx; k++)
+                        if (CityOccupation[k, j] != Occupation.Free && CityOccupation[k, j] != Occupation.Walkable)
                         {
                             allPossible = false;
                             break;
@@ -455,7 +458,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
                         LinkedList<Vector3> pathList = new LinkedList<Vector3>();
                         for (int k = i; k <= i + stepx; k++)
                         {
-                            Vector3 current = new Vector3(k+CityBoundaryMin.x, 0, j + CityBoundaryMin.y);
+                            Vector3 current = new Vector3(k + CityBoundaryMin.x, 0, j + CityBoundaryMin.y);
                             current.y = CityTerrain.SampleHeight(current);
                             pathList.AddLast(current);
                             CityOccupation[k, j] = Occupation.Walkable;
@@ -645,9 +648,9 @@ public class ProceduralCityGenerator : MonoBehaviour {
 
         //calculate a table showing the probabilities of having a tree around
         float total = 0;
-        for (int i = 0; i < hmw-1; i++)
+        for (int i = 0; i < hmw - 1; i++)
         {
-            for (int j = 0; j < hmh-1; j++)
+            for (int j = 0; j < hmh - 1; j++)
             {
                 if (EuclideanWaterProximityTable[i, j] != float.PositiveInfinity && EuclideanWaterProximityTable[i, j] > 2)
                 {
@@ -658,9 +661,9 @@ public class ProceduralCityGenerator : MonoBehaviour {
 
         //int maxTreesInGrid = Mathf.Max(1, (int)(ScaleFactor*ScaleFactor/9));
         int treeCount = 0;
-        for (int i = 0; i < hmw-1; i++)
+        for (int i = 0; i < hmw - 1; i++)
         {
-            for (int j = 0; j < hmh-1; j++)
+            for (int j = 0; j < hmh - 1; j++)
             {
                 if (EuclideanWaterProximityTable[i, j] != float.PositiveInfinity && EuclideanWaterProximityTable[i, j] > 2)
                 {
@@ -671,7 +674,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
                     {
                         treeCount++;
                         MakeTree(new Vector2(i + UnityEngine.Random.Range(-0.5f, 0.5f), j + UnityEngine.Random.Range(-0.5f, 0.5f)));
-                        
+
                     }
                 }
             }
@@ -736,7 +739,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
             htree = UnityEngine.Object.Instantiate(tree1);
         else
             htree = UnityEngine.Object.Instantiate(tree2);
-        
+
         htree.transform.SetParent(trees.transform, true);
 
 
@@ -783,12 +786,12 @@ public class ProceduralCityGenerator : MonoBehaviour {
                 //check if water source
                 if (alphas[j, i, WaterChannel] > 0.5f)
                 {
-                    for (int di = 0; di < hmw-1; di++)
+                    for (int di = 0; di < hmw - 1; di++)
                     {
-                        for (int dj = 0; dj < hmh-1; dj++)
+                        for (int dj = 0; dj < hmh - 1; dj++)
                         {
                             //calculate distance from water to that point
-                            float distance = Mathf.Sqrt( (i-di)* (i - di) + (j-dj)* (j - dj))*ScaleFactor; //gives us approximate distance in meters
+                            float distance = Mathf.Sqrt((i - di) * (i - di) + (j - dj) * (j - dj)) * ScaleFactor; //gives us approximate distance in meters
                             EuclideanWaterProximityTable[di, dj] = Mathf.Min(EuclideanWaterProximityTable[di, dj], distance);
                         }
                     }
@@ -810,7 +813,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
         {
             for (int j = 0; j < ch; j++)
             {
-                CityWaterProximityTable[i, j] = hmw*ScaleFactor;
+                CityWaterProximityTable[i, j] = hmw * ScaleFactor;
             }
         }
 
@@ -864,10 +867,10 @@ public class ProceduralCityGenerator : MonoBehaviour {
                 riobj.name = "ri" + i + j;
                 riobj.transform.SetParent(RegionInformationParent.transform);
                 float height = CityTerrain.SampleHeight(new Vector3(i + CityBoundaryMin.x, 0, j + CityBoundaryMin.y));
-                riobj.transform.position = new Vector3(i+CityBoundaryMin.x, height-1, j+CityBoundaryMin.y);
+                riobj.transform.position = new Vector3(i + CityBoundaryMin.x, height - 1, j + CityBoundaryMin.y);
                 riobj.AddComponent<RegionInformation>();
                 RegionInformation ri = riobj.GetComponent<RegionInformation>();
-                
+
             }
         }
     }
@@ -967,9 +970,9 @@ public class ProceduralCityGenerator : MonoBehaviour {
                         from.y = fromHeight;
 
                         //calculate a cost from source to target
-                        float slope = (to.y - from.y) / (new Vector2(to.x-from.x, to.z-from.z)).magnitude;
+                        float slope = (to.y - from.y) / (new Vector2(to.x - from.x, to.z - from.z)).magnitude;
                         //float cost = ((to - from).magnitude + 10 * (slope - EasiestWalkingSlope) * (slope - EasiestWalkingSlope)) * ScaleFactor;
-                        float cost = ((to - from).magnitude * (1 + 10*( (slope - EasiestWalkingSlope) * (slope - EasiestWalkingSlope)))) * ScaleFactor;
+                        float cost = ((to - from).magnitude * (1 + 10 * ((slope - EasiestWalkingSlope) * (slope - EasiestWalkingSlope)))) * ScaleFactor;
                         //if (CityOccupation[ti, tj] == Occupation.Walkable && CityOccupation[current.x, current.y] == Occupation.Walkable)
                         if (RoadExists(current.x, current.y, ti, tj))
                         {
@@ -987,7 +990,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
                             CityCoreAccessibilityTable[ti, tj] = CityCoreAccessibilityTable[current.x, current.y] + cost;
                             CityCoreAccessibilityPath[ti, tj] = current;
                             //check if it exists in the 
-                            if(!toBeVisited.Contains(new Vector2Int(ti, tj)))
+                            if (!toBeVisited.Contains(new Vector2Int(ti, tj)))
                                 toBeVisited.AddLast(new Vector2Int(ti, tj));
                         }
                     }
@@ -1007,7 +1010,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
         CityAccessibilityScores = new float[cw, ch];
         CityAccessibilityTable = new float[cw, ch, cw, ch];
         CityAccessPath = new Vector2Int[cw, ch, cw, ch];
-        
+
 
         for (int fi = CityBoundaryMin.x; fi <= CityBoundaryMax.x; fi++)
         {
@@ -1021,7 +1024,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
                             CityAccessibilityTable[fi - CityBoundaryMin.x, fj - CityBoundaryMin.y, ti - CityBoundaryMin.x, tj - CityBoundaryMin.y] = 0;
                         else
                         {
-                            CityAccessibilityTable[fi - CityBoundaryMin.x, fj - CityBoundaryMin.y, ti - CityBoundaryMin.x, tj - CityBoundaryMin.y] = Mathf.Sqrt((fi-ti)* (fi - ti) + (fj - tj) * (fj - tj))*ScaleFactor;
+                            CityAccessibilityTable[fi - CityBoundaryMin.x, fj - CityBoundaryMin.y, ti - CityBoundaryMin.x, tj - CityBoundaryMin.y] = Mathf.Sqrt((fi - ti) * (fi - ti) + (fj - tj) * (fj - tj)) * ScaleFactor;
 
                         }
                     }
@@ -1080,7 +1083,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
                         if ((Mathf.Abs(ti - fi) + Mathf.Abs(tj - fj) == 4) || Mathf.Abs(Mathf.Abs(ti - fi) - Mathf.Abs(tj - fj)) == 2)
                             continue;
                         //if source != target and target is inside the boundaries
-                        if (((ti != fi) || (tj != fj)) && GridInsideCity(ti,tj,false))
+                        if (((ti != fi) || (tj != fj)) && GridInsideCity(ti, tj, false))
                         {
 
                             if (!(CityOccupation[ti - CityBoundaryMin.x, tj - CityBoundaryMin.y] == Occupation.Free || CityOccupation[ti - CityBoundaryMin.x, tj - CityBoundaryMin.y] == Occupation.Walkable))
@@ -1092,7 +1095,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
 
                             //calculate a cost from source to target
                             float slope = (to.y - from.y) / (to - from).magnitude;
-                            float cost = ((to - from).magnitude * (1+ 10 * (slope - EasiestWalkingSlope) * (slope - EasiestWalkingSlope)) * ScaleFactor);
+                            float cost = ((to - from).magnitude * (1 + 10 * (slope - EasiestWalkingSlope) * (slope - EasiestWalkingSlope)) * ScaleFactor);
 
                             CityAccessibilityTable[fi - CityBoundaryMin.x, fj - CityBoundaryMin.y, ti - CityBoundaryMin.x, tj - CityBoundaryMin.y] = cost;
                             CityAccessPath[fi - CityBoundaryMin.x, fj - CityBoundaryMin.y, ti - CityBoundaryMin.x, tj - CityBoundaryMin.y] = new Vector2Int(ti - CityBoundaryMin.x, tj - CityBoundaryMin.y);
@@ -1219,25 +1222,25 @@ public class ProceduralCityGenerator : MonoBehaviour {
                     float waterProximityCost = CityWaterProximityTable[i, j];
                     float waterAvoidance = waterProximityCost < 40 ? (80 - waterProximityCost) / 5 : 0;
 
-                    costs[i, j] = -1f * illuminationScores[i,j] * WeightSunExposure 
-                        + -1f * sceneryScores[i, j] * WeightView 
-                        + privacyCosts[i, j] * WeightPrivacy 
-                        + WeightDistToCenter * distCost 
-                        + WeightSlope * slopeCost 
+                    costs[i, j] = -1f * illuminationScores[i, j] * WeightSunExposure
+                        + -1f * sceneryScores[i, j] * WeightView
+                        + privacyCosts[i, j] * WeightPrivacy
+                        + WeightDistToCenter * distCost
+                        + WeightSlope * slopeCost
                         + WeightWaterProximity * waterProximityCost / 200f + waterAvoidance; //1 point per 200 meter++
 
-                    if(randomCosts)
+                    if (randomCosts)
                         costs[i, j] = UnityEngine.Random.value;
                     //fill debug information
 
                     RegionInformation ri = riobj.GetComponent<RegionInformation>();
-                    
+
                     ri.DistToCenter = distToCenter;
                     ri.Slope = slopeCost;
                     ri.WaterProximity = waterProximityCost;
                     ri.Privacy = privacyCosts[i, j];
                     ri.View = sceneryScores[i, j];
-                    ri.SunExposure = illuminationScores[i,j];
+                    ri.SunExposure = illuminationScores[i, j];
                     ri.WeightDistToCenter = WeightDistToCenter;
                     ri.WeightSlope = WeightSlope;
                     ri.WeightWaterProximity = WeightWaterProximity;
@@ -1246,7 +1249,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
                     ri.WeightSunExposure = WeightSunExposure;
                     ri.Height = height;
                     ri.Accommodates = -1;
-                    
+
                 }
             }
         }
@@ -1266,7 +1269,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
             {
                 Vector3 position = new Vector3(CityBoundaryMin.x + i, height, CityBoundaryMin.y + j);
                 position.y = CityTerrain.SampleHeight(position) + height;
-                scores[i,j] = CheckSunExposure(position);
+                scores[i, j] = CheckSunExposure(position);
             }
         }
         done = true;
@@ -1279,13 +1282,13 @@ public class ProceduralCityGenerator : MonoBehaviour {
     {
         if (sunExposureValues.ContainsKey(position) && sunExposureValues[position] >= 0)
             return sunExposureValues[position];
-        
+
         float maxTilt = 23.5f;
         int halfYearSamples = 6;
         int shaded = 0;
         int sunny = 0;
         //yearly samples
-        for(int m = -halfYearSamples; m <= halfYearSamples; m++)
+        for (int m = -halfYearSamples; m <= halfYearSamples; m++)
         {
             float tiltAngle = (90 - Latitude) + (m * maxTilt / halfYearSamples);
             //approximate daily samples
@@ -1300,13 +1303,13 @@ public class ProceduralCityGenerator : MonoBehaviour {
                 if (Physics.Raycast(position, dir, hmw * 2))
                 {
                     shaded++;
-                    if(!done)
-                        Debug.DrawRay(position, dir, Color.black,3000);
+                    if (!done)
+                        Debug.DrawRay(position, dir, Color.black, 3000);
                 }
                 else
                 {
                     sunny++;
-                    if(!done)
+                    if (!done)
                         Debug.DrawRay(position, dir, Color.yellow, 3000);
                 }
             }
@@ -1358,7 +1361,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
         sceneryCalculationTime += (Time.realtimeSinceStartup - t_start);
         return scores;
     }
-    
+
     //returns an array of costs
     private float[,] CheckViewPrivacyCosts(float height)
     {
@@ -1479,7 +1482,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
                     {
                         float xdif = Mathf.Max(Mathf.Abs(ci - i) - 0.5f, 0);
                         float ydif = Mathf.Max(Mathf.Abs(cj - j) - 0.5f, 0);
-                        if ( (xdif*xdif+ydif*ydif) < ((checkRadius / ScaleFactor)*(checkRadius / ScaleFactor)))
+                        if ((xdif * xdif + ydif * ydif) < ((checkRadius / ScaleFactor) * (checkRadius / ScaleFactor)))
                             currentCost += costs[ci, cj];
                     }
 
@@ -1530,7 +1533,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
                         //Debug.DrawLine(from, to, Color.red, 1000, false);
 
                     }
-                    if (CityOccupation[ci, cj] == Occupation.Free && ((xdif * xdif + ydif * ydif) <= (((checkRadius+padding) / ScaleFactor) * ((checkRadius+padding) / ScaleFactor))))
+                    if (CityOccupation[ci, cj] == Occupation.Free && ((xdif * xdif + ydif * ydif) <= (((checkRadius + padding) / ScaleFactor) * ((checkRadius + padding) / ScaleFactor))))
                     {
 
                         //draw a line and stop;
@@ -1608,7 +1611,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
 
             }
             //update roads table
-            AddRoad(p1.Value,p2.Value);
+            AddRoad(p1.Value, p2.Value);
             p0 = p1;
             p1 = p2;
             p2 = p3;
@@ -1635,20 +1638,21 @@ public class ProceduralCityGenerator : MonoBehaviour {
         AddRoad(fx, fy, tx, ty);
     }
 
-    private void AddRoad(int fx, int fy, int tx, int ty) { 
-        
+    private void AddRoad(int fx, int fy, int tx, int ty)
+    {
+
         if (Mathf.Abs(fx - tx) + Mathf.Abs(fy - ty) > 3 || Mathf.Abs(Mathf.Abs(fx - tx) - Mathf.Abs(fy - ty)) > 1)
         {
-            Debug.Log("Cannot add road between" + new Vector2Int(fx,fy) + " and " + new Vector2Int(tx, ty) + ". Not neighbors!");
+            Debug.Log("Cannot add road between" + new Vector2Int(fx, fy) + " and " + new Vector2Int(tx, ty) + ". Not neighbors!");
         }
-        else if(fx == tx && fy == ty)
+        else if (fx == tx && fy == ty)
         {
             Debug.Log("Cannot add road between" + new Vector2Int(fx, fy) + " and " + new Vector2Int(tx, ty) + ". Same point!");
         }
-        else 
+        else
         {
             //east case
-            if(tx == fx+1 && ty == fy) //e case
+            if (tx == fx + 1 && ty == fy) //e case
             {
                 Roads[fx, fy] = (ushort)(Roads[fx, fy] | 0b_0000_0000_0000_0001);
                 Roads[tx, ty] = (ushort)(Roads[tx, ty] | 0b_0000_0001_0000_0001);
@@ -1729,8 +1733,8 @@ public class ProceduralCityGenerator : MonoBehaviour {
                 Roads[tx, ty] = (ushort)(Roads[tx, ty] | 0b_0000_0000_1000_0000);
             }
 
-            
-        }    
+
+        }
     }
 
     private bool RoadExists(int fx, int fy)
@@ -1825,7 +1829,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
         p0 = (p1 + p0) / 2;
         p3 = (p2 + p3) / 2;
         //The coefficients of the cubic polynomial (except the 0.5f * which I added later for performance)
-        Vector3 a = 2f *  p1;
+        Vector3 a = 2f * p1;
         Vector3 b = p2 - p0;
         Vector3 c = 2f * p0 - 5f * p1 + 4f * p2 - p3;
         Vector3 d = -p0 + 3f * p1 - 3f * p2 + p3;
@@ -1912,7 +1916,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
 
         //calculate costs
         float[,] costs = CalculateBuildingCosts(400
-            ,20+(1-Security)*30
+            , 20 + (1 - Security) * 30
             , 0.5f + Privacy * UnityEngine.Random.Range(0.4f, 0.6f)
             , 0.5f + Social_Life * UnityEngine.Random.Range(0.4f, 0.6f)
             , Mathf.Max(0.5f * UnityEngine.Random.value - 0.25f, 0f)
@@ -1923,7 +1927,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
         //float[,] costs = CalculateBuildingCosts(400, 100, 0, 1, 0);//TODO add visibility related costs
 
         //find a suitable place
-        Vector2Int houseGrid = FindBestBuildingArea(costs, checkRadius*(1f-overlap), true, 0);
+        Vector2Int houseGrid = FindBestBuildingArea(costs, checkRadius * (1f - overlap), true, 0);
 
 
         //check if there is a suitable area
@@ -1951,7 +1955,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
         PCHouse house = new PCHouse(housePosition, numFloors, coveredArea, courtyardArea, numPeople, "house", WoodWallTexture, StoneWallTexture, RoofTexture, tree1, tree2);
 
         RegionInformation ri1 = house.model.AddComponent<RegionInformation>();
-         
+
         GameObject go = GameObject.Find("ri" + houseGrid.x + houseGrid.y);
         RegionInformation ri2 = go.GetComponent<RegionInformation>();
         ri1.CopyInformationFrom(ri2);
@@ -1980,7 +1984,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
         }
 
         //update dictionaries
-        DetermineDirtyCosts(houseGrid, checkRadius, numFloors*3);
+        DetermineDirtyCosts(houseGrid, checkRadius, numFloors * 3);
 
         //list.AddFirst(entrancePosition);
         list.AddFirst(housePosition);
@@ -2006,12 +2010,12 @@ public class ProceduralCityGenerator : MonoBehaviour {
 
         return false;
     }
-    
+
     private void DetermineDirtyCosts(Vector2Int grid, float radius, float height = 3)
     {
 
         float negligibleSunAngle = 20;
-        Vector3 pos = new Vector3(grid.x+CityBoundaryMin.x, height / ScaleFactor+radius*Mathf.Tan(negligibleSunAngle*Mathf.Deg2Rad)/ScaleFactor, grid.y + CityBoundaryMin.y);
+        Vector3 pos = new Vector3(grid.x + CityBoundaryMin.x, height / ScaleFactor + radius * Mathf.Tan(negligibleSunAngle * Mathf.Deg2Rad) / ScaleFactor, grid.y + CityBoundaryMin.y);
         pos.y += CityTerrain.SampleHeight(pos);
         List<Vector3> dirtyList = new List<Vector3>();
         foreach (KeyValuePair<Vector3, float> item in sunExposureValues)
@@ -2027,8 +2031,8 @@ public class ProceduralCityGenerator : MonoBehaviour {
                 continue;
             dirtyList.Add(p2);
             //if(drawn > 0)
-                //Debug.DrawLine(p2, pos, Color.black, 1000);
-            
+            //Debug.DrawLine(p2, pos, Color.black, 1000);
+
         }
         for (int i = 0; i < dirtyList.Count; i++)
             sunExposureValues[dirtyList[i]] = -1;
@@ -2044,22 +2048,22 @@ public class ProceduralCityGenerator : MonoBehaviour {
                 continue;
             Vector3 p2 = item.Key;
             float dist = (pos - p2).magnitude;
-            float deg1 = 2 * Mathf.Rad2Deg * Mathf.Atan((radius/ScaleFactor) / dist);
+            float deg1 = 2 * Mathf.Rad2Deg * Mathf.Atan((radius / ScaleFactor) / dist);
             float deg2 = 2 * Mathf.Rad2Deg * Mathf.Atan((height / ScaleFactor) / dist);
-            if (deg1*deg2 > negligibleVisArea)
+            if (deg1 * deg2 > negligibleVisArea)
             {
-                if(dist < (20 + radius) / ScaleFactor)
+                if (dist < (20 + radius) / ScaleFactor)
                 {
                     dirtyList.Add(p2);
-                    if(drawn > 0)
+                    if (drawn > 0)
                         Debug.DrawLine(p2, pos, Color.black, 1000);
                 }
                 else
                 {
                     Vector3 rdir = (pos - p2);
                     rdir.Normalize();
-                    Ray r = new Ray(p2+rdir*20/ScaleFactor, rdir);
-                    if(!Physics.Raycast(r, dist - (radius+20) / ScaleFactor))
+                    Ray r = new Ray(p2 + rdir * 20 / ScaleFactor, rdir);
+                    if (!Physics.Raycast(r, dist - (radius + 20) / ScaleFactor))
                     {
                         dirtyList.Add(p2);
                         if (drawn <= 3 && drawn > 0)
@@ -2181,7 +2185,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
 
 
         Vector3 hamamPosition = CityCorePosition;
-        float hamamSize = Mathf.Sqrt(InitialPopulation/2 + 100);//1 side in meters
+        float hamamSize = Mathf.Sqrt(InitialPopulation / 2 + 100);//1 side in meters
 
         float[,] costs = CalculateBuildingCosts(400, 150, 1f, 1f, 1f);
 
@@ -2240,7 +2244,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
         float[,,] alphas = CityTerrain.terrainData.GetAlphamaps(0, 0, CityTerrain.terrainData.alphamapWidth, CityTerrain.terrainData.alphamapHeight);
 
         //to avoid cities directly over water
-        float [,] WaterOccupation = new float[hmw / ScoreSamplingScale+1, hmh / ScoreSamplingScale+1];
+        float[,] WaterOccupation = new float[hmw / ScoreSamplingScale + 1, hmh / ScoreSamplingScale + 1];
         for (int i = 0; i < hmw; i++)
             for (int j = 0; j < hmh; j++)
                 WaterOccupation[i / ScoreSamplingScale, j / ScoreSamplingScale] = 0;
@@ -2363,7 +2367,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
             for (int j = nc; j < hmh / ScoreSamplingScale - nc; j++)
             {
                 int regionIndex = 0;
-                for(int ii = i - nc; ii <= i+nc; ii++)
+                for (int ii = i - nc; ii <= i + nc; ii++)
                 {
                     for (int jj = j - nc; jj <= j + nc; jj++)
                     {
@@ -2376,7 +2380,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
                         float beaScore = 0;
                         if (AvoidWater)
                         {
-                            securityScores[regionIndex] = secScore* (1 - WaterOccupation[ii, jj]);
+                            securityScores[regionIndex] = secScore * (1 - WaterOccupation[ii, jj]);
                             sustainabilityScores[regionIndex] = susScore * (1 - WaterOccupation[ii, jj]); ;
                             socialScores[regionIndex] = socScore * (1 - WaterOccupation[ii, jj]); ;
                             economyScores[regionIndex] = ecoScore * (1 - WaterOccupation[ii, jj]); ;
@@ -2415,7 +2419,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
                 }
 
                 CityCoreScores[i, j] = privacyScore * Privacy + securityScore * Security + sustainabilityScore * Sustainability + socialScore * Social_Life + economyScore * Economy + beautyScore * Beauty;
-                
+
                 //CityCoreScores[i, j] = privacyScore * Privacy + securityScore * Security + sustainabilityScore * Sustainability + socialScore * Social_Life + economyScore * Economy + beautyScore * Beauty;
                 if (maxScore < CityCoreScores[i, j])
                 {
@@ -2492,7 +2496,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
                 for (int j = 0; j < hmh / ScoreSamplingScale; j++)
                 {
                     GameObject go = GameObject.Find("costcube" + i + "_" + j);
-                
+
                     Renderer gorenderer = go.GetComponent<Renderer>();
                     gorenderer.material.SetColor("_Color", new Color(scores[i, j], scores[i, j], 1 - scores[i, j]));
 
@@ -2533,7 +2537,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
 
                             Vector3 dir = to - from;
                             dir.Normalize();
-                            
+
                             Ray r = new Ray(from, dir);
                             RaycastHit rhit = new RaycastHit();
                             if (Physics.Raycast(r, out rhit, hmw * 2f))
@@ -2546,7 +2550,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
                                     float visibilityFactor = Vector3.Dot(toNormal, -dir);
 
                                     VisibilityTable[fi, fj, ti, tj] = true;
-                                    VisibilityScores[fi, fj] += 0.1f+visibilityFactor;//1;
+                                    VisibilityScores[fi, fj] += 0.1f + visibilityFactor;//1;
                                     //VisibilityScores[fi, fj] += 1;
                                 }
                             }
@@ -2610,14 +2614,14 @@ public class ProceduralCityGenerator : MonoBehaviour {
                 float heatDif = height * ScaleFactor / 200f; //1 degrees per 200 meters
                 Vector3 pos = new Vector3(i * ScoreSamplingScale, height, j * ScoreSamplingScale);
                 Vector3 pos2 = new Vector3(i * ScoreSamplingScale, height + 2, j * ScoreSamplingScale);
-                
+
                 //check direction of the city, find the
                 //int sampleCount = 8;
                 Vector3 generalGradient = CityTerrain.terrainData.GetInterpolatedNormal(i * ScoreSamplingScale / (hmw - 1.0f), j * ScoreSamplingScale / (hmh - 1.0f));
                 float walkability = 0;
                 int numContributors = 0;
 
-                for( int si = (int)((i-0.5f)*ScoreSamplingScale); si <= (int)((i + 0.5f) * ScoreSamplingScale); si +=1)
+                for (int si = (int)((i - 0.5f) * ScoreSamplingScale); si <= (int)((i + 0.5f) * ScoreSamplingScale); si += 1)
                 {
                     for (int sj = (int)((j - 0.5f) * ScoreSamplingScale); sj <= (int)((j + 0.5f) * ScoreSamplingScale); sj += 1)
                     {
@@ -2626,9 +2630,9 @@ public class ProceduralCityGenerator : MonoBehaviour {
                             numContributors++;
                             Vector3 gradient = CityTerrain.terrainData.GetInterpolatedNormal((si) / (hmw - 1.0f), (sj) / (hmh - 1.0f));
                             generalGradient += gradient;
-                            float slope = Mathf.Atan(Mathf.Sqrt(1 - gradient.y * gradient.y) / gradient.y)*Mathf.Rad2Deg; //30 will be 0, 0 will be 1
+                            float slope = Mathf.Atan(Mathf.Sqrt(1 - gradient.y * gradient.y) / gradient.y) * Mathf.Rad2Deg; //30 will be 0, 0 will be 1
                             slope = Mathf.Max(slope, 3f);
-                            walkability += Mathf.Max(5 - Mathf.Log(slope - 2, 2),0f);//Mathf.Max(Mathf.Min(Vector3.Dot(gradient, Vector3.up), Mathf.Cos(3f * Mathf.Deg2Rad))-Mathf.Cos(20f * Mathf.Deg2Rad),0f); // up to 3 degrees of slope is ok
+                            walkability += Mathf.Max(5 - Mathf.Log(slope - 2, 2), 0f);//Mathf.Max(Mathf.Min(Vector3.Dot(gradient, Vector3.up), Mathf.Cos(3f * Mathf.Deg2Rad))-Mathf.Cos(20f * Mathf.Deg2Rad),0f); // up to 3 degrees of slope is ok
                         }
                     }
                 }
@@ -2648,16 +2652,16 @@ public class ProceduralCityGenerator : MonoBehaviour {
                     }    
                 }*/
                 generalGradient.Normalize();
-                Vector3 sunDir = new Vector3(0, Mathf.Cos(Mathf.Deg2Rad*Latitude), -1f*Mathf.Sin(Mathf.Deg2Rad * Latitude));
+                Vector3 sunDir = new Vector3(0, Mathf.Cos(Mathf.Deg2Rad * Latitude), -1f * Mathf.Sin(Mathf.Deg2Rad * Latitude));
                 float gradientScore = 1 + Vector3.Dot(sunDir, generalGradient);
                 //gradientScore = Mathf.Max(0f, 2 * (gradientScore - 1));
                 Vector3 pos3 = pos + generalGradient * gradientScore * 3f;
                 //Debug.DrawLine(pos, pos3, new Color(gradientScore / 2.0f, gradientScore / 2.0f, 1 - gradientScore / 2.0f), 500, true);
 
-                AccessibilityWithinScores[i, j] = walkability/numContributors;
+                AccessibilityWithinScores[i, j] = walkability / numContributors;
                 if (AccessibilityWithinScores[i, j] > maxAccessibilityWithin)
                     maxAccessibilityWithin = AccessibilityWithinScores[i, j];
-                ClimateScores[i, j] = 2 * gradientScore - 5*heatDif*heatDif;
+                ClimateScores[i, j] = 2 * gradientScore - 5 * heatDif * heatDif;
                 if (ClimateScores[i, j] > maxClimateScore)
                     maxClimateScore = ClimateScores[i, j];
                 if (ClimateScores[i, j] < minClimateScore)
@@ -2674,26 +2678,28 @@ public class ProceduralCityGenerator : MonoBehaviour {
                 if (maxClimateScore == minClimateScore)
                     ClimateScores[i, j] = 0;
                 else
-                    ClimateScores[i, j] = (ClimateScores[i, j]-minClimateScore) / (maxClimateScore-minClimateScore);
+                    ClimateScores[i, j] = (ClimateScores[i, j] - minClimateScore) / (maxClimateScore - minClimateScore);
             }
         }
-        
+
     }
 
     // Find the highest Point of Terrain
-    void FindHighestPoint() {
+    void FindHighestPoint()
+    {
         Debug.Log(CityTerrain.terrainData.heightmapResolution);
         Debug.Log(hmh);
         Debug.Log(hmw);
 
-        
-        for ( int i = 0; i < hmw; i++){
+
+        for (int i = 0; i < hmw; i++)
+        {
             for (int j = 0; j < hmh; j++)
             {
                 float h3 = CityTerrain.terrainData.GetHeight(i, j);
-                float h2= CityTerrain.terrainData.GetInterpolatedHeight(i/(hmw-1.0f), j / (hmh - 1.0f));
+                float h2 = CityTerrain.terrainData.GetInterpolatedHeight(i / (hmw - 1.0f), j / (hmh - 1.0f));
                 float h = CityTerrain.SampleHeight(new Vector3(i, 0, j));
-                if(h > maxHeight)
+                if (h > maxHeight)
                 {
                     maxHeight = h;
                     maxHeightX = i;
@@ -2769,7 +2775,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
         int numSamples = 4;
         if (ScoreSamplingScale < numSamples)
             numSamples = ScoreSamplingScale;
-        float EasiestWalkingSlope = -0.087f/2; //sin(5 deg) = 0.087
+        float EasiestWalkingSlope = -0.087f / 2; //sin(5 deg) = 0.087
         CostOf1mStraight = numSamples * (0.25f + EasiestWalkingSlope * EasiestWalkingSlope) / (ScoreSamplingScale * ScaleFactor);
         Debug.Log("CostOf1mstraight: " + CostOf1mStraight);
 
@@ -2798,7 +2804,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
 
                             //calculate a cost from source to target
                             Vector3 step = (to - from) / numSamples;
-                            float sm = (new Vector3(step.x,0,step.z)).magnitude;
+                            float sm = (new Vector3(step.x, 0, step.z)).magnitude;
                             Vector3 current = from;
                             Vector3 next = current + step;
                             float cost = 0;
@@ -2812,7 +2818,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
                                 //check slope and add to cost
                                 float slope = (next.y - current.y) / sm;
                                 cost += constantPart * (1 + 220 * (slope - EasiestWalkingSlope) * (slope - EasiestWalkingSlope)); //sin(5 deg) = 0.087float cost = ((to - from).magnitude * (1 + 5*(slope - EasiestWalkingSlope) * (slope - EasiestWalkingSlope))) * ScaleFactor;
-                               
+
 
                                 //assign next to current
                                 current = next;
@@ -2862,7 +2868,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
                 {
                     for (int tj = 0; tj < hmh / ScoreSamplingScale; tj++)
                     {
-                        if(fi != ti || fj != tj)
+                        if (fi != ti || fj != tj)
                         {
                             AccessibilityOutScores[fi, fj] += AccessibilityTable[fi, fj, ti, tj] / (new Vector2(fi - ti, fj - tj)).magnitude;
                             AccessibilityInScores[fi, fj] += AccessibilityTable[ti, tj, fi, fj] / (new Vector2(fi - ti, fj - tj)).magnitude;
@@ -2888,14 +2894,14 @@ public class ProceduralCityGenerator : MonoBehaviour {
         {
             for (int fj = 0; fj < hmh / ScoreSamplingScale; fj++)
             {
-                AccessibilityInScores[fi, fj] = (AccessibilityInScores[fi, fj] - maxAccessibilityCost)/(minAccessibilityCost-maxAccessibilityCost);
+                AccessibilityInScores[fi, fj] = (AccessibilityInScores[fi, fj] - maxAccessibilityCost) / (minAccessibilityCost - maxAccessibilityCost);
                 AccessibilityOutScores[fi, fj] = (AccessibilityOutScores[fi, fj] - maxAccessibilityCost) / (minAccessibilityCost - maxAccessibilityCost);
             }
         }
 
         //show one path from (3,3) to (20,15)
-        Vector2Int fromInt = new Vector2Int(3,3);
-        Vector2Int toInt = new Vector2Int(20,15);
+        Vector2Int fromInt = new Vector2Int(3, 3);
+        Vector2Int toInt = new Vector2Int(20, 15);
         drawPath(fromInt, toInt);
         drawPath(new Vector2Int(5, 8), new Vector2Int(2, 18));
         drawPath(new Vector2Int(6, 2), new Vector2Int(20, 15));
@@ -2948,9 +2954,9 @@ public class ProceduralCityGenerator : MonoBehaviour {
         LinkedList<Vector3> path = new LinkedList<Vector3>();
         path.AddLast(current3);
 
-        while((CityCoreAccessibilityPath[current.x - CityBoundaryMin.x, current.y - CityBoundaryMin.y].x != -1))
+        while ((CityCoreAccessibilityPath[current.x - CityBoundaryMin.x, current.y - CityBoundaryMin.y].x != -1))
         {
-            current = CityCoreAccessibilityPath[current.x - CityBoundaryMin.x, current.y - CityBoundaryMin.y]+CityBoundaryMin;
+            current = CityCoreAccessibilityPath[current.x - CityBoundaryMin.x, current.y - CityBoundaryMin.y] + CityBoundaryMin;
 
             if (CityOccupation[current.x - CityBoundaryMin.x, current.y - CityBoundaryMin.y] == Occupation.Free)
                 CityOccupation[current.x - CityBoundaryMin.x, current.y - CityBoundaryMin.y] = Occupation.Walkable;
@@ -2971,9 +2977,9 @@ public class ProceduralCityGenerator : MonoBehaviour {
             return null;
         }
         //find a middle node
-        Vector2Int nextInt = CityAccessPath[fromInt.x-CityBoundaryMin.x, fromInt.y-CityBoundaryMin.y, toInt.x - CityBoundaryMin.x, toInt.y - CityBoundaryMin.y] + CityBoundaryMin;
+        Vector2Int nextInt = CityAccessPath[fromInt.x - CityBoundaryMin.x, fromInt.y - CityBoundaryMin.y, toInt.x - CityBoundaryMin.x, toInt.y - CityBoundaryMin.y] + CityBoundaryMin;
 
-        if(nextInt.x == toInt.x && nextInt.y == toInt.y)
+        if (nextInt.x == toInt.x && nextInt.y == toInt.y)
         {
             //draw a line and stop;
             Vector3 from = new Vector3(fromInt.x, 0, fromInt.y);
@@ -2996,7 +3002,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
         }
         else
         {
-            LinkedList<Vector3> list1 = MakeCityPath(fromInt,nextInt);
+            LinkedList<Vector3> list1 = MakeCityPath(fromInt, nextInt);
             LinkedList<Vector3> list2 = MakeCityPath(nextInt, toInt);
             foreach (Vector3 v3 in list2)
                 list1.AddLast(v3);
@@ -3022,7 +3028,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
                 {
 
                     float height = CityTerrain.terrainData.GetInterpolatedHeight(i / (hmw - 1.0f), j / (hmh - 1.0f));
-                    AddSceneryRegion(sceneryRegions.transform, new Vector3(i+0.5f, height, j + 0.5f), new Vector3(1.5f, 1.5f, 1.5f));
+                    AddSceneryRegion(sceneryRegions.transform, new Vector3(i + 0.5f, height, j + 0.5f), new Vector3(1.5f, 1.5f, 1.5f));
                 }
             }
         }
@@ -3043,7 +3049,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
             }
         }
 
-        for (int i = 0; i < ScoreSamplingScale* (hmw / ScoreSamplingScale); i++)
+        for (int i = 0; i < ScoreSamplingScale * (hmw / ScoreSamplingScale); i++)
         {
             for (int j = 0; j < ScoreSamplingScale * (hmh / ScoreSamplingScale); j++)
             {
@@ -3054,17 +3060,17 @@ public class ProceduralCityGenerator : MonoBehaviour {
                     {
                         for (int dj = 0; dj < hmh / ScoreSamplingScale; dj++)
                         {
-                            float distance = AccessibilityTable[di, dj, i/ScoreSamplingScale, j/ScoreSamplingScale]/CostOf1mStraight; //gives us approximate distance in meters
-                            if(distance < WaterFarAwayThreshold)
+                            float distance = AccessibilityTable[di, dj, i / ScoreSamplingScale, j / ScoreSamplingScale] / CostOf1mStraight; //gives us approximate distance in meters
+                            if (distance < WaterFarAwayThreshold)
                             {
                                 distance = Mathf.Max(distance, WaterNearbyThreshold);
                                 //distance = Mathf.Min(distance, WaterFarAwayThreshold);
                                 //1st strategy. Close to any water source wins
-                                WaterProximityScores[di, dj] = Mathf.Max(WaterProximityScores[di, dj], (WaterFarAwayThreshold - distance)/(WaterFarAwayThreshold-WaterNearbyThreshold)  );
+                                WaterProximityScores[di, dj] = Mathf.Max(WaterProximityScores[di, dj], (WaterFarAwayThreshold - distance) / (WaterFarAwayThreshold - WaterNearbyThreshold));
                                 //2nd strategy. Each water source adds to score
                                 //WaterProximityScores[di, dj] += Mathf.Min(1,Mathf.Max(0, (WaterFarAwayThreshold - distance) / (WaterFarAwayThreshold - WaterNearbyThreshold)));
                                 //3rd strategy. Each water source adds to score until a threshold
-                                
+
                                 //WaterProximityScores[di, dj] = Mathf.Min(WaterProximityScores[di, dj], maxwaterproximityscore);
                             }
                         }
@@ -3074,9 +3080,9 @@ public class ProceduralCityGenerator : MonoBehaviour {
         }
 
         float maxScore = 1;
-        for (int i = 0; i <  hmw / ScoreSamplingScale; i++)
-            for (int j = 0; j <  hmh / ScoreSamplingScale; j++)
-                maxScore = Mathf.Max(maxScore, WaterProximityScores[i,j]);
+        for (int i = 0; i < hmw / ScoreSamplingScale; i++)
+            for (int j = 0; j < hmh / ScoreSamplingScale; j++)
+                maxScore = Mathf.Max(maxScore, WaterProximityScores[i, j]);
 
         for (int i = 0; i < hmw / ScoreSamplingScale; i++)
             for (int j = 0; j < hmh / ScoreSamplingScale; j++)
@@ -3133,19 +3139,19 @@ public class ProceduralCityGenerator : MonoBehaviour {
         float[] sceneryHits = new float[36];
         int[] samples = new int[36];
 
-        int hstep = 360/scores.Length;
+        int hstep = 360 / scores.Length;
         int vstep = 9;
-        for(int i = 0; i < 360; i+=hstep)
+        for (int i = 0; i < 360; i += hstep)
         {
             float totalDist = 0;
             int samplesCount = 0;
             int sceneryHitsCount = 0;
-            for(int j = -45; j < 45; j+=vstep)
+            for (int j = -45; j < 45; j += vstep)
             {
                 Vector3 dir = new Vector3(Mathf.Sin(i * Mathf.Deg2Rad), Mathf.Sin(j * Mathf.Deg2Rad), Mathf.Cos(i * Mathf.Deg2Rad));
                 Ray r = new Ray(position, dir);
                 RaycastHit h = new RaycastHit();
-                if (Physics.Raycast(r, out h, hmw*2))
+                if (Physics.Raycast(r, out h, hmw * 2))
                 {
                     if (h.collider.gameObject.CompareTag("SceneryRegion"))
                     {
@@ -3156,7 +3162,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
                     else
                         //if(!drawn)
                         //    Debug.DrawLine(position, h.point, Color.yellow, 3000);
-                    totalDist += h.distance;
+                        totalDist += h.distance;
                     samplesCount++;
                 }
                 else
@@ -3164,13 +3170,13 @@ public class ProceduralCityGenerator : MonoBehaviour {
             }
             float averageDist = totalDist / samplesCount;
             avdists[i / hstep] = averageDist;
-            sceneryHits[i / hstep] = 1.0f*sceneryHitsCount / samplesCount;
+            sceneryHits[i / hstep] = 1.0f * sceneryHitsCount / samplesCount;
             samples[i / hstep] = samplesCount;
         }
 
         //calculate a score for each direction
         for (int i = 0; i < scores.Length; i++)
-            scores[i] = 2*sceneryHits[i]/samples[i] + avdists[i] / hmw;
+            scores[i] = 2 * sceneryHits[i] / samples[i] + avdists[i] / hmw;
         //drawn = true;
         return scores;
     }
@@ -3190,7 +3196,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
         int hstep = 360 / scores.Length;
         int vstep = 9;
 
-        NativeArray<RaycastCommand> commands = new NativeArray<RaycastCommand>((360/hstep)*(90/vstep),Allocator.TempJob);
+        NativeArray<RaycastCommand> commands = new NativeArray<RaycastCommand>((360 / hstep) * (90 / vstep), Allocator.TempJob);
         NativeArray<RaycastHit> results = new NativeArray<RaycastHit>((360 / hstep) * (90 / vstep), Allocator.TempJob);
 
 
@@ -3200,10 +3206,10 @@ public class ProceduralCityGenerator : MonoBehaviour {
             {
                 Vector3 dir = new Vector3(Mathf.Sin(i * Mathf.Deg2Rad), Mathf.Sin(j * Mathf.Deg2Rad), Mathf.Cos(i * Mathf.Deg2Rad));
                 RaycastCommand r = new RaycastCommand(position, dir, hmw * 2);
-                commands[(i/hstep) * (90 / vstep) + ((j + 45) / vstep)] = r;
+                commands[(i / hstep) * (90 / vstep) + ((j + 45) / vstep)] = r;
             }
         }
-        
+
         JobHandle handle = RaycastCommand.ScheduleBatch(commands, results, 4);
         // Wait for the batch processing job to complete
         handle.Complete();
@@ -3227,7 +3233,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
                     else
                         //if (!drawn)
                         //  Debug.DrawLine(position, h.point, Color.yellow, 3000);
-                    totalDist += h.distance;
+                        totalDist += h.distance;
                     samplesCount++;
                 }
                 else
@@ -3243,7 +3249,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
         for (int i = 0; i < scores.Length; i++)
             scores[i] = 2 * sceneryHits[i] / samples[i] + avdists[i] / hmw;
         //drawn = true;
-        
+
         results.Dispose();
         commands.Dispose();
 
@@ -3268,23 +3274,23 @@ public class ProceduralCityGenerator : MonoBehaviour {
 
     void MakeRockyArea(Vector2Int sourcePos, float radius)
     {
-        
+
         float radiusX = radius - 0.5f + UnityEngine.Random.value;
-        float radiusY = radius*radius/radiusX;
+        float radiusY = radius * radius / radiusX;
         //
-        int StartX = Mathf.Max( (int)(Mathf.Floor(sourcePos.x - radiusX / ScaleFactor)),0);
-        int EndX = Mathf.Min((int)(Mathf.Ceil(sourcePos.x + radiusX / ScaleFactor)), hmw-1);
+        int StartX = Mathf.Max((int)(Mathf.Floor(sourcePos.x - radiusX / ScaleFactor)), 0);
+        int EndX = Mathf.Min((int)(Mathf.Ceil(sourcePos.x + radiusX / ScaleFactor)), hmw - 1);
         int StartY = Mathf.Max((int)(Mathf.Floor(sourcePos.y - radiusY / ScaleFactor)), 0);
-        int EndY = Mathf.Min((int)(Mathf.Ceil(sourcePos.y + radiusY / ScaleFactor)), hmh-1);
+        int EndY = Mathf.Min((int)(Mathf.Ceil(sourcePos.y + radiusY / ScaleFactor)), hmh - 1);
         if (OutOfBounds(new Vector2(StartX, StartY)) || OutOfBounds(new Vector2(EndX, EndY)))
             return;
 
         Debug.Log(sourcePos);
-        Debug.Log("(" + StartX + ", " + StartY + ") - (" +  EndX + ", " + EndY + ")");
+        Debug.Log("(" + StartX + ", " + StartY + ") - (" + EndX + ", " + EndY + ")");
 
-        float[,] heights = CityTerrain.terrainData.GetHeights(StartX, StartY, EndX-StartX+1, EndY-StartY+1);
-        float[,,] alphas = CityTerrain.terrainData.GetAlphamaps(StartX, StartY, EndX - StartX+1, EndY - StartY+1);
-        float centerHeight = heights[(EndY-StartY+1)/2, (EndX - StartX + 1) / 2];
+        float[,] heights = CityTerrain.terrainData.GetHeights(StartX, StartY, EndX - StartX + 1, EndY - StartY + 1);
+        float[,,] alphas = CityTerrain.terrainData.GetAlphamaps(StartX, StartY, EndX - StartX + 1, EndY - StartY + 1);
+        float centerHeight = heights[(EndY - StartY + 1) / 2, (EndX - StartX + 1) / 2];
 
 
         for (int i = StartX; i <= EndX; i++)
@@ -3292,11 +3298,11 @@ public class ProceduralCityGenerator : MonoBehaviour {
             for (int j = StartY; j <= EndY; j++)
             {
 
-                if(!OutOfBounds(new Vector2(i, j)))
+                if (!OutOfBounds(new Vector2(i, j)))
                 {
-                    Vector3 source_to_pos = new Vector3(i-sourcePos.x, j - sourcePos.y);
-                    float targetHeight = centerHeight + ((UnityEngine.Random.value*1.2f)*(source_to_pos.magnitude/radius) - 0.3f) *0.001f;
-                    if(source_to_pos.magnitude < radius*(0.8f* UnityEngine.Random.value*0.4f) && heights[j-StartY,i-StartX] < targetHeight && alphas[j - StartY, i - StartX,2] < 0.5f )
+                    Vector3 source_to_pos = new Vector3(i - sourcePos.x, j - sourcePos.y);
+                    float targetHeight = centerHeight + ((UnityEngine.Random.value * 1.2f) * (source_to_pos.magnitude / radius) - 0.3f) * 0.001f;
+                    if (source_to_pos.magnitude < radius * (0.8f * UnityEngine.Random.value * 0.4f) && heights[j - StartY, i - StartX] < targetHeight && alphas[j - StartY, i - StartX, 2] < 0.5f)
                     {
                         heights[j - StartY, i - StartX] = targetHeight;
                         alphas[j - StartY, i - StartX, SandChannel] = 0f;
@@ -3309,29 +3315,29 @@ public class ProceduralCityGenerator : MonoBehaviour {
             }
         }
 
-        CityTerrain.terrainData.SetHeights(StartX, StartY,heights);
+        CityTerrain.terrainData.SetHeights(StartX, StartY, heights);
         CityTerrain.terrainData.SetAlphamaps(StartX, StartY, alphas);
-        
+
     }
 
     void ClearMap()
     {
-        float[,,] alphas = CityTerrain.terrainData.GetAlphamaps(0, 0, hmw-1, hmh-1);
+        float[,,] alphas = CityTerrain.terrainData.GetAlphamaps(0, 0, hmw - 1, hmh - 1);
         for (int i = 0; i < CityTerrain.terrainData.alphamapWidth; i++)
         {
             for (int j = 0; j < CityTerrain.terrainData.alphamapHeight; j++)
             {
                 //for each point of mask do:
                 //paint all from old texture to new texture (saving already painted in new texture)
-                float sand = UnityEngine.Random.Range(0.5f,2f) * (0.2f + 0.8f*Mathf.Abs(2*(CityTerrain.SampleHeight(new Vector3(j, 0, i)) - (maxHeight / 2))/maxHeight));
+                float sand = UnityEngine.Random.Range(0.5f, 2f) * (0.2f + 0.8f * Mathf.Abs(2 * (CityTerrain.SampleHeight(new Vector3(j, 0, i)) - (maxHeight / 2)) / maxHeight));
                 if (sand > 1)
                     sand = 1;
                 Vector3 n = CityTerrain.terrainData.GetInterpolatedNormal(j / (hmh - 1.0f), i / (hmw - 1.0f));
-                float rock = UnityEngine.Random.Range(0.5f, 2f) * (1.2f - 2*Vector3.Dot(Vector3.up, n));
-                if(rock > 0.5)
+                float rock = UnityEngine.Random.Range(0.5f, 2f) * (1.2f - 2 * Vector3.Dot(Vector3.up, n));
+                if (rock > 0.5)
                 {
                     if (rock > 1) rock = 1;
-                    alphas[i, j, 0] = sand*(1-rock);
+                    alphas[i, j, 0] = sand * (1 - rock);
                     alphas[i, j, 1] = (1 - sand) * (1 - rock);
                     alphas[i, j, 2] = 0;
                     alphas[i, j, 3] = rock;
@@ -3351,8 +3357,8 @@ public class ProceduralCityGenerator : MonoBehaviour {
 
     void MakeRiver(Vector2 sourcePos)
     {
-        Vector2 currentPos = new Vector2(sourcePos.x+1f, sourcePos.y);
-        Vector2 currentDir = new Vector2(1,0);
+        Vector2 currentPos = new Vector2(sourcePos.x + 1f, sourcePos.y);
+        Vector2 currentDir = new Vector2(1, 0);
         float currentHeight = CityTerrain.terrainData.GetInterpolatedHeight(currentPos.x / (hmw - 1.0f), currentPos.y / (hmh - 1.0f));
         float currentWidth = 2f;
         bool stopped = false;
@@ -3371,7 +3377,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
             Vector3 n = CityTerrain.terrainData.GetInterpolatedNormal(currentPos.x / (hmw - 1.0f), currentPos.y / (hmh - 1.0f));
             Debug.Log(n);
             n[1] = 0;
-            if(n.magnitude > 0.01f)
+            if (n.magnitude > 0.01f)
             {
                 n.Normalize();
                 currentDir.Set(n.x, n.z);
@@ -3379,7 +3385,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
 
             currentPos += currentDir;
             float newHeight = CityTerrain.terrainData.GetInterpolatedHeight(currentPos.x / (hmw - 1.0f), currentPos.y / (hmh - 1.0f));
-            if (i > 1000 || currentHeight < newHeight || OutOfBounds(currentPos) )
+            if (i > 1000 || currentHeight < newHeight || OutOfBounds(currentPos))
                 stopped = true;
             currentHeight = newHeight;
             Debug.Log(currentPos + ", height: " + currentHeight);
@@ -3401,7 +3407,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
                 float river = alphas[i, j, 2];
                 //TODO decrease the height of that point by river a mount
                 if (river > 0.5f)
-                    heights[i, j] = heights[i, j]-0.001f;
+                    heights[i, j] = heights[i, j] - 0.001f;
             }
         }
         CityTerrain.terrainData.SetHeights(0, 0, heights);
@@ -3409,7 +3415,7 @@ public class ProceduralCityGenerator : MonoBehaviour {
 
     private bool OutOfBounds(Vector2 pos)
     {
-        return (pos.x <= 0 || pos.x >= (hmw-1) || pos.y <= 0 || pos.y >= (hmh-1));
+        return (pos.x <= 0 || pos.x >= (hmw - 1) || pos.y <= 0 || pos.y >= (hmh - 1));
     }
 
     public float getAccommodationRate()

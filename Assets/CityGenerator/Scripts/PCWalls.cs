@@ -101,7 +101,7 @@ public class PCWalls : PCBuilding
             }
 
             model = new GameObject("CityWalls");
-            for (int i = 0; i < wallPoints.Count-1; i++)
+            for (int i = 0; i < wallPoints.Count - 1; i++)
             {
                 HouseWall(wallPoints[i], wallPoints[i + 1], false, false);
                 //GameObject wallSegment = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -117,11 +117,11 @@ public class PCWalls : PCBuilding
     {
         Vector3 dir = to - from;
 
-        if(Mathf.Abs(dir[1]) > houseWallHeight/4)
+        if (Mathf.Abs(dir[1]) > houseWallHeight / 4)
         {
             //divide 2 three pieces
-            HouseWall(from, from + dir / 3,false, windows);
-            HouseWall(from + dir / 3, from + 2 *dir /3 , door, windows);
+            HouseWall(from, from + dir / 3, false, windows);
+            HouseWall(from + dir / 3, from + 2 * dir / 3, door, windows);
             HouseWall(from + 2 * dir / 3, to, false, windows);
             return;
         }
@@ -143,7 +143,7 @@ public class PCWalls : PCBuilding
 
             houseWall.transform.SetParent(model.transform, false);
             houseWall.transform.localScale = (new Vector3((to - from).magnitude, houseWallHeight, houseWallThickness));
-            houseWall.transform.localPosition = (from + to + towardsIn * houseWallThickness + Vector3.up * houseWallHeight/2f) / 2f;
+            houseWall.transform.localPosition = (from + to + towardsIn * houseWallThickness + Vector3.up * houseWallHeight / 2f) / 2f;
             houseWall.transform.Rotate(Vector3.up, Vector3.SignedAngle(Vector3.right, dir, Vector3.up));
         }
         else if (door)
