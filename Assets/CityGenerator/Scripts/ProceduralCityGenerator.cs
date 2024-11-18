@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using Unity.Collections;
@@ -117,7 +116,6 @@ public class ProceduralCityGenerator : MonoBehaviour
     Dictionary<Vector3, float> sunExposureValues;
     Dictionary<Vector3, float> sceneryValues;
 
-
     void Start()
     {
         // Set culture to "en-US" for consistent formatting
@@ -135,8 +133,6 @@ public class ProceduralCityGenerator : MonoBehaviour
             {
                 MakeRockyArea(new Vector2Int(UnityEngine.Random.Range(20, hmw - 20), UnityEngine.Random.Range(20, hmw - 20)), 20 + UnityEngine.Random.value * 20);
             }
-
-
         }
 
         float cbeginning = Time.realtimeSinceStartup;
@@ -144,6 +140,9 @@ public class ProceduralCityGenerator : MonoBehaviour
         ConstructionState = 1;
 
         Debug.Log("City core is determined as: " + CityCorePosition + " in " + (Time.realtimeSinceStartup - cbeginning));
+
+        var pc = GameObject.Find("Player");
+        pc.transform.position = CityCorePosition + 5 * Vector3.up / ScaleFactor;
     }
 
 
@@ -156,15 +155,15 @@ public class ProceduralCityGenerator : MonoBehaviour
     [Obsolete]
     void Update()
     {
-        if (ConstructionState == 0 && Input.GetKeyDown("space"))
-        {
-            ConstructionState++;
-        }
-        if (ConstructionState == 0 && Input.GetKeyDown("v"))
-        {
-            RecalculateCosts();
-            VisualizeCosts(CityCoreScores);
-        }
+        // if (ConstructionState == 0 && Input.GetKeyDown("space"))
+        // {
+        //     ConstructionState++;
+        // }
+        // if (ConstructionState == 0 && Input.GetKeyDown("v"))
+        // {
+        //     RecalculateCosts();
+        //     VisualizeCosts(CityCoreScores);
+        // }
 
         if (ConstructionState == 1)
         {
@@ -3203,5 +3202,10 @@ public class ProceduralCityGenerator : MonoBehaviour
         }
 
         return (float)accommodated / InitialPopulation;
+    }
+
+    public Vector2 GetCityCore()
+    {
+        return cityCore;
     }
 }
