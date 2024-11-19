@@ -21,18 +21,6 @@ public class RegionInformation : MonoBehaviour
     public float Height;
     public int Accommodates;
 
-    // Use this for initialization
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     internal void CopyInformationFrom(RegionInformation ri2)
     {
         DistToCenter = ri2.DistToCenter;

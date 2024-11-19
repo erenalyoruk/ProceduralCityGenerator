@@ -4,10 +4,8 @@ using System;
 
 public class PCHouse : PCBuilding
 {
-    int accommodatesMax;
     public int accommodatesCurrent;
     int numFloors;
-    float coveredArea;
     float courtyardArea;
     float edgeSize;
     float coveredEdgeSize;
@@ -24,7 +22,6 @@ public class PCHouse : PCBuilding
     public PCHouse(Vector3 position, int numFloors, float coveredArea, float courtyardArea, int accommodates, string buildingName, Texture houseWallTexture, Texture stoneWallTexture, Texture roofTexture, GameObject tree1, GameObject tree2) : base(buildingName)
     {
         this.numFloors = numFloors;
-        this.coveredArea = coveredArea;
         this.courtyardArea = courtyardArea;
         this.houseWallTexture = houseWallTexture;
         this.stoneWallTexture = stoneWallTexture;
@@ -43,7 +40,7 @@ public class PCHouse : PCBuilding
         houseWallHeight = 2.7f;
         outerWallThickness = 0.6f;
         outerWallHeight = 2f;
-        colorDarkening = 0.7f + (UnityEngine.Random.value) * 0.3f;
+        colorDarkening = 0.7f + UnityEngine.Random.value * 0.3f;
         accommodatesCurrent = accommodates;
         colorStyle = UnityEngine.Random.value > 0.7 ? 2 : 1;
         GenerateModel(position);
@@ -82,15 +79,15 @@ public class PCHouse : PCBuilding
                             lowerLeft + courtYardEdgeVector + Vector3.up * outerWallHeight,
                             lowerLeft + Vector3.up * outerWallHeight);
 
-            int numTreesI = ((int)(courtyardEdgeSize / 3));
-            int numTreesJ = ((int)(edgeSize / 3));
+            int numTreesI = (int)(courtyardEdgeSize / 3);
+            int numTreesJ = (int)(edgeSize / 3);
             for (int i = 0; i < numTreesI; i++)
             {
                 for (int j = 0; j < numTreesJ; j++)
                 {
                     if (UnityEngine.Random.value > 0.6f)
                     {
-                        Vector3 TreePos = lowerLeft + (upperLeft - lowerLeft) / edgeSize + coveredAreaVector / coveredEdgeSize + ((upperLeft - lowerLeft - 2 * (upperLeft - lowerLeft) / edgeSize) / numTreesI) * (i + UnityEngine.Random.value) + ((courtYardEdgeVector - 2 * courtYardEdgeVector / courtyardEdgeSize) / numTreesJ) * (j + UnityEngine.Random.value);
+                        Vector3 TreePos = lowerLeft + (upperLeft - lowerLeft) / edgeSize + coveredAreaVector / coveredEdgeSize + (upperLeft - lowerLeft - 2 * (upperLeft - lowerLeft) / edgeSize) / numTreesI * (i + UnityEngine.Random.value) + (courtYardEdgeVector - 2 * courtYardEdgeVector / courtyardEdgeSize) / numTreesJ * (j + UnityEngine.Random.value);
                         TreePos = model.transform.TransformPoint(TreePos);
                         pcg.MakeTree(new Vector2(TreePos.x, TreePos.z));
                     }
@@ -389,7 +386,7 @@ public class PCHouse : PCBuilding
             }
 
             houseWall.transform.SetParent(model.transform, false);
-            houseWall.transform.localScale = (new Vector3((to - from).magnitude, houseWallHeight, houseWallThickness));
+            houseWall.transform.localScale = new Vector3((to - from).magnitude, houseWallHeight, houseWallThickness);
             houseWall.transform.localPosition = (from + to + towardsIn * houseWallThickness + Vector3.up * houseWallHeight) / 2f;
             houseWall.transform.Rotate(Vector3.up, Vector3.SignedAngle(dir, Vector3.right, Vector3.up));
         }
@@ -431,7 +428,7 @@ public class PCHouse : PCBuilding
     {
         GameObject underWindow = GameObject.CreatePrimitive(PrimitiveType.Cube);
         underWindow.transform.SetParent(model.transform, false);
-        underWindow.transform.localScale = (new Vector3((to - from).magnitude, houseWallHeight / 3, houseWallThickness));
+        underWindow.transform.localScale = new Vector3((to - from).magnitude, houseWallHeight / 3, houseWallThickness);
 
         //adjustTexture
         Renderer houseWallRenderer = underWindow.GetComponent<Renderer>();
@@ -458,7 +455,7 @@ public class PCHouse : PCBuilding
 
         GameObject overWindow = GameObject.CreatePrimitive(PrimitiveType.Cube);
         overWindow.transform.SetParent(model.transform, false);
-        overWindow.transform.localScale = (new Vector3((to - from).magnitude, houseWallHeight / 6, houseWallThickness));
+        overWindow.transform.localScale = new Vector3((to - from).magnitude, houseWallHeight / 6, houseWallThickness);
 
         //adjustTexture
         houseWallRenderer = overWindow.GetComponent<Renderer>();
@@ -523,7 +520,7 @@ public class PCHouse : PCBuilding
         }
 
         cube.transform.SetParent(model.transform, false);
-        cube.transform.localScale = (new Vector3((to - from).magnitude + width, width, width));
+        cube.transform.localScale = new Vector3((to - from).magnitude + width, width, width);
         cube.transform.localPosition = (from + to) / 2f;
         Vector3 dir = to - from;
         dir.Normalize();
@@ -539,7 +536,7 @@ public class PCHouse : PCBuilding
 
         GameObject overDoor = GameObject.CreatePrimitive(PrimitiveType.Cube);
         overDoor.transform.SetParent(model.transform, false);
-        overDoor.transform.localScale = (new Vector3((to - from).magnitude, houseWallHeight / 6, houseWallThickness));
+        overDoor.transform.localScale = new Vector3((to - from).magnitude, houseWallHeight / 6, houseWallThickness);
 
         //adjustTexture
         Renderer houseWallRenderer = overDoor.GetComponent<Renderer>();
@@ -559,7 +556,7 @@ public class PCHouse : PCBuilding
         //draw the door
         GameObject doorObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
         doorObject.transform.SetParent(model.transform, false);
-        doorObject.transform.localScale = (new Vector3((to - from).magnitude, 5f * houseWallHeight / 6, houseWallThickness * 0.25f));
+        doorObject.transform.localScale = new Vector3((to - from).magnitude, 5f * houseWallHeight / 6, houseWallThickness * 0.25f);
         doorObject.transform.localPosition = (from + to + towardsIn * houseWallThickness * 0.5f + 10f * Vector3.up * houseWallHeight / 12f) / 2f;
         doorObject.transform.Rotate(Vector3.up, Vector3.SignedAngle(dir, Vector3.right, Vector3.up));
         houseWallRenderer = doorObject.GetComponent<Renderer>();
@@ -578,20 +575,20 @@ public class PCHouse : PCBuilding
         dir.Normalize();
         if (door)
         {
-            OuterWall(from, from + dir * (((to - from).magnitude) / 2 - 1 - outerWallThickness));
+            OuterWall(from, from + dir * ((to - from).magnitude / 2 - 1 - outerWallThickness));
             float owh = outerWallHeight;
             outerWallHeight = houseWallHeight;
-            OuterWall(from + dir * (((to - from).magnitude) / 2 - 1 - outerWallThickness), from + dir * (((to - from).magnitude) / 2 - 1));
-            OuterWall(from + dir * (((to - from).magnitude) / 2 + 1), from + dir * (((to - from).magnitude) / 2 + 1 + outerWallThickness));
+            OuterWall(from + dir * ((to - from).magnitude / 2 - 1 - outerWallThickness), from + dir * ((to - from).magnitude / 2 - 1));
+            OuterWall(from + dir * ((to - from).magnitude / 2 + 1), from + dir * ((to - from).magnitude / 2 + 1 + outerWallThickness));
             outerWallHeight = owh;
-            OuterWall(from + dir * (((to - from).magnitude) / 2 + 1), to);
-            HouseWall(from + dir * (((to - from).magnitude) / 2 - 1), from + dir * (((to - from).magnitude) / 2 + 1));
+            OuterWall(from + dir * ((to - from).magnitude / 2 + 1), to);
+            HouseWall(from + dir * ((to - from).magnitude / 2 - 1), from + dir * ((to - from).magnitude / 2 + 1));
             return;
         }
 
         GameObject outerWall = GameObject.CreatePrimitive(PrimitiveType.Cube);
         outerWall.transform.SetParent(model.transform, false);
-        outerWall.transform.localScale = (new Vector3((to - from).magnitude, outerWallHeight, outerWallThickness));
+        outerWall.transform.localScale = new Vector3((to - from).magnitude, outerWallHeight, outerWallThickness);
         Vector3 towardsIn = Vector3.Cross(dir, Vector3.up);
         outerWall.transform.localPosition = (from + to + towardsIn * outerWallThickness + Vector3.up * outerWallHeight) / 2f;
         outerWall.transform.Rotate(Vector3.up, Vector3.SignedAngle(dir, Vector3.right, Vector3.up));
@@ -602,7 +599,6 @@ public class PCHouse : PCBuilding
         houseWallRenderer.material.SetTextureScale("_MainTex", new Vector2((to - from).magnitude / 5f, 1.25f));
         houseWallRenderer.material.SetTextureOffset("_MainTex", new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
         houseWallRenderer.material.SetColor("_Color", Color.white * colorDarkening);
-
     }
 
     private void Roof(Vector3 bl, Vector3 br, Vector3 tr, Vector3 tl)
@@ -734,13 +730,13 @@ public class PCHouse : PCBuilding
         for (int i = 0; i < 14; i++)
         {
             if ((uEdge.magnitude > vEdge.magnitude && (i == 0 || i == 1 || i == 8 || i == 9)) || (uEdge.magnitude <= vEdge.magnitude && (i == 0 || i == 1 || i == 8)))
-                texCoords[i] = (new Vector2(vertices[i].x - vertices[0].x, vertices[i].z - vertices[0].z));
+                texCoords[i] = new Vector2(vertices[i].x - vertices[0].x, vertices[i].z - vertices[0].z);
             if ((uEdge.magnitude > vEdge.magnitude && (i == 4 || i == 5 || i == 11 || i == 12)) || (uEdge.magnitude <= vEdge.magnitude && (i == 4 || i == 5 || i == 11)))
-                texCoords[i] = (new Vector2(vertices[5].x - vertices[i].x, vertices[5].z - vertices[i].z));
+                texCoords[i] = new Vector2(vertices[5].x - vertices[i].x, vertices[5].z - vertices[i].z);
             if ((uEdge.magnitude > vEdge.magnitude && (i == 2 || i == 3 || i == 10)) || (uEdge.magnitude <= vEdge.magnitude && (i == 2 || i == 3 || i == 9 || i == 10)))
-                texCoords[i] = (new Vector2(vertices[5].z - vertices[i].z, vertices[5].x - vertices[i].x));
+                texCoords[i] = new Vector2(vertices[5].z - vertices[i].z, vertices[5].x - vertices[i].x);
             if ((uEdge.magnitude > vEdge.magnitude && (i == 6 || i == 7 || i == 13)) || (uEdge.magnitude <= vEdge.magnitude && (i == 6 || i == 7 || i == 12 || i == 13)))
-                texCoords[i] = (new Vector2(vertices[i].z - vertices[0].z, vertices[i].x - vertices[0].x));
+                texCoords[i] = new Vector2(vertices[i].z - vertices[0].z, vertices[i].x - vertices[0].x);
             texCoords[i] *= 0.5f;
         }
         m.uv = texCoords;
@@ -805,7 +801,7 @@ public class PCHouse : PCBuilding
         Vector3 vDir = vEdge / vEdge.magnitude;
         float roofAngle = UnityEngine.Random.Range(23f, 30f) * Mathf.Deg2Rad;
         float roofHeight = Mathf.Tan(roofAngle) * (uEdge.magnitude - 1) * 0.5f;
-        float roofUEdgeLength = (uEdge.magnitude * 0.5f) / (Mathf.Cos(roofAngle));
+        float roofUEdgeLength = uEdge.magnitude * 0.5f / Mathf.Cos(roofAngle);
 
         //make two cubes textured with the roof texture
         GameObject roofLeft = GameObject.CreatePrimitive(PrimitiveType.Cube);

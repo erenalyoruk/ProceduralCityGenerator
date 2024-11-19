@@ -136,7 +136,7 @@ public class PCWalls : PCBuilding
             houseWallRenderer.material.SetColor("_Color", Color.white * colorDarkening);
 
             houseWall.transform.SetParent(model.transform, false);
-            houseWall.transform.localScale = (new Vector3((to - from).magnitude, houseWallHeight, houseWallThickness));
+            houseWall.transform.localScale = new Vector3((to - from).magnitude, houseWallHeight, houseWallThickness);
             houseWall.transform.localPosition = (from + to + towardsIn * houseWallThickness + Vector3.up * houseWallHeight / 2f) / 2f;
             houseWall.transform.Rotate(Vector3.up, Vector3.SignedAngle(Vector3.right, dir, Vector3.up));
         }
@@ -178,7 +178,7 @@ public class PCWalls : PCBuilding
     {
         GameObject underWindow = GameObject.CreatePrimitive(PrimitiveType.Cube);
         underWindow.transform.SetParent(model.transform, false);
-        underWindow.transform.localScale = (new Vector3((to - from).magnitude, houseWallHeight / 3, houseWallThickness));
+        underWindow.transform.localScale = new Vector3((to - from).magnitude, houseWallHeight / 3, houseWallThickness);
 
         //adjustTexture
         Renderer houseWallRenderer = underWindow.GetComponent<Renderer>();
@@ -198,7 +198,7 @@ public class PCWalls : PCBuilding
 
         GameObject overWindow = GameObject.CreatePrimitive(PrimitiveType.Cube);
         overWindow.transform.SetParent(model.transform, false);
-        overWindow.transform.localScale = (new Vector3((to - from).magnitude, houseWallHeight / 6, houseWallThickness));
+        overWindow.transform.localScale = new Vector3((to - from).magnitude, houseWallHeight / 6, houseWallThickness);
 
         //adjustTexture
         houseWallRenderer = overWindow.GetComponent<Renderer>();
@@ -243,7 +243,7 @@ public class PCWalls : PCBuilding
         houseWallRenderer.material.SetColor("_Color", Color.white * 0.8f * colorDarkening);
 
         cube.transform.SetParent(model.transform, false);
-        cube.transform.localScale = (new Vector3((to - from).magnitude + width, width, width));
+        cube.transform.localScale = new Vector3((to - from).magnitude + width, width, width);
         cube.transform.localPosition = (from + to) / 2f;
         Vector3 dir = to - from;
         dir.Normalize();
@@ -259,7 +259,7 @@ public class PCWalls : PCBuilding
 
         GameObject overDoor = GameObject.CreatePrimitive(PrimitiveType.Cube);
         overDoor.transform.SetParent(model.transform, false);
-        overDoor.transform.localScale = (new Vector3((to - from).magnitude, houseWallHeight / 6, houseWallThickness));
+        overDoor.transform.localScale = new Vector3((to - from).magnitude, houseWallHeight / 6, houseWallThickness);
 
         //adjustTexture
         Renderer houseWallRenderer = overDoor.GetComponent<Renderer>();
@@ -274,7 +274,7 @@ public class PCWalls : PCBuilding
         //draw the door
         GameObject doorObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
         doorObject.transform.SetParent(model.transform, false);
-        doorObject.transform.localScale = (new Vector3((to - from).magnitude, 5f * houseWallHeight / 6, houseWallThickness * 0.25f));
+        doorObject.transform.localScale = new Vector3((to - from).magnitude, 5f * houseWallHeight / 6, houseWallThickness * 0.25f);
         doorObject.transform.localPosition = (from + to + towardsIn * houseWallThickness * 0.5f + 10f * Vector3.up * houseWallHeight / 12f) / 2f;
         doorObject.transform.Rotate(Vector3.up, Vector3.SignedAngle(dir, Vector3.right, Vector3.up));
         houseWallRenderer = doorObject.GetComponent<Renderer>();

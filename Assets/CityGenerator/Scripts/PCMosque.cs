@@ -33,27 +33,27 @@ public class PCMosque : PCBuilding
 
         GameObject mosqueWalls1 = GameObject.CreatePrimitive(PrimitiveType.Cube);
         mosqueWalls1.transform.SetParent(model.transform, false);
-        mosqueWalls1.transform.localScale = (new Vector3(size, height / 2, 1));
+        mosqueWalls1.transform.localScale = new Vector3(size, height / 2, 1);
         mosqueWalls1.transform.localPosition = new Vector3(0, 0, size / 2 - 0.5f);
 
         GameObject mosqueWalls2 = GameObject.CreatePrimitive(PrimitiveType.Cube);
         mosqueWalls2.transform.SetParent(model.transform, false);
-        mosqueWalls2.transform.localScale = (new Vector3(size, height / 2, 1));
+        mosqueWalls2.transform.localScale = new Vector3(size, height / 2, 1);
         mosqueWalls2.transform.localPosition = new Vector3(0, 0, -size / 2 + 0.5f);
 
         GameObject mosqueWalls3 = GameObject.CreatePrimitive(PrimitiveType.Cube);
         mosqueWalls3.transform.SetParent(model.transform, false);
-        mosqueWalls3.transform.localScale = (new Vector3(1, height / 2, size));
+        mosqueWalls3.transform.localScale = new Vector3(1, height / 2, size);
         mosqueWalls3.transform.localPosition = new Vector3(-size / 2 + 0.5f, 0, 0);
 
         GameObject mosqueWalls4 = GameObject.CreatePrimitive(PrimitiveType.Cube);
         mosqueWalls4.transform.SetParent(model.transform, false);
-        mosqueWalls4.transform.localScale = (new Vector3(1, height / 2, size));
+        mosqueWalls4.transform.localScale = new Vector3(1, height / 2, size);
         mosqueWalls4.transform.localPosition = new Vector3(size / 2 - 0.5f, 0, 0);
 
         GameObject mosqueDomeBase = GameObject.CreatePrimitive(PrimitiveType.Cube);
         mosqueDomeBase.transform.SetParent(model.transform, false);
-        mosqueDomeBase.transform.localScale = (new Vector3(size * 0.35f, 2, size * 0.2f));
+        mosqueDomeBase.transform.localScale = new Vector3(size * 0.35f, 2, size * 0.2f);
         mosqueDomeBase.transform.localPosition = new Vector3(size * 0.25f, 9, 0);
 
         //new additions
@@ -68,8 +68,8 @@ public class PCMosque : PCBuilding
         Vector3 lowerRight = lowerLeft + new Vector3(0.4f * size, 0, 0);
         Vector3 upperRight = upperLeft + new Vector3(0.4f * size, 0, 0);
 
-        int numTreesI = ((int)(edgeSize / 6));
-        int numTreesJ = ((int)(edgeSize / 3));
+        int numTreesI = (int)(edgeSize / 6);
+        int numTreesJ = (int)(edgeSize / 3);
         for (int ti = 0; ti < numTreesI; ti++)
         {
             for (int tj = 0; tj < numTreesJ; tj++)
@@ -114,19 +114,19 @@ public class PCMosque : PCBuilding
             if (vertices[i].y < -0.05) vertices[i] = new Vector3(0, 0, 0);
         m.vertices = vertices;
         mosqueDome.transform.SetParent(model.transform, false);
-        mosqueDome.transform.localScale = (new Vector3(size, size, size)) * 0.35f;
+        mosqueDome.transform.localScale = new Vector3(size, size, size) * 0.35f;
         mosqueDome.transform.localPosition = new Vector3(size * 0.25f, 9, 0);
 
         GameObject mosqueHalfDome1 = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         mosqueHalfDome1.GetComponent<MeshFilter>().mesh.vertices = vertices;
         mosqueHalfDome1.transform.SetParent(model.transform, false);
-        mosqueHalfDome1.transform.localScale = (new Vector3(size, size, size)) * 0.15f;
+        mosqueHalfDome1.transform.localScale = new Vector3(size, size, size) * 0.15f;
         mosqueHalfDome1.transform.localPosition = new Vector3(size * 0.275f, 8, size * 0.25f);
 
         GameObject mosqueHalfDome2 = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         mosqueHalfDome2.GetComponent<MeshFilter>().mesh.vertices = vertices;
         mosqueHalfDome2.transform.SetParent(model.transform, false);
-        mosqueHalfDome2.transform.localScale = (new Vector3(size, size, size)) * 0.15f;
+        mosqueHalfDome2.transform.localScale = new Vector3(size, size, size) * 0.15f;
         mosqueHalfDome2.transform.localPosition = new Vector3(size * 0.275f, 8, -size * 0.25f);
 
         Renderer houseWallRenderer = mosqueWalls1.GetComponent<Renderer>();
@@ -250,7 +250,7 @@ public class PCMosque : PCBuilding
             }
 
             houseWall.transform.SetParent(model.transform, false);
-            houseWall.transform.localScale = (new Vector3((to - from).magnitude, houseWallHeight, houseWallThickness));
+            houseWall.transform.localScale = new Vector3((to - from).magnitude, houseWallHeight, houseWallThickness);
             houseWall.transform.localPosition = (from + to + towardsIn * houseWallThickness + Vector3.up * houseWallHeight) / 2f;
             houseWall.transform.Rotate(Vector3.up, Vector3.SignedAngle(dir, Vector3.right, Vector3.up));
         }
@@ -292,7 +292,7 @@ public class PCMosque : PCBuilding
     {
         GameObject underWindow = GameObject.CreatePrimitive(PrimitiveType.Cube);
         underWindow.transform.SetParent(model.transform, false);
-        underWindow.transform.localScale = (new Vector3((to - from).magnitude, houseWallHeight / 3, houseWallThickness));
+        underWindow.transform.localScale = new Vector3((to - from).magnitude, houseWallHeight / 3, houseWallThickness);
 
         //adjustTexture
         Renderer houseWallRenderer = underWindow.GetComponent<Renderer>();
@@ -319,7 +319,7 @@ public class PCMosque : PCBuilding
 
         GameObject overWindow = GameObject.CreatePrimitive(PrimitiveType.Cube);
         overWindow.transform.SetParent(model.transform, false);
-        overWindow.transform.localScale = (new Vector3((to - from).magnitude, houseWallHeight / 6, houseWallThickness));
+        overWindow.transform.localScale = new Vector3((to - from).magnitude, houseWallHeight / 6, houseWallThickness);
 
         //adjustTexture
         houseWallRenderer = overWindow.GetComponent<Renderer>();
@@ -374,7 +374,7 @@ public class PCMosque : PCBuilding
         }
 
         cube.transform.SetParent(model.transform, false);
-        cube.transform.localScale = (new Vector3((to - from).magnitude + width, width, width));
+        cube.transform.localScale = new Vector3((to - from).magnitude + width, width, width);
         cube.transform.localPosition = (from + to) / 2f;
         Vector3 dir = to - from;
         dir.Normalize();
@@ -390,7 +390,7 @@ public class PCMosque : PCBuilding
 
         GameObject overDoor = GameObject.CreatePrimitive(PrimitiveType.Cube);
         overDoor.transform.SetParent(model.transform, false);
-        overDoor.transform.localScale = (new Vector3((to - from).magnitude, houseWallHeight / 6, houseWallThickness));
+        overDoor.transform.localScale = new Vector3((to - from).magnitude, houseWallHeight / 6, houseWallThickness);
 
         //adjustTexture
         Renderer houseWallRenderer = overDoor.GetComponent<Renderer>();
@@ -410,7 +410,7 @@ public class PCMosque : PCBuilding
         //draw the door
         GameObject doorObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
         doorObject.transform.SetParent(model.transform, false);
-        doorObject.transform.localScale = (new Vector3((to - from).magnitude, 5f * houseWallHeight / 6, houseWallThickness * 0.25f));
+        doorObject.transform.localScale = new Vector3((to - from).magnitude, 5f * houseWallHeight / 6, houseWallThickness * 0.25f);
         doorObject.transform.localPosition = (from + to + towardsIn * houseWallThickness * 0.5f + 10f * Vector3.up * houseWallHeight / 12f) / 2f;
         doorObject.transform.Rotate(Vector3.up, Vector3.SignedAngle(dir, Vector3.right, Vector3.up));
         houseWallRenderer = doorObject.GetComponent<Renderer>();
@@ -429,20 +429,20 @@ public class PCMosque : PCBuilding
         dir.Normalize();
         if (door)
         {
-            OuterWall(from, from + dir * (((to - from).magnitude) / 2 - 1 - outerWallThickness));
+            OuterWall(from, from + dir * ((to - from).magnitude / 2 - 1 - outerWallThickness));
             float owh = outerWallHeight;
             outerWallHeight = houseWallHeight;
-            OuterWall(from + dir * (((to - from).magnitude) / 2 - 1 - outerWallThickness), from + dir * (((to - from).magnitude) / 2 - 1));
-            OuterWall(from + dir * (((to - from).magnitude) / 2 + 1), from + dir * (((to - from).magnitude) / 2 + 1 + outerWallThickness));
+            OuterWall(from + dir * ((to - from).magnitude / 2 - 1 - outerWallThickness), from + dir * ((to - from).magnitude / 2 - 1));
+            OuterWall(from + dir * ((to - from).magnitude / 2 + 1), from + dir * ((to - from).magnitude / 2 + 1 + outerWallThickness));
             outerWallHeight = owh;
-            OuterWall(from + dir * (((to - from).magnitude) / 2 + 1), to);
-            HouseWall(from + dir * (((to - from).magnitude) / 2 - 1), from + dir * (((to - from).magnitude) / 2 + 1));
+            OuterWall(from + dir * ((to - from).magnitude / 2 + 1), to);
+            HouseWall(from + dir * ((to - from).magnitude / 2 - 1), from + dir * ((to - from).magnitude / 2 + 1));
             return;
         }
 
         GameObject outerWall = GameObject.CreatePrimitive(PrimitiveType.Cube);
         outerWall.transform.SetParent(model.transform, false);
-        outerWall.transform.localScale = (new Vector3((to - from).magnitude, outerWallHeight, outerWallThickness));
+        outerWall.transform.localScale = new Vector3((to - from).magnitude, outerWallHeight, outerWallThickness);
         Vector3 towardsIn = Vector3.Cross(dir, Vector3.up);
         outerWall.transform.localPosition = (from + to + towardsIn * outerWallThickness + Vector3.up * outerWallHeight) / 2f;
         outerWall.transform.Rotate(Vector3.up, Vector3.SignedAngle(dir, Vector3.right, Vector3.up));
@@ -584,13 +584,13 @@ public class PCMosque : PCBuilding
         for (int i = 0; i < 14; i++)
         {
             if ((uEdge.magnitude > vEdge.magnitude && (i == 0 || i == 1 || i == 8 || i == 9)) || (uEdge.magnitude <= vEdge.magnitude && (i == 0 || i == 1 || i == 8)))
-                texCoords[i] = (new Vector2(vertices[i].x - vertices[0].x, vertices[i].z - vertices[0].z));
+                texCoords[i] = new Vector2(vertices[i].x - vertices[0].x, vertices[i].z - vertices[0].z);
             if ((uEdge.magnitude > vEdge.magnitude && (i == 4 || i == 5 || i == 11 || i == 12)) || (uEdge.magnitude <= vEdge.magnitude && (i == 4 || i == 5 || i == 11)))
-                texCoords[i] = (new Vector2(vertices[5].x - vertices[i].x, vertices[5].z - vertices[i].z));
+                texCoords[i] = new Vector2(vertices[5].x - vertices[i].x, vertices[5].z - vertices[i].z);
             if ((uEdge.magnitude > vEdge.magnitude && (i == 2 || i == 3 || i == 10)) || (uEdge.magnitude <= vEdge.magnitude && (i == 2 || i == 3 || i == 9 || i == 10)))
-                texCoords[i] = (new Vector2(vertices[5].z - vertices[i].z, vertices[5].x - vertices[i].x));
+                texCoords[i] = new Vector2(vertices[5].z - vertices[i].z, vertices[5].x - vertices[i].x);
             if ((uEdge.magnitude > vEdge.magnitude && (i == 6 || i == 7 || i == 13)) || (uEdge.magnitude <= vEdge.magnitude && (i == 6 || i == 7 || i == 12 || i == 13)))
-                texCoords[i] = (new Vector2(vertices[i].z - vertices[0].z, vertices[i].x - vertices[0].x));
+                texCoords[i] = new Vector2(vertices[i].z - vertices[0].z, vertices[i].x - vertices[0].x);
             texCoords[i] *= 0.5f;
         }
         m.uv = texCoords;
@@ -653,7 +653,7 @@ public class PCMosque : PCBuilding
         Vector3 vDir = vEdge / vEdge.magnitude;
         float roofAngle = UnityEngine.Random.Range(23f, 30f) * Mathf.Deg2Rad;
         float roofHeight = Mathf.Tan(roofAngle) * (uEdge.magnitude - 1) * 0.5f;
-        float roofUEdgeLength = (uEdge.magnitude * 0.5f) / (Mathf.Cos(roofAngle));
+        float roofUEdgeLength = uEdge.magnitude * 0.5f / Mathf.Cos(roofAngle);
 
         //make two cubes textured with the roof texture
         GameObject roofLeft = GameObject.CreatePrimitive(PrimitiveType.Cube);

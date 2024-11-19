@@ -7,7 +7,6 @@ using UnityEngine;
 
 public class ProceduralCityGenerator : MonoBehaviour
 {
-
     public Terrain CityTerrain;
 
     public float BaseHeight = 0F;
@@ -685,9 +684,9 @@ public class ProceduralCityGenerator : MonoBehaviour
         GameObject htree;
         int treeType = UnityEngine.Random.value > 0.3f ? 1 : 2;
         if (treeType == 1)
-            htree = UnityEngine.Object.Instantiate(tree1);
+            htree = Instantiate(tree1);
         else
-            htree = UnityEngine.Object.Instantiate(tree2);
+            htree = Instantiate(tree2);
 
         htree.transform.SetParent(trees.transform, true);
 

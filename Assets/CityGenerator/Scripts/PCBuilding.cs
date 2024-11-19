@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PCBuilding
 {
 
-    public Vector2Int entranceGrid;//keeps the grid
+    public Vector2Int entranceGrid;
     public GameObject model;
     protected string buildingName;
     protected Texture texture;
@@ -39,10 +37,8 @@ public class PCBuilding
     {
         model = GameObject.CreatePrimitive(PrimitiveType.Cube);
         model.transform.position = position;
-        model.transform.localScale = (new Vector3(size, height * 2, size)) / ProceduralCityGenerator.ScaleFactor;
-        model.transform.Rotate(Vector3.up, UnityEngine.Random.value * 90);
-
-
+        model.transform.localScale = new Vector3(size, height * 2, size) / ProceduralCityGenerator.ScaleFactor;
+        model.transform.Rotate(Vector3.up, Random.value * 90);
     }
 
     //assumes looking from outside
@@ -63,7 +59,6 @@ public class PCBuilding
         Quaternion q = Quaternion.LookRotation(normal, upVector);
         pr.transform.localRotation = q;
         pr.GetComponent<MeshRenderer>().enabled = false;
-
     }
 
 }
