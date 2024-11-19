@@ -2981,6 +2981,8 @@ public class ProceduralCityGenerator : MonoBehaviour
         JobHandle handle = RaycastCommand.ScheduleBatch(commands, results, 4);
         handle.Complete(); // Wait for the job to complete
 
+        commands.Dispose(); // Release the allocated memory for the commands
+
         for (int i = 0; i < 360; i += hstep)
         {
             float totalDist = 0;
@@ -3013,6 +3015,8 @@ public class ProceduralCityGenerator : MonoBehaviour
             sceneryHits[i / hstep] = 1.0f * sceneryHitsCount / samplesCount;
             samples[i / hstep] = samplesCount;
         }
+
+        results.Dispose(); // Release the allocated memory for the results
 
         // Calculate the final score based on the average distance and scenery hits
         for (int i = 0; i < scores.Length; i++)

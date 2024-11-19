@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class RegionInformation : MonoBehaviour
 {
@@ -37,7 +34,5 @@ public class RegionInformation : MonoBehaviour
         WeightSunExposure = ri2.WeightSunExposure;
         Height = ri2.Height;
         Accommodates = ri2.Accommodates;
-
-
     }
 }

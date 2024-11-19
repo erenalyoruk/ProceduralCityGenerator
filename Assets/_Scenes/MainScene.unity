@@ -299,8 +299,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0521dbd234fb5f344981f6388b97f292, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _speed: 4
-  _sensitivity: 0.5
+  _speed: 1
+  _sensitivity: 0.2
 --- !u!1 &1542911147
 GameObject:
   m_ObjectHideFlags: 0
@@ -373,7 +373,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
+  near clip plane: 0.1
   far clip plane: 1000
   field of view: 60
   orthographic: 0
@@ -522,7 +522,7 @@ MonoBehaviour:
   CityTerrain: {fileID: 574189739}
   BaseHeight: 0
   Latitude: 38
-  InitialPopulation: 150
+  InitialPopulation: 100
   Privacy: 0.11
   Security: 0.876
   Sustainability: 0.584
