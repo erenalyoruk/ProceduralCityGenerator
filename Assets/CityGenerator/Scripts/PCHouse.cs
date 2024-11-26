@@ -1,6 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
 using System.Collections;
-using System;
+using UnityEngine;
 
 public class PCHouse : PCBuilding
 {
@@ -10,16 +10,33 @@ public class PCHouse : PCBuilding
     float edgeSize;
     float coveredEdgeSize;
     float courtyardEdgeSize;
-    float outerWallThickness, outerWallHeight;
-    float houseWallThickness, houseWallHeight;
+    float outerWallThickness,
+        outerWallHeight;
+    float houseWallThickness,
+        houseWallHeight;
     float doorWidth = 1f;
     float windowWidth = 0.8f;
     float colorDarkening;
     int colorStyle = 1;
-    Texture houseWallTexture, stoneWallTexture, roofTexture;
-    public Vector2Int secondaryEntranceGrid;//if there is a second door
+    Texture houseWallTexture,
+        stoneWallTexture,
+        roofTexture;
+    public Vector2Int secondaryEntranceGrid; //if there is a second door
 
-    public PCHouse(Vector3 position, int numFloors, float coveredArea, float courtyardArea, int accommodates, string buildingName, Texture houseWallTexture, Texture stoneWallTexture, Texture roofTexture, GameObject tree1, GameObject tree2) : base(buildingName)
+    public PCHouse(
+        Vector3 position,
+        int numFloors,
+        float coveredArea,
+        float courtyardArea,
+        int accommodates,
+        string buildingName,
+        Texture houseWallTexture,
+        Texture stoneWallTexture,
+        Texture roofTexture,
+        GameObject tree1,
+        GameObject tree2
+    )
+        : base(buildingName)
     {
         this.numFloors = numFloors;
         this.courtyardArea = courtyardArea;
@@ -31,7 +48,9 @@ public class PCHouse : PCBuilding
         edgeSize = Mathf.Sqrt(coveredArea + courtyardArea);
         if (courtyardArea / coveredArea > 2)
         {
-            edgeSize = Mathf.Sqrt((coveredArea + courtyardArea) / ProceduralCityGenerator.GoldenRatio);
+            edgeSize = Mathf.Sqrt(
+                (coveredArea + courtyardArea) / ProceduralCityGenerator.GoldenRatio
+            );
         }
         coveredEdgeSize = coveredArea / edgeSize;
         courtyardEdgeSize = courtyardArea / edgeSize;
@@ -51,8 +70,18 @@ public class PCHouse : PCBuilding
         model = new GameObject(buildingName);
         model.transform.position = position;
 
-        float[] privacyCosts = pcg.CheckPrivacyCost(position + (numFloors - 0.5f) * (houseWallHeight / ProceduralCityGenerator.ScaleFactor) * Vector3.up);
-        float[] sceneryScores = pcg.CheckSceneryScoreOld(position + (numFloors - 0.5f) * (houseWallHeight / ProceduralCityGenerator.ScaleFactor) * Vector3.up);
+        float[] privacyCosts = pcg.CheckPrivacyCost(
+            position
+                + (numFloors - 0.5f)
+                    * (houseWallHeight / ProceduralCityGenerator.ScaleFactor)
+                    * Vector3.up
+        );
+        float[] sceneryScores = pcg.CheckSceneryScoreOld(
+            position
+                + (numFloors - 0.5f)
+                    * (houseWallHeight / ProceduralCityGenerator.ScaleFactor)
+                    * Vector3.up
+        );
         float rotAngle = FindBestOrientation(privacyCosts, sceneryScores);
 
         //model.transform.Rotate(Vector3.up, UnityEngine.Random.value * 90);
@@ -63,8 +92,16 @@ public class PCHouse : PCBuilding
         privateRegions.transform.SetParent(model.transform);
 
         //generate courtyard walls
-        Vector3 lowerLeft = new Vector3(-(coveredEdgeSize + courtyardEdgeSize) / 2, 0, -edgeSize / 2);
-        Vector3 upperLeft = new Vector3(-(coveredEdgeSize + courtyardEdgeSize) / 2, 0, edgeSize / 2);
+        Vector3 lowerLeft = new Vector3(
+            -(coveredEdgeSize + courtyardEdgeSize) / 2,
+            0,
+            -edgeSize / 2
+        );
+        Vector3 upperLeft = new Vector3(
+            -(coveredEdgeSize + courtyardEdgeSize) / 2,
+            0,
+            edgeSize / 2
+        );
         Vector3 courtYardEdgeVector = new Vector3(courtyardEdgeSize, 0, 0);
         Vector3 coveredAreaVector = new Vector3(coveredEdgeSize, 0, 0);
 
@@ -74,10 +111,12 @@ public class PCHouse : PCBuilding
             OuterWall(upperLeft, lowerLeft, true);
             OuterWall(upperLeft + courtYardEdgeVector, upperLeft);
 
-            AddPrivateRegion(upperLeft + courtYardEdgeVector + Vector3.up * outerWallHeight,
-                            upperLeft + Vector3.up * outerWallHeight,
-                            lowerLeft + courtYardEdgeVector + Vector3.up * outerWallHeight,
-                            lowerLeft + Vector3.up * outerWallHeight);
+            AddPrivateRegion(
+                upperLeft + courtYardEdgeVector + Vector3.up * outerWallHeight,
+                upperLeft + Vector3.up * outerWallHeight,
+                lowerLeft + courtYardEdgeVector + Vector3.up * outerWallHeight,
+                lowerLeft + Vector3.up * outerWallHeight
+            );
 
             int numTreesI = (int)(courtyardEdgeSize / 3);
             int numTreesJ = (int)(edgeSize / 3);
@@ -87,104 +126,309 @@ public class PCHouse : PCBuilding
                 {
                     if (UnityEngine.Random.value > 0.6f)
                     {
-                        Vector3 TreePos = lowerLeft + (upperLeft - lowerLeft) / edgeSize + coveredAreaVector / coveredEdgeSize + (upperLeft - lowerLeft - 2 * (upperLeft - lowerLeft) / edgeSize) / numTreesI * (i + UnityEngine.Random.value) + (courtYardEdgeVector - 2 * courtYardEdgeVector / courtyardEdgeSize) / numTreesJ * (j + UnityEngine.Random.value);
+                        Vector3 TreePos =
+                            lowerLeft
+                            + (upperLeft - lowerLeft) / edgeSize
+                            + coveredAreaVector / coveredEdgeSize
+                            + (upperLeft - lowerLeft - 2 * (upperLeft - lowerLeft) / edgeSize)
+                                / numTreesI
+                                * (i + UnityEngine.Random.value)
+                            + (courtYardEdgeVector - 2 * courtYardEdgeVector / courtyardEdgeSize)
+                                / numTreesJ
+                                * (j + UnityEngine.Random.value);
                         TreePos = model.transform.TransformPoint(TreePos);
                         pcg.MakeTree(new Vector2(TreePos.x, TreePos.z));
                     }
                 }
             }
-
         }
 
-        BottomBuffer(lowerLeft, lowerLeft + courtYardEdgeVector + coveredAreaVector, upperLeft + courtYardEdgeVector + coveredAreaVector, upperLeft);
+        BottomBuffer(
+            lowerLeft,
+            lowerLeft + courtYardEdgeVector + coveredAreaVector,
+            upperLeft + courtYardEdgeVector + coveredAreaVector,
+            upperLeft
+        );
 
         Vector3 heightVector = new Vector3(0, 0, 0);
         bool CumbaExists = (numFloors > 1) && (UnityEngine.Random.value > 0.3f);
         for (int i = 0; i < numFloors; i++)
         {
             //bottom wall of the house
-            HouseWall(heightVector + lowerLeft + courtYardEdgeVector, heightVector + lowerLeft + courtYardEdgeVector + coveredAreaVector); //right side
+            HouseWall(
+                heightVector + lowerLeft + courtYardEdgeVector,
+                heightVector + lowerLeft + courtYardEdgeVector + coveredAreaVector
+            ); //right side
             //left(inside/courtyard) wall of the house
-            HouseWall(heightVector + upperLeft + courtYardEdgeVector + coveredAreaVector, heightVector + upperLeft + courtYardEdgeVector); //left side
+            HouseWall(
+                heightVector + upperLeft + courtYardEdgeVector + coveredAreaVector,
+                heightVector + upperLeft + courtYardEdgeVector
+            ); //left side
             //top wall of the house
-            HouseWall(heightVector + upperLeft + courtYardEdgeVector, heightVector + lowerLeft + courtYardEdgeVector, i == 0, true);
+            HouseWall(
+                heightVector + upperLeft + courtYardEdgeVector,
+                heightVector + lowerLeft + courtYardEdgeVector,
+                i == 0,
+                true
+            );
             if (CumbaExists && i > 0)
             {
-                if (edgeSize > windowWidth * 2 * 6)//cumba takes all side or part of it
+                if (edgeSize > windowWidth * 2 * 6) //cumba takes all side or part of it
                 {
-                    HouseWall(heightVector + lowerLeft + courtYardEdgeVector + coveredAreaVector, heightVector + lowerLeft + courtYardEdgeVector + coveredAreaVector + (upperLeft - lowerLeft) / 3, false, true);
+                    HouseWall(
+                        heightVector + lowerLeft + courtYardEdgeVector + coveredAreaVector,
+                        heightVector
+                            + lowerLeft
+                            + courtYardEdgeVector
+                            + coveredAreaVector
+                            + (upperLeft - lowerLeft) / 3,
+                        false,
+                        true
+                    );
                     //bottom extrusion
-                    HouseWall(heightVector + lowerLeft + courtYardEdgeVector + coveredAreaVector + (upperLeft - lowerLeft) / 3, heightVector + lowerLeft + courtYardEdgeVector + coveredAreaVector + coveredAreaVector / coveredAreaVector.magnitude + (upperLeft - lowerLeft) / 3); //right side
-                    HouseWall(heightVector + lowerLeft + courtYardEdgeVector + coveredAreaVector + coveredAreaVector / coveredAreaVector.magnitude + (upperLeft - lowerLeft) / 3, heightVector + upperLeft + courtYardEdgeVector + coveredAreaVector + coveredAreaVector / coveredAreaVector.magnitude - (upperLeft - lowerLeft) / 3, false, true);
+                    HouseWall(
+                        heightVector
+                            + lowerLeft
+                            + courtYardEdgeVector
+                            + coveredAreaVector
+                            + (upperLeft - lowerLeft) / 3,
+                        heightVector
+                            + lowerLeft
+                            + courtYardEdgeVector
+                            + coveredAreaVector
+                            + coveredAreaVector / coveredAreaVector.magnitude
+                            + (upperLeft - lowerLeft) / 3
+                    ); //right side
+                    HouseWall(
+                        heightVector
+                            + lowerLeft
+                            + courtYardEdgeVector
+                            + coveredAreaVector
+                            + coveredAreaVector / coveredAreaVector.magnitude
+                            + (upperLeft - lowerLeft) / 3,
+                        heightVector
+                            + upperLeft
+                            + courtYardEdgeVector
+                            + coveredAreaVector
+                            + coveredAreaVector / coveredAreaVector.magnitude
+                            - (upperLeft - lowerLeft) / 3,
+                        false,
+                        true
+                    );
                     //top extrusion
-                    HouseWall(heightVector + upperLeft + courtYardEdgeVector + coveredAreaVector + coveredAreaVector / coveredAreaVector.magnitude - (upperLeft - lowerLeft) / 3, heightVector + upperLeft + courtYardEdgeVector + coveredAreaVector - (upperLeft - lowerLeft) / 3); //left side
-                    HouseWall(heightVector + upperLeft + courtYardEdgeVector + coveredAreaVector - (upperLeft - lowerLeft) / 3, heightVector + upperLeft + courtYardEdgeVector + coveredAreaVector, false, true);
+                    HouseWall(
+                        heightVector
+                            + upperLeft
+                            + courtYardEdgeVector
+                            + coveredAreaVector
+                            + coveredAreaVector / coveredAreaVector.magnitude
+                            - (upperLeft - lowerLeft) / 3,
+                        heightVector
+                            + upperLeft
+                            + courtYardEdgeVector
+                            + coveredAreaVector
+                            - (upperLeft - lowerLeft) / 3
+                    ); //left side
+                    HouseWall(
+                        heightVector
+                            + upperLeft
+                            + courtYardEdgeVector
+                            + coveredAreaVector
+                            - (upperLeft - lowerLeft) / 3,
+                        heightVector + upperLeft + courtYardEdgeVector + coveredAreaVector,
+                        false,
+                        true
+                    );
 
-                    MiddleBuffer(heightVector + lowerLeft + courtYardEdgeVector,
-                                 heightVector + lowerLeft + courtYardEdgeVector + coveredAreaVector,
-                                 heightVector + upperLeft + courtYardEdgeVector + coveredAreaVector,
-                                 heightVector + upperLeft + courtYardEdgeVector);
+                    MiddleBuffer(
+                        heightVector + lowerLeft + courtYardEdgeVector,
+                        heightVector + lowerLeft + courtYardEdgeVector + coveredAreaVector,
+                        heightVector + upperLeft + courtYardEdgeVector + coveredAreaVector,
+                        heightVector + upperLeft + courtYardEdgeVector
+                    );
 
-                    MiddleBuffer(heightVector + lowerLeft + courtYardEdgeVector + coveredAreaVector + (upperLeft - lowerLeft) / 3,
-                                    heightVector + lowerLeft + courtYardEdgeVector + coveredAreaVector + (upperLeft - lowerLeft) / 3 + coveredAreaVector / coveredAreaVector.magnitude,
-                                    heightVector + lowerLeft + courtYardEdgeVector + coveredAreaVector + 2 * (upperLeft - lowerLeft) / 3 + coveredAreaVector / coveredAreaVector.magnitude,
-                                    heightVector + lowerLeft + courtYardEdgeVector + coveredAreaVector + 2 * (upperLeft - lowerLeft) / 3);
+                    MiddleBuffer(
+                        heightVector
+                            + lowerLeft
+                            + courtYardEdgeVector
+                            + coveredAreaVector
+                            + (upperLeft - lowerLeft) / 3,
+                        heightVector
+                            + lowerLeft
+                            + courtYardEdgeVector
+                            + coveredAreaVector
+                            + (upperLeft - lowerLeft) / 3
+                            + coveredAreaVector / coveredAreaVector.magnitude,
+                        heightVector
+                            + lowerLeft
+                            + courtYardEdgeVector
+                            + coveredAreaVector
+                            + 2 * (upperLeft - lowerLeft) / 3
+                            + coveredAreaVector / coveredAreaVector.magnitude,
+                        heightVector
+                            + lowerLeft
+                            + courtYardEdgeVector
+                            + coveredAreaVector
+                            + 2 * (upperLeft - lowerLeft) / 3
+                    );
 
                     if (i == 1)
                     {
                         Vector3 floorHeight = heightVector;
                         floorHeight.y -= 3;
-                        MiddleBuffer(floorHeight + lowerLeft + courtYardEdgeVector + coveredAreaVector + (upperLeft - lowerLeft) / 3,
-                                    floorHeight + lowerLeft + courtYardEdgeVector + coveredAreaVector + (upperLeft - lowerLeft) / 3 + coveredAreaVector / coveredAreaVector.magnitude,
-                                    floorHeight + lowerLeft + courtYardEdgeVector + coveredAreaVector + 2 * (upperLeft - lowerLeft) / 3 + coveredAreaVector / coveredAreaVector.magnitude,
-                                    floorHeight + lowerLeft + courtYardEdgeVector + coveredAreaVector + 2 * (upperLeft - lowerLeft) / 3);
+                        MiddleBuffer(
+                            floorHeight
+                                + lowerLeft
+                                + courtYardEdgeVector
+                                + coveredAreaVector
+                                + (upperLeft - lowerLeft) / 3,
+                            floorHeight
+                                + lowerLeft
+                                + courtYardEdgeVector
+                                + coveredAreaVector
+                                + (upperLeft - lowerLeft) / 3
+                                + coveredAreaVector / coveredAreaVector.magnitude,
+                            floorHeight
+                                + lowerLeft
+                                + courtYardEdgeVector
+                                + coveredAreaVector
+                                + 2 * (upperLeft - lowerLeft) / 3
+                                + coveredAreaVector / coveredAreaVector.magnitude,
+                            floorHeight
+                                + lowerLeft
+                                + courtYardEdgeVector
+                                + coveredAreaVector
+                                + 2 * (upperLeft - lowerLeft) / 3
+                        );
 
-                        Vector3 supportStartPoint = heightVector + lowerLeft + courtYardEdgeVector + coveredAreaVector
-                                                    + (upperLeft - lowerLeft) / 3 + 0.9f * coveredAreaVector / coveredAreaVector.magnitude - Vector3.up * 0.2f + Vector3.forward * 0.15f - Vector3.right * 0.1f;
-                        Vector3 supportEndPoint = heightVector + lowerLeft + courtYardEdgeVector + coveredAreaVector + (upperLeft - lowerLeft) / 3 - Vector3.up * 1.4f + Vector3.forward * 0.15f + Vector3.right * 0.25f;
+                        Vector3 supportStartPoint =
+                            heightVector
+                            + lowerLeft
+                            + courtYardEdgeVector
+                            + coveredAreaVector
+                            + (upperLeft - lowerLeft) / 3
+                            + 0.9f * coveredAreaVector / coveredAreaVector.magnitude
+                            - Vector3.up * 0.2f
+                            + Vector3.forward * 0.15f
+                            - Vector3.right * 0.1f;
+                        Vector3 supportEndPoint =
+                            heightVector
+                            + lowerLeft
+                            + courtYardEdgeVector
+                            + coveredAreaVector
+                            + (upperLeft - lowerLeft) / 3
+                            - Vector3.up * 1.4f
+                            + Vector3.forward * 0.15f
+                            + Vector3.right * 0.25f;
                         MakeElongatedCube(supportStartPoint, supportEndPoint, 0.2f, true);
 
-                        supportStartPoint = heightVector + lowerLeft + courtYardEdgeVector + coveredAreaVector
-                                            + 2 * (upperLeft - lowerLeft) / 3 + 0.9f * coveredAreaVector / coveredAreaVector.magnitude - Vector3.up * 0.2f - Vector3.forward * 0.15f - Vector3.right * 0.1f;
-                        supportEndPoint = heightVector + lowerLeft + courtYardEdgeVector + coveredAreaVector + 2 * (upperLeft - lowerLeft) / 3 - Vector3.up * 1.4f - Vector3.forward * 0.15f + Vector3.right * 0.25f;
+                        supportStartPoint =
+                            heightVector
+                            + lowerLeft
+                            + courtYardEdgeVector
+                            + coveredAreaVector
+                            + 2 * (upperLeft - lowerLeft) / 3
+                            + 0.9f * coveredAreaVector / coveredAreaVector.magnitude
+                            - Vector3.up * 0.2f
+                            - Vector3.forward * 0.15f
+                            - Vector3.right * 0.1f;
+                        supportEndPoint =
+                            heightVector
+                            + lowerLeft
+                            + courtYardEdgeVector
+                            + coveredAreaVector
+                            + 2 * (upperLeft - lowerLeft) / 3
+                            - Vector3.up * 1.4f
+                            - Vector3.forward * 0.15f
+                            + Vector3.right * 0.25f;
                         MakeElongatedCube(supportStartPoint, supportEndPoint, 0.2f, true);
-
                     }
-
                 }
                 else
                 {
                     //bottom extrusion
-                    HouseWall(heightVector + lowerLeft + courtYardEdgeVector + coveredAreaVector, heightVector + lowerLeft + courtYardEdgeVector + coveredAreaVector + coveredAreaVector / coveredAreaVector.magnitude); //right side
-                    HouseWall(heightVector + lowerLeft + courtYardEdgeVector + coveredAreaVector + coveredAreaVector / coveredAreaVector.magnitude, heightVector + upperLeft + courtYardEdgeVector + coveredAreaVector + coveredAreaVector / coveredAreaVector.magnitude, false, true);
+                    HouseWall(
+                        heightVector + lowerLeft + courtYardEdgeVector + coveredAreaVector,
+                        heightVector
+                            + lowerLeft
+                            + courtYardEdgeVector
+                            + coveredAreaVector
+                            + coveredAreaVector / coveredAreaVector.magnitude
+                    ); //right side
+                    HouseWall(
+                        heightVector
+                            + lowerLeft
+                            + courtYardEdgeVector
+                            + coveredAreaVector
+                            + coveredAreaVector / coveredAreaVector.magnitude,
+                        heightVector
+                            + upperLeft
+                            + courtYardEdgeVector
+                            + coveredAreaVector
+                            + coveredAreaVector / coveredAreaVector.magnitude,
+                        false,
+                        true
+                    );
                     //top extrusion
-                    HouseWall(heightVector + upperLeft + courtYardEdgeVector + coveredAreaVector + coveredAreaVector / coveredAreaVector.magnitude, heightVector + upperLeft + courtYardEdgeVector + coveredAreaVector); //left side
-                    MiddleBuffer(heightVector + lowerLeft + courtYardEdgeVector,
-                                    heightVector + lowerLeft + courtYardEdgeVector + coveredAreaVector + coveredAreaVector / coveredAreaVector.magnitude,
-                                    heightVector + upperLeft + courtYardEdgeVector + coveredAreaVector + coveredAreaVector / coveredAreaVector.magnitude,
-                                    heightVector + upperLeft + courtYardEdgeVector);
+                    HouseWall(
+                        heightVector
+                            + upperLeft
+                            + courtYardEdgeVector
+                            + coveredAreaVector
+                            + coveredAreaVector / coveredAreaVector.magnitude,
+                        heightVector + upperLeft + courtYardEdgeVector + coveredAreaVector
+                    ); //left side
+                    MiddleBuffer(
+                        heightVector + lowerLeft + courtYardEdgeVector,
+                        heightVector
+                            + lowerLeft
+                            + courtYardEdgeVector
+                            + coveredAreaVector
+                            + coveredAreaVector / coveredAreaVector.magnitude,
+                        heightVector
+                            + upperLeft
+                            + courtYardEdgeVector
+                            + coveredAreaVector
+                            + coveredAreaVector / coveredAreaVector.magnitude,
+                        heightVector + upperLeft + courtYardEdgeVector
+                    );
                     if (i == 1)
                     {
                         Vector3 floorHeight = heightVector;
                         floorHeight.y -= 3;
-                        MiddleBuffer(floorHeight + lowerLeft + courtYardEdgeVector,
-                                    floorHeight + lowerLeft + courtYardEdgeVector + coveredAreaVector + coveredAreaVector / coveredAreaVector.magnitude,
-                                    floorHeight + upperLeft + courtYardEdgeVector + coveredAreaVector + coveredAreaVector / coveredAreaVector.magnitude,
-                                    floorHeight + upperLeft + courtYardEdgeVector);
-
+                        MiddleBuffer(
+                            floorHeight + lowerLeft + courtYardEdgeVector,
+                            floorHeight
+                                + lowerLeft
+                                + courtYardEdgeVector
+                                + coveredAreaVector
+                                + coveredAreaVector / coveredAreaVector.magnitude,
+                            floorHeight
+                                + upperLeft
+                                + courtYardEdgeVector
+                                + coveredAreaVector
+                                + coveredAreaVector / coveredAreaVector.magnitude,
+                            floorHeight + upperLeft + courtYardEdgeVector
+                        );
                     }
                 }
             }
             else
             {
                 //outside wall of the house
-                HouseWall(heightVector + lowerLeft + courtYardEdgeVector + coveredAreaVector, heightVector + upperLeft + courtYardEdgeVector + coveredAreaVector, i == 0, i > 0 || numFloors == 1);
-                MiddleBuffer(heightVector + lowerLeft + courtYardEdgeVector,
-                                 heightVector + lowerLeft + courtYardEdgeVector + coveredAreaVector,
-                                 heightVector + upperLeft + courtYardEdgeVector + coveredAreaVector,
-                                 heightVector + upperLeft + courtYardEdgeVector);
+                HouseWall(
+                    heightVector + lowerLeft + courtYardEdgeVector + coveredAreaVector,
+                    heightVector + upperLeft + courtYardEdgeVector + coveredAreaVector,
+                    i == 0,
+                    i > 0 || numFloors == 1
+                );
+                MiddleBuffer(
+                    heightVector + lowerLeft + courtYardEdgeVector,
+                    heightVector + lowerLeft + courtYardEdgeVector + coveredAreaVector,
+                    heightVector + upperLeft + courtYardEdgeVector + coveredAreaVector,
+                    heightVector + upperLeft + courtYardEdgeVector
+                );
             }
-
 
             heightVector.y += 3;
         }
@@ -193,65 +437,87 @@ public class PCHouse : PCBuilding
         {
             if (edgeSize > windowWidth * 2 * 6)
             {
-                Roof(heightVector + lowerLeft + courtYardEdgeVector,
+                Roof(
+                    heightVector + lowerLeft + courtYardEdgeVector,
                     heightVector + lowerLeft + courtYardEdgeVector + coveredAreaVector,
                     heightVector + upperLeft + courtYardEdgeVector + coveredAreaVector,
-                    heightVector + upperLeft + courtYardEdgeVector);
+                    heightVector + upperLeft + courtYardEdgeVector
+                );
 
-                Roof(heightVector + lowerLeft + courtYardEdgeVector + (upperLeft - lowerLeft) / 3,
-                        heightVector + lowerLeft + courtYardEdgeVector + (upperLeft - lowerLeft) / 3 + coveredAreaVector + coveredAreaVector / coveredAreaVector.magnitude,
-                        heightVector + lowerLeft + courtYardEdgeVector + 2 * (upperLeft - lowerLeft) / 3 + coveredAreaVector + coveredAreaVector / coveredAreaVector.magnitude,
-                        heightVector + lowerLeft + courtYardEdgeVector + 2 * (upperLeft - lowerLeft) / 3);
+                Roof(
+                    heightVector + lowerLeft + courtYardEdgeVector + (upperLeft - lowerLeft) / 3,
+                    heightVector
+                        + lowerLeft
+                        + courtYardEdgeVector
+                        + (upperLeft - lowerLeft) / 3
+                        + coveredAreaVector
+                        + coveredAreaVector / coveredAreaVector.magnitude,
+                    heightVector
+                        + lowerLeft
+                        + courtYardEdgeVector
+                        + 2 * (upperLeft - lowerLeft) / 3
+                        + coveredAreaVector
+                        + coveredAreaVector / coveredAreaVector.magnitude,
+                    heightVector + lowerLeft + courtYardEdgeVector + 2 * (upperLeft - lowerLeft) / 3
+                );
             }
             else
             {
-                Roof(heightVector + lowerLeft + courtYardEdgeVector,
-                        heightVector + lowerLeft + courtYardEdgeVector + coveredAreaVector + coveredAreaVector / coveredAreaVector.magnitude,
-                        heightVector + upperLeft + courtYardEdgeVector + coveredAreaVector + coveredAreaVector / coveredAreaVector.magnitude,
-                        heightVector + upperLeft + courtYardEdgeVector);
+                Roof(
+                    heightVector + lowerLeft + courtYardEdgeVector,
+                    heightVector
+                        + lowerLeft
+                        + courtYardEdgeVector
+                        + coveredAreaVector
+                        + coveredAreaVector / coveredAreaVector.magnitude,
+                    heightVector
+                        + upperLeft
+                        + courtYardEdgeVector
+                        + coveredAreaVector
+                        + coveredAreaVector / coveredAreaVector.magnitude,
+                    heightVector + upperLeft + courtYardEdgeVector
+                );
             }
-
-
         }
         else
         {
             if (UnityEngine.Random.value < 0.5f)
             {
-                Roof(heightVector + lowerLeft + courtYardEdgeVector,
+                Roof(
+                    heightVector + lowerLeft + courtYardEdgeVector,
                     heightVector + lowerLeft + courtYardEdgeVector + coveredAreaVector,
                     heightVector + upperLeft + courtYardEdgeVector + coveredAreaVector,
-                    heightVector + upperLeft + courtYardEdgeVector);
-
+                    heightVector + upperLeft + courtYardEdgeVector
+                );
             }
             else
             {
-                Roof2(heightVector + lowerLeft + courtYardEdgeVector,
+                Roof2(
+                    heightVector + lowerLeft + courtYardEdgeVector,
                     heightVector + lowerLeft + courtYardEdgeVector + coveredAreaVector,
                     heightVector + upperLeft + courtYardEdgeVector + coveredAreaVector,
-                    heightVector + upperLeft + courtYardEdgeVector);
+                    heightVector + upperLeft + courtYardEdgeVector
+                );
             }
-
-
         }
 
         //for each floor generate walls
         //buffer
-        //walls including door 
+        //walls including door
         //for each extra floor
         //buffer
         //walls with windows (maybe extrusion (cumba))
         //buffer
         //generate roof
         //Roof();
-
     }
 
     bool randomCosts = false;
+
     private float FindBestOrientation(float[] privacyCosts, float[] sceneryScores)
     {
         GameObject cityBuilder = GameObject.Find("CityBuilder");
         ProceduralCityGenerator pcg = cityBuilder.GetComponent<ProceduralCityGenerator>();
-
 
         float[] totalCosts = new float[privacyCosts.Length];
         for (int i = 0; i < privacyCosts.Length; i++)
@@ -264,12 +530,18 @@ public class PCHouse : PCBuilding
                 float angleJ = j * (360 / privacyCosts.Length);
                 float weight = Mathf.Cos(Mathf.Deg2Rad * (angleI - angleJ));
                 if (weight > 0)
-                    totalCosts[i] += weight * privacyCosts[j] * pcg.Privacy - weight * sceneryScores[i] * pcg.Beauty;
+                    totalCosts[i] +=
+                        weight * privacyCosts[j] * pcg.Privacy
+                        - weight * sceneryScores[i] * pcg.Beauty;
 
                 //check back side
                 weight = Mathf.Cos(Mathf.Deg2Rad * (angleI - angleJ + 180));
                 if (weight > 0)
-                    totalCosts[i] += (weight * privacyCosts[j] * pcg.Privacy - weight * sceneryScores[i] * pcg.Beauty) * (courtyardArea > 5 ? 0.5f : 0.9f);
+                    totalCosts[i] +=
+                        (
+                            weight * privacyCosts[j] * pcg.Privacy
+                            - weight * sceneryScores[i] * pcg.Beauty
+                        ) * (courtyardArea > 5 ? 0.5f : 0.9f);
 
                 if (randomCosts)
                     totalCosts[i] = UnityEngine.Random.value;
@@ -335,15 +607,22 @@ public class PCHouse : PCBuilding
         Renderer middleWallRenderer = middleWall.GetComponent<Renderer>();
         middleWallRenderer.material.SetTexture("_MainTex", houseWallTexture);
         middleWallRenderer.material.SetTextureScale("_MainTex", new Vector2(0.1f, 0.1f));
-        middleWallRenderer.material.SetTextureOffset("_MainTex", new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
+        middleWallRenderer.material.SetTextureOffset(
+            "_MainTex",
+            new Vector2(UnityEngine.Random.value, UnityEngine.Random.value)
+        );
         middleWallRenderer.material.SetColor("_Color", Color.white * colorDarkening * 0.7f);
 
         middleWall.transform.SetParent(model.transform, false);
-        middleWall.transform.localScale = new Vector3(0.3f, (br - bl).magnitude, (tr - br).magnitude);
-        middleWall.transform.localPosition = (bl + br + tr + tl) / 4f + new Vector3(0, houseWallHeight + 0.15f, 0);
+        middleWall.transform.localScale = new Vector3(
+            0.3f,
+            (br - bl).magnitude,
+            (tr - br).magnitude
+        );
+        middleWall.transform.localPosition =
+            (bl + br + tr + tl) / 4f + new Vector3(0, houseWallHeight + 0.15f, 0);
         middleWall.transform.Rotate(Vector3.forward, 90);
     }
-
 
     private void BottomBuffer(Vector3 bl, Vector3 br, Vector3 tr, Vector3 tl)
     {
@@ -352,8 +631,14 @@ public class PCHouse : PCBuilding
         //adjustTexture
         Renderer middleWallRenderer = bottomWall.GetComponent<Renderer>();
         middleWallRenderer.material.SetTexture("_MainTex", stoneWallTexture);
-        middleWallRenderer.material.SetTextureScale("_MainTex", new Vector2((br - bl).magnitude / 5, 2.5f));
-        middleWallRenderer.material.SetTextureOffset("_MainTex", new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
+        middleWallRenderer.material.SetTextureScale(
+            "_MainTex",
+            new Vector2((br - bl).magnitude / 5, 2.5f)
+        );
+        middleWallRenderer.material.SetTextureOffset(
+            "_MainTex",
+            new Vector2(UnityEngine.Random.value, UnityEngine.Random.value)
+        );
         middleWallRenderer.material.SetColor("_Color", Color.white * colorDarkening);
 
         bottomWall.transform.SetParent(model.transform, false);
@@ -376,8 +661,14 @@ public class PCHouse : PCBuilding
             if (colorStyle == 1)
             {
                 houseWallRenderer.material.SetTexture("_MainTex", houseWallTexture);
-                houseWallRenderer.material.SetTextureScale("_MainTex", new Vector2((to - from).magnitude / 4f, 1));
-                houseWallRenderer.material.SetTextureOffset("_MainTex", new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
+                houseWallRenderer.material.SetTextureScale(
+                    "_MainTex",
+                    new Vector2((to - from).magnitude / 4f, 1)
+                );
+                houseWallRenderer.material.SetTextureOffset(
+                    "_MainTex",
+                    new Vector2(UnityEngine.Random.value, UnityEngine.Random.value)
+                );
                 houseWallRenderer.material.SetColor("_Color", Color.white * colorDarkening);
             }
             else
@@ -386,9 +677,17 @@ public class PCHouse : PCBuilding
             }
 
             houseWall.transform.SetParent(model.transform, false);
-            houseWall.transform.localScale = new Vector3((to - from).magnitude, houseWallHeight, houseWallThickness);
-            houseWall.transform.localPosition = (from + to + towardsIn * houseWallThickness + Vector3.up * houseWallHeight) / 2f;
-            houseWall.transform.Rotate(Vector3.up, Vector3.SignedAngle(dir, Vector3.right, Vector3.up));
+            houseWall.transform.localScale = new Vector3(
+                (to - from).magnitude,
+                houseWallHeight,
+                houseWallThickness
+            );
+            houseWall.transform.localPosition =
+                (from + to + towardsIn * houseWallThickness + Vector3.up * houseWallHeight) / 2f;
+            houseWall.transform.Rotate(
+                Vector3.up,
+                Vector3.SignedAngle(dir, Vector3.right, Vector3.up)
+            );
         }
         else if (door)
         {
@@ -409,7 +708,10 @@ public class PCHouse : PCBuilding
         {
             float sideLength = (to - from).magnitude;
             // how many windows fits
-            int windowsCount = (int)((sideLength - houseWallThickness * 2) / (windowWidth * ProceduralCityGenerator.GoldenRatio));
+            int windowsCount = (int)(
+                (sideLength - houseWallThickness * 2)
+                / (windowWidth * ProceduralCityGenerator.GoldenRatio)
+            );
             //evenly distribute windows like -w-w-w-
             float intervalLength = (sideLength - windowsCount * windowWidth) / (windowsCount + 1f);
             HouseWall(from, from + dir * intervalLength);
@@ -420,7 +722,6 @@ public class PCHouse : PCBuilding
                 windowFrom += dir * (windowWidth + intervalLength);
                 HouseWall(windowFrom - dir * intervalLength, windowFrom);
             }
-
         }
     }
 
@@ -428,15 +729,25 @@ public class PCHouse : PCBuilding
     {
         GameObject underWindow = GameObject.CreatePrimitive(PrimitiveType.Cube);
         underWindow.transform.SetParent(model.transform, false);
-        underWindow.transform.localScale = new Vector3((to - from).magnitude, houseWallHeight / 3, houseWallThickness);
+        underWindow.transform.localScale = new Vector3(
+            (to - from).magnitude,
+            houseWallHeight / 3,
+            houseWallThickness
+        );
 
         //adjustTexture
         Renderer houseWallRenderer = underWindow.GetComponent<Renderer>();
         if (colorStyle == 1)
         {
             houseWallRenderer.material.SetTexture("_MainTex", houseWallTexture);
-            houseWallRenderer.material.SetTextureScale("_MainTex", new Vector2((to - from).magnitude / 4f, 0.3f));
-            houseWallRenderer.material.SetTextureOffset("_MainTex", new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
+            houseWallRenderer.material.SetTextureScale(
+                "_MainTex",
+                new Vector2((to - from).magnitude / 4f, 0.3f)
+            );
+            houseWallRenderer.material.SetTextureOffset(
+                "_MainTex",
+                new Vector2(UnityEngine.Random.value, UnityEngine.Random.value)
+            );
             houseWallRenderer.material.SetColor("_Color", Color.white * colorDarkening);
         }
         else
@@ -444,33 +755,49 @@ public class PCHouse : PCBuilding
             houseWallRenderer.material.SetColor("_Color", Color.white * colorDarkening);
         }
 
-
-
         Vector3 dir = to - from;
         dir.Normalize();
         Vector3 towardsIn = Vector3.Cross(dir, Vector3.up);
-        underWindow.transform.localPosition = (from + to + towardsIn * houseWallThickness + Vector3.up * houseWallHeight / 3f) / 2f;
-        underWindow.transform.Rotate(Vector3.up, Vector3.SignedAngle(dir, Vector3.right, Vector3.up));
-
+        underWindow.transform.localPosition =
+            (from + to + towardsIn * houseWallThickness + Vector3.up * houseWallHeight / 3f) / 2f;
+        underWindow.transform.Rotate(
+            Vector3.up,
+            Vector3.SignedAngle(dir, Vector3.right, Vector3.up)
+        );
 
         GameObject overWindow = GameObject.CreatePrimitive(PrimitiveType.Cube);
         overWindow.transform.SetParent(model.transform, false);
-        overWindow.transform.localScale = new Vector3((to - from).magnitude, houseWallHeight / 6, houseWallThickness);
+        overWindow.transform.localScale = new Vector3(
+            (to - from).magnitude,
+            houseWallHeight / 6,
+            houseWallThickness
+        );
 
         //adjustTexture
         houseWallRenderer = overWindow.GetComponent<Renderer>();
         if (colorStyle == 1)
         {
             houseWallRenderer.material.SetTexture("_MainTex", houseWallTexture);
-            houseWallRenderer.material.SetTextureScale("_MainTex", new Vector2((to - from).magnitude / 4f, 0.3f));
-            houseWallRenderer.material.SetTextureOffset("_MainTex", new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
+            houseWallRenderer.material.SetTextureScale(
+                "_MainTex",
+                new Vector2((to - from).magnitude / 4f, 0.3f)
+            );
+            houseWallRenderer.material.SetTextureOffset(
+                "_MainTex",
+                new Vector2(UnityEngine.Random.value, UnityEngine.Random.value)
+            );
             houseWallRenderer.material.SetColor("_Color", Color.white * colorDarkening);
         }
         else
             houseWallRenderer.material.SetColor("_Color", Color.white * colorDarkening);
 
-        overWindow.transform.localPosition = (from + to + towardsIn * houseWallThickness + 22f * Vector3.up * houseWallHeight / 12f) / 2f;
-        overWindow.transform.Rotate(Vector3.up, Vector3.SignedAngle(dir, Vector3.right, Vector3.up));
+        overWindow.transform.localPosition =
+            (from + to + towardsIn * houseWallThickness + 22f * Vector3.up * houseWallHeight / 12f)
+            / 2f;
+        overWindow.transform.Rotate(
+            Vector3.up,
+            Vector3.SignedAngle(dir, Vector3.right, Vector3.up)
+        );
 
         //make inner window
         Vector3 WindowCornersUpperLeft = from;
@@ -478,23 +805,38 @@ public class PCHouse : PCBuilding
         Vector3 WindowCornersUpperRight = to;
         Vector3 WindowCornersLowerRight = to;
 
-
         WindowCornersUpperLeft.y += 5f * houseWallHeight / 6;
         WindowCornersLowerLeft.y += houseWallHeight / 3;
         WindowCornersUpperRight.y += 5f * houseWallHeight / 6;
         WindowCornersLowerRight.y += houseWallHeight / 3;
 
-        AddPrivateRegion(WindowCornersUpperLeft, WindowCornersLowerLeft, WindowCornersUpperRight, WindowCornersLowerRight);
+        AddPrivateRegion(
+            WindowCornersUpperLeft,
+            WindowCornersLowerLeft,
+            WindowCornersUpperRight,
+            WindowCornersLowerRight
+        );
 
         MakeElongatedCube(WindowCornersLowerLeft, WindowCornersLowerRight, 0.15f);
         MakeElongatedCube(WindowCornersUpperLeft, WindowCornersUpperRight, 0.15f);
         MakeElongatedCube(WindowCornersUpperLeft, WindowCornersLowerLeft, 0.15f);
         MakeElongatedCube(WindowCornersUpperRight, WindowCornersLowerRight, 0.15f);
-        MakeElongatedCube((WindowCornersUpperRight + WindowCornersUpperLeft) / 2, (WindowCornersLowerRight + WindowCornersLowerLeft) / 2, 0.05f);
-        MakeElongatedCube(WindowCornersLowerLeft / 3f + WindowCornersUpperLeft * 2f / 3, WindowCornersLowerRight / 3f + WindowCornersUpperRight * 2f / 3f, 0.05f);
-        MakeElongatedCube(WindowCornersLowerLeft * 2f / 3f + WindowCornersUpperLeft / 3f, WindowCornersLowerRight * 2f / 3f + WindowCornersUpperRight / 3f, 0.05f);
+        MakeElongatedCube(
+            (WindowCornersUpperRight + WindowCornersUpperLeft) / 2,
+            (WindowCornersLowerRight + WindowCornersLowerLeft) / 2,
+            0.05f
+        );
+        MakeElongatedCube(
+            WindowCornersLowerLeft / 3f + WindowCornersUpperLeft * 2f / 3,
+            WindowCornersLowerRight / 3f + WindowCornersUpperRight * 2f / 3f,
+            0.05f
+        );
+        MakeElongatedCube(
+            WindowCornersLowerLeft * 2f / 3f + WindowCornersUpperLeft / 3f,
+            WindowCornersLowerRight * 2f / 3f + WindowCornersUpperRight / 3f,
+            0.05f
+        );
     }
-
 
     private void MakeElongatedCube(Vector3 from, Vector3 to, float width, bool wooden = false)
     {
@@ -508,14 +850,20 @@ public class PCHouse : PCBuilding
                 houseWallRenderer.material.SetColor("_Color", Color.white * 0.8f * colorDarkening);
             else
             {
-                houseWallRenderer.material.SetColor("_Color", new Color(117f / 255, 112f / 255, 96f / 255) * colorDarkening);
+                houseWallRenderer.material.SetColor(
+                    "_Color",
+                    new Color(117f / 255, 112f / 255, 96f / 255) * colorDarkening
+                );
             }
         }
         else
         {
             houseWallRenderer.material.SetTexture("_MainTex", houseWallTexture);
             houseWallRenderer.material.SetTextureScale("_MainTex", new Vector2(0.1f, 0.1f));
-            houseWallRenderer.material.SetTextureOffset("_MainTex", new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
+            houseWallRenderer.material.SetTextureOffset(
+                "_MainTex",
+                new Vector2(UnityEngine.Random.value, UnityEngine.Random.value)
+            );
             houseWallRenderer.material.SetColor("_Color", Color.white * colorDarkening * 0.7f);
         }
 
@@ -524,8 +872,10 @@ public class PCHouse : PCBuilding
         cube.transform.localPosition = (from + to) / 2f;
         Vector3 dir = to - from;
         dir.Normalize();
-        cube.transform.Rotate(Vector3.Cross(Vector3.right, dir), Vector3.SignedAngle(Vector3.right, dir, Vector3.Cross(Vector3.right, dir)));
-
+        cube.transform.Rotate(
+            Vector3.Cross(Vector3.right, dir),
+            Vector3.SignedAngle(Vector3.right, dir, Vector3.Cross(Vector3.right, dir))
+        );
     }
 
     private void Door(Vector3 from, Vector3 to)
@@ -536,35 +886,79 @@ public class PCHouse : PCBuilding
 
         GameObject overDoor = GameObject.CreatePrimitive(PrimitiveType.Cube);
         overDoor.transform.SetParent(model.transform, false);
-        overDoor.transform.localScale = new Vector3((to - from).magnitude, houseWallHeight / 6, houseWallThickness);
+        overDoor.transform.localScale = new Vector3(
+            (to - from).magnitude,
+            houseWallHeight / 6,
+            houseWallThickness
+        );
 
         //adjustTexture
         Renderer houseWallRenderer = overDoor.GetComponent<Renderer>();
         if (colorStyle == 1)
         {
             houseWallRenderer.material.SetTexture("_MainTex", houseWallTexture);
-            houseWallRenderer.material.SetTextureScale("_MainTex", new Vector2((to - from).magnitude / 4f, 0.3f));
-            houseWallRenderer.material.SetTextureOffset("_MainTex", new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
+            houseWallRenderer.material.SetTextureScale(
+                "_MainTex",
+                new Vector2((to - from).magnitude / 4f, 0.3f)
+            );
+            houseWallRenderer.material.SetTextureOffset(
+                "_MainTex",
+                new Vector2(UnityEngine.Random.value, UnityEngine.Random.value)
+            );
             houseWallRenderer.material.SetColor("_Color", Color.white * colorDarkening);
         }
         else
             houseWallRenderer.material.SetColor("_Color", Color.white * colorDarkening);
 
-        overDoor.transform.localPosition = (from + to + towardsIn * houseWallThickness + 22f * Vector3.up * houseWallHeight / 12f) / 2f;
+        overDoor.transform.localPosition =
+            (from + to + towardsIn * houseWallThickness + 22f * Vector3.up * houseWallHeight / 12f)
+            / 2f;
         overDoor.transform.Rotate(Vector3.up, Vector3.SignedAngle(dir, Vector3.right, Vector3.up));
 
         //draw the door
         GameObject doorObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
         doorObject.transform.SetParent(model.transform, false);
-        doorObject.transform.localScale = new Vector3((to - from).magnitude, 5f * houseWallHeight / 6, houseWallThickness * 0.25f);
-        doorObject.transform.localPosition = (from + to + towardsIn * houseWallThickness * 0.5f + 10f * Vector3.up * houseWallHeight / 12f) / 2f;
-        doorObject.transform.Rotate(Vector3.up, Vector3.SignedAngle(dir, Vector3.right, Vector3.up));
+        doorObject.transform.localScale = new Vector3(
+            (to - from).magnitude,
+            5f * houseWallHeight / 6,
+            houseWallThickness * 0.25f
+        );
+        doorObject.transform.localPosition =
+            (
+                from
+                + to
+                + towardsIn * houseWallThickness * 0.5f
+                + 10f * Vector3.up * houseWallHeight / 12f
+            ) / 2f;
+        doorObject.transform.Rotate(
+            Vector3.up,
+            Vector3.SignedAngle(dir, Vector3.right, Vector3.up)
+        );
         houseWallRenderer = doorObject.GetComponent<Renderer>();
-        houseWallRenderer.material.SetColor("_Color", new Color(0.3f, 0.22f, 0.05f) * UnityEngine.Random.value);
-        MakeElongatedCube(from + towardsIn * houseWallThickness * 0.25f, to + towardsIn * houseWallThickness * 0.25f, houseWallThickness * 0.4f);
-        MakeElongatedCube(from + Vector3.up * 5f * houseWallHeight / 6 + towardsIn * houseWallThickness * 0.25f, to + Vector3.up * 5f * houseWallHeight / 6 + towardsIn * houseWallThickness * 0.25f, houseWallThickness * 0.4f);
-        MakeElongatedCube(from + towardsIn * houseWallThickness * 0.25f, from + Vector3.up * 5f * houseWallHeight / 6 + towardsIn * houseWallThickness * 0.25f, houseWallThickness * 0.4f);
-        MakeElongatedCube(to + towardsIn * houseWallThickness * 0.25f, to + Vector3.up * 5f * houseWallHeight / 6 + towardsIn * houseWallThickness * 0.25f, houseWallThickness * 0.4f);
+        houseWallRenderer.material.SetColor(
+            "_Color",
+            new Color(0.3f, 0.22f, 0.05f) * UnityEngine.Random.value
+        );
+        MakeElongatedCube(
+            from + towardsIn * houseWallThickness * 0.25f,
+            to + towardsIn * houseWallThickness * 0.25f,
+            houseWallThickness * 0.4f
+        );
+        MakeElongatedCube(
+            from + Vector3.up * 5f * houseWallHeight / 6 + towardsIn * houseWallThickness * 0.25f,
+            to + Vector3.up * 5f * houseWallHeight / 6 + towardsIn * houseWallThickness * 0.25f,
+            houseWallThickness * 0.4f
+        );
+        MakeElongatedCube(
+            from + towardsIn * houseWallThickness * 0.25f,
+            from + Vector3.up * 5f * houseWallHeight / 6 + towardsIn * houseWallThickness * 0.25f,
+            houseWallThickness * 0.4f
+        );
+        MakeElongatedCube(
+            to + towardsIn * houseWallThickness * 0.25f,
+            to + Vector3.up * 5f * houseWallHeight / 6 + towardsIn * houseWallThickness * 0.25f,
+            houseWallThickness * 0.4f
+        );
         //put a few steps in front of the door
         BottomBuffer(from - towardsIn * 0.5f, from, to, to - towardsIn * 0.5f);
     }
@@ -578,37 +972,59 @@ public class PCHouse : PCBuilding
             OuterWall(from, from + dir * ((to - from).magnitude / 2 - 1 - outerWallThickness));
             float owh = outerWallHeight;
             outerWallHeight = houseWallHeight;
-            OuterWall(from + dir * ((to - from).magnitude / 2 - 1 - outerWallThickness), from + dir * ((to - from).magnitude / 2 - 1));
-            OuterWall(from + dir * ((to - from).magnitude / 2 + 1), from + dir * ((to - from).magnitude / 2 + 1 + outerWallThickness));
+            OuterWall(
+                from + dir * ((to - from).magnitude / 2 - 1 - outerWallThickness),
+                from + dir * ((to - from).magnitude / 2 - 1)
+            );
+            OuterWall(
+                from + dir * ((to - from).magnitude / 2 + 1),
+                from + dir * ((to - from).magnitude / 2 + 1 + outerWallThickness)
+            );
             outerWallHeight = owh;
             OuterWall(from + dir * ((to - from).magnitude / 2 + 1), to);
-            HouseWall(from + dir * ((to - from).magnitude / 2 - 1), from + dir * ((to - from).magnitude / 2 + 1));
+            HouseWall(
+                from + dir * ((to - from).magnitude / 2 - 1),
+                from + dir * ((to - from).magnitude / 2 + 1)
+            );
             return;
         }
 
         GameObject outerWall = GameObject.CreatePrimitive(PrimitiveType.Cube);
         outerWall.transform.SetParent(model.transform, false);
-        outerWall.transform.localScale = new Vector3((to - from).magnitude, outerWallHeight, outerWallThickness);
+        outerWall.transform.localScale = new Vector3(
+            (to - from).magnitude,
+            outerWallHeight,
+            outerWallThickness
+        );
         Vector3 towardsIn = Vector3.Cross(dir, Vector3.up);
-        outerWall.transform.localPosition = (from + to + towardsIn * outerWallThickness + Vector3.up * outerWallHeight) / 2f;
+        outerWall.transform.localPosition =
+            (from + to + towardsIn * outerWallThickness + Vector3.up * outerWallHeight) / 2f;
         outerWall.transform.Rotate(Vector3.up, Vector3.SignedAngle(dir, Vector3.right, Vector3.up));
 
         //adjustTexture
         Renderer houseWallRenderer = outerWall.GetComponent<Renderer>();
         houseWallRenderer.material.SetTexture("_MainTex", stoneWallTexture);
-        houseWallRenderer.material.SetTextureScale("_MainTex", new Vector2((to - from).magnitude / 5f, 1.25f));
-        houseWallRenderer.material.SetTextureOffset("_MainTex", new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
+        houseWallRenderer.material.SetTextureScale(
+            "_MainTex",
+            new Vector2((to - from).magnitude / 5f, 1.25f)
+        );
+        houseWallRenderer.material.SetTextureOffset(
+            "_MainTex",
+            new Vector2(UnityEngine.Random.value, UnityEngine.Random.value)
+        );
         houseWallRenderer.material.SetColor("_Color", Color.white * colorDarkening);
     }
 
     private void Roof(Vector3 bl, Vector3 br, Vector3 tr, Vector3 tl)
     {
-        //For determining number of accommodated 
+        //For determining number of accommodated
         GameObject cityBuilder = GameObject.Find("CityBuilder");
         ProceduralCityGenerator pcg = cityBuilder.GetComponent<ProceduralCityGenerator>();
         float accommodationRate = pcg.GetAccommodationRate();
-        if (accommodationRate > 1) accommodationRate = 1f;
-        if (accommodationRate < 0) accommodationRate = 0f;
+        if (accommodationRate > 1)
+            accommodationRate = 1f;
+        if (accommodationRate < 0)
+            accommodationRate = 0f;
 
         GameObject primitive = GameObject.CreatePrimitive(PrimitiveType.Plane);
         primitive.transform.SetParent(model.transform, true);
@@ -663,24 +1079,51 @@ public class PCHouse : PCBuilding
         int[] faces = new int[18];
         if (uEdge.magnitude > vEdge.magnitude)
         {
-            faces[0] = 0; faces[2] = 1; faces[1] = 8;
-            faces[3] = 1; faces[5] = 9; faces[4] = 8;
-            faces[6] = 2; faces[8] = 3; faces[7] = 10;
-            faces[9] = 4; faces[11] = 5; faces[10] = 11;
-            faces[12] = 5; faces[14] = 12; faces[13] = 11;
-            faces[15] = 6; faces[17] = 7; faces[16] = 13;
+            faces[0] = 0;
+            faces[2] = 1;
+            faces[1] = 8;
+            faces[3] = 1;
+            faces[5] = 9;
+            faces[4] = 8;
+            faces[6] = 2;
+            faces[8] = 3;
+            faces[7] = 10;
+            faces[9] = 4;
+            faces[11] = 5;
+            faces[10] = 11;
+            faces[12] = 5;
+            faces[14] = 12;
+            faces[13] = 11;
+            faces[15] = 6;
+            faces[17] = 7;
+            faces[16] = 13;
         }
         else
         {
-            faces[0] = 0; faces[2] = 1; faces[1] = 8;
-            faces[3] = 2; faces[5] = 3; faces[4] = 9;
-            faces[6] = 3; faces[8] = 10; faces[7] = 9;
-            faces[9] = 4; faces[11] = 5; faces[10] = 11;
-            faces[12] = 6; faces[14] = 7; faces[13] = 12;
-            faces[15] = 7; faces[17] = 13; faces[16] = 12;
+            faces[0] = 0;
+            faces[2] = 1;
+            faces[1] = 8;
+            faces[3] = 2;
+            faces[5] = 3;
+            faces[4] = 9;
+            faces[6] = 3;
+            faces[8] = 10;
+            faces[7] = 9;
+            faces[9] = 4;
+            faces[11] = 5;
+            faces[10] = 11;
+            faces[12] = 6;
+            faces[14] = 7;
+            faces[13] = 12;
+            faces[15] = 7;
+            faces[17] = 13;
+            faces[16] = 12;
         }
         m.triangles = faces;
-        Vector3 n1, n2, n3, n4;
+        Vector3 n1,
+            n2,
+            n3,
+            n4;
         n1 = -Vector3.Cross(vertices[1] - vertices[0], vertices[8] - vertices[0]);
         n2 = -Vector3.Cross(vertices[3] - vertices[2], vertices[10] - vertices[2]);
         n3 = -Vector3.Cross(vertices[5] - vertices[4], vertices[11] - vertices[4]);
@@ -729,14 +1172,38 @@ public class PCHouse : PCBuilding
 
         for (int i = 0; i < 14; i++)
         {
-            if ((uEdge.magnitude > vEdge.magnitude && (i == 0 || i == 1 || i == 8 || i == 9)) || (uEdge.magnitude <= vEdge.magnitude && (i == 0 || i == 1 || i == 8)))
-                texCoords[i] = new Vector2(vertices[i].x - vertices[0].x, vertices[i].z - vertices[0].z);
-            if ((uEdge.magnitude > vEdge.magnitude && (i == 4 || i == 5 || i == 11 || i == 12)) || (uEdge.magnitude <= vEdge.magnitude && (i == 4 || i == 5 || i == 11)))
-                texCoords[i] = new Vector2(vertices[5].x - vertices[i].x, vertices[5].z - vertices[i].z);
-            if ((uEdge.magnitude > vEdge.magnitude && (i == 2 || i == 3 || i == 10)) || (uEdge.magnitude <= vEdge.magnitude && (i == 2 || i == 3 || i == 9 || i == 10)))
-                texCoords[i] = new Vector2(vertices[5].z - vertices[i].z, vertices[5].x - vertices[i].x);
-            if ((uEdge.magnitude > vEdge.magnitude && (i == 6 || i == 7 || i == 13)) || (uEdge.magnitude <= vEdge.magnitude && (i == 6 || i == 7 || i == 12 || i == 13)))
-                texCoords[i] = new Vector2(vertices[i].z - vertices[0].z, vertices[i].x - vertices[0].x);
+            if (
+                (uEdge.magnitude > vEdge.magnitude && (i == 0 || i == 1 || i == 8 || i == 9))
+                || (uEdge.magnitude <= vEdge.magnitude && (i == 0 || i == 1 || i == 8))
+            )
+                texCoords[i] = new Vector2(
+                    vertices[i].x - vertices[0].x,
+                    vertices[i].z - vertices[0].z
+                );
+            if (
+                (uEdge.magnitude > vEdge.magnitude && (i == 4 || i == 5 || i == 11 || i == 12))
+                || (uEdge.magnitude <= vEdge.magnitude && (i == 4 || i == 5 || i == 11))
+            )
+                texCoords[i] = new Vector2(
+                    vertices[5].x - vertices[i].x,
+                    vertices[5].z - vertices[i].z
+                );
+            if (
+                (uEdge.magnitude > vEdge.magnitude && (i == 2 || i == 3 || i == 10))
+                || (uEdge.magnitude <= vEdge.magnitude && (i == 2 || i == 3 || i == 9 || i == 10))
+            )
+                texCoords[i] = new Vector2(
+                    vertices[5].z - vertices[i].z,
+                    vertices[5].x - vertices[i].x
+                );
+            if (
+                (uEdge.magnitude > vEdge.magnitude && (i == 6 || i == 7 || i == 13))
+                || (uEdge.magnitude <= vEdge.magnitude && (i == 6 || i == 7 || i == 12 || i == 13))
+            )
+                texCoords[i] = new Vector2(
+                    vertices[i].z - vertices[0].z,
+                    vertices[i].x - vertices[0].x
+                );
             texCoords[i] *= 0.5f;
         }
         m.uv = texCoords;
@@ -745,15 +1212,19 @@ public class PCHouse : PCBuilding
         Renderer houseWallRenderer = roof.GetComponent<Renderer>();
 
         houseWallRenderer.material.SetTexture("_MainTex", roofTexture);
-        houseWallRenderer.material.SetTextureOffset("_MainTex", new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
-        houseWallRenderer.material.SetColor("_Color", Color.white * UnityEngine.Random.Range(0.6f, 1));
-
+        houseWallRenderer.material.SetTextureOffset(
+            "_MainTex",
+            new Vector2(UnityEngine.Random.value, UnityEngine.Random.value)
+        );
+        houseWallRenderer.material.SetColor(
+            "_Color",
+            Color.white * UnityEngine.Random.Range(0.6f, 1)
+        );
 
         //for visualizing accomodation rate on roofs
         //houseWallRenderer.material.SetColor("_Color", new Color(1f - accommodationRate, 1f - accommodationRate, accommodationRate));
 
         roof.transform.SetParent(model.transform, false);
-
 
         GameObject underRoof = GameObject.CreatePrimitive(PrimitiveType.Cube);
 
@@ -761,11 +1232,18 @@ public class PCHouse : PCBuilding
         Renderer middleWallRenderer = underRoof.GetComponent<Renderer>();
         middleWallRenderer.material.SetTexture("_MainTex", houseWallTexture);
         middleWallRenderer.material.SetTextureScale("_MainTex", new Vector2(0.1f, 0.1f));
-        middleWallRenderer.material.SetTextureOffset("_MainTex", new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
+        middleWallRenderer.material.SetTextureOffset(
+            "_MainTex",
+            new Vector2(UnityEngine.Random.value, UnityEngine.Random.value)
+        );
         middleWallRenderer.material.SetColor("_Color", Color.black);
 
         underRoof.transform.SetParent(model.transform, false);
-        underRoof.transform.localScale = new Vector3(0.05f, (vertices[1] - vertices[0]).magnitude, (vertices[3] - vertices[1]).magnitude);
+        underRoof.transform.localScale = new Vector3(
+            0.05f,
+            (vertices[1] - vertices[0]).magnitude,
+            (vertices[3] - vertices[1]).magnitude
+        );
         underRoof.transform.localPosition = (bl + br + tr + tl) / 4f;
         underRoof.transform.Rotate(Vector3.forward, 90);
     }
@@ -781,21 +1259,35 @@ public class PCHouse : PCBuilding
 
     private void Roof2Helper(Vector3 obl, Vector3 obr, Vector3 otr, Vector3 otl)
     {
-        //For determining number of accommodated 
+        //For determining number of accommodated
         GameObject cityBuilder = GameObject.Find("CityBuilder");
         ProceduralCityGenerator pcg = cityBuilder.GetComponent<ProceduralCityGenerator>();
         float accommodationRate = pcg.GetAccommodationRate();
-        if (accommodationRate > 1) accommodationRate = 1f;
-        if (accommodationRate < 0) accommodationRate = 0f;
+        if (accommodationRate > 1)
+            accommodationRate = 1f;
+        if (accommodationRate < 0)
+            accommodationRate = 0f;
 
-        Vector3 bl = obl - 0.5f * (obr - obl) / (obr - obl).magnitude - 0.5f * (otl - obl) / (otl - obl).magnitude;
-        Vector3 br = obr + 0.5f * (obr - obl) / (obr - obl).magnitude - 0.5f * (otl - obl) / (otl - obl).magnitude;
-        Vector3 tr = otr + 0.5f * (obr - obl) / (obr - obl).magnitude + 0.5f * (otl - obl) / (otl - obl).magnitude;
-        Vector3 tl = otl - 0.5f * (obr - obl) / (obr - obl).magnitude + 0.5f * (otl - obl) / (otl - obl).magnitude;
+        Vector3 bl =
+            obl
+            - 0.5f * (obr - obl) / (obr - obl).magnitude
+            - 0.5f * (otl - obl) / (otl - obl).magnitude;
+        Vector3 br =
+            obr
+            + 0.5f * (obr - obl) / (obr - obl).magnitude
+            - 0.5f * (otl - obl) / (otl - obl).magnitude;
+        Vector3 tr =
+            otr
+            + 0.5f * (obr - obl) / (obr - obl).magnitude
+            + 0.5f * (otl - obl) / (otl - obl).magnitude;
+        Vector3 tl =
+            otl
+            - 0.5f * (obr - obl) / (obr - obl).magnitude
+            + 0.5f * (otl - obl) / (otl - obl).magnitude;
         GameObject roof = new GameObject("roof");
         roof.transform.SetParent(model.transform, false);
-        Vector3 uEdge = br - bl;//yatay / egik
-        Vector3 vEdge = tl - bl;//yukarı / duz kenar
+        Vector3 uEdge = br - bl; //yatay / egik
+        Vector3 vEdge = tl - bl; //yukarı / duz kenar
 
         Vector3 uDir = uEdge / uEdge.magnitude;
         Vector3 vDir = vEdge / vEdge.magnitude;
@@ -811,21 +1303,47 @@ public class PCHouse : PCBuilding
         roofLeft.name = "roof left";
         roofRight.name = "roof right";
 
-        roofLeft.transform.localScale = new Vector3(houseWallThickness * 0.25f, roofUEdgeLength, vEdge.magnitude);
-        roofRight.transform.localScale = new Vector3(houseWallThickness * 0.25f, roofUEdgeLength, vEdge.magnitude);
-
+        roofLeft.transform.localScale = new Vector3(
+            houseWallThickness * 0.25f,
+            roofUEdgeLength,
+            vEdge.magnitude
+        );
+        roofRight.transform.localScale = new Vector3(
+            houseWallThickness * 0.25f,
+            roofUEdgeLength,
+            vEdge.magnitude
+        );
 
         roofLeft.transform.Rotate(vDir, (roofAngle - Mathf.PI / 2f) * Mathf.Rad2Deg);
         roofRight.transform.Rotate(vDir, (Mathf.PI / 2f - roofAngle) * Mathf.Rad2Deg);
-        roofLeft.transform.Rotate(Vector3.up, Vector3.SignedAngle(vDir, Vector3.forward, Vector3.up));
-        roofRight.transform.Rotate(Vector3.up, Vector3.SignedAngle(vDir, Vector3.forward, Vector3.up));
-        roofLeft.transform.localPosition = bl + vEdge * 0.5f + uEdge * 0.25f + uDir * Mathf.Tan(roofAngle) * houseWallThickness * 0.125f + Vector3.up * (roofHeight - 0.25f * uEdge.magnitude * Mathf.Tan(roofAngle));
-        roofRight.transform.localPosition = bl + vEdge * 0.5f + uEdge * 0.75f - uDir * Mathf.Tan(roofAngle) * houseWallThickness * 0.125f + Vector3.up * (roofHeight - 0.25f * uEdge.magnitude * Mathf.Tan(roofAngle));
+        roofLeft.transform.Rotate(
+            Vector3.up,
+            Vector3.SignedAngle(vDir, Vector3.forward, Vector3.up)
+        );
+        roofRight.transform.Rotate(
+            Vector3.up,
+            Vector3.SignedAngle(vDir, Vector3.forward, Vector3.up)
+        );
+        roofLeft.transform.localPosition =
+            bl
+            + vEdge * 0.5f
+            + uEdge * 0.25f
+            + uDir * Mathf.Tan(roofAngle) * houseWallThickness * 0.125f
+            + Vector3.up * (roofHeight - 0.25f * uEdge.magnitude * Mathf.Tan(roofAngle));
+        roofRight.transform.localPosition =
+            bl
+            + vEdge * 0.5f
+            + uEdge * 0.75f
+            - uDir * Mathf.Tan(roofAngle) * houseWallThickness * 0.125f
+            + Vector3.up * (roofHeight - 0.25f * uEdge.magnitude * Mathf.Tan(roofAngle));
 
         float roofDarkening = UnityEngine.Random.Range(0.6f, 1.0f);
         Renderer roofLeftRenderer = roofLeft.GetComponent<Renderer>();
         roofLeftRenderer.material.SetTexture("_MainTex", roofTexture);
-        roofLeftRenderer.material.SetTextureScale("_MainTex", new Vector2(vEdge.magnitude, roofUEdgeLength));
+        roofLeftRenderer.material.SetTextureScale(
+            "_MainTex",
+            new Vector2(vEdge.magnitude, roofUEdgeLength)
+        );
         roofLeftRenderer.material.SetColor("_Color", Color.white * roofDarkening);
 
         //for visualizing accomodation rate on roofs
@@ -833,9 +1351,11 @@ public class PCHouse : PCBuilding
 
         roofLeftRenderer = roofRight.GetComponent<Renderer>();
         roofLeftRenderer.material.SetTexture("_MainTex", roofTexture);
-        roofLeftRenderer.material.SetTextureScale("_MainTex", new Vector2(vEdge.magnitude, roofUEdgeLength));
+        roofLeftRenderer.material.SetTextureScale(
+            "_MainTex",
+            new Vector2(vEdge.magnitude, roofUEdgeLength)
+        );
         roofLeftRenderer.material.SetColor("_Color", Color.white * roofDarkening);
-
 
         //for visualizing accomodation rate on roofs
         //roofLeftRenderer.material.SetColor("_Color", new Color(1f - accommodationRate, 1f - accommodationRate, accommodationRate));
@@ -866,8 +1386,12 @@ public class PCHouse : PCBuilding
         m.vertices = vertices;
 
         int[] faces = new int[6];
-        faces[0] = 0; faces[1] = 1; faces[2] = 2;
-        faces[3] = 3; faces[4] = 4; faces[5] = 5;
+        faces[0] = 0;
+        faces[1] = 1;
+        faces[2] = 2;
+        faces[3] = 3;
+        faces[4] = 4;
+        faces[5] = 5;
         m.triangles = faces;
 
         Vector3[] normals = new Vector3[vertices.Length];
@@ -894,7 +1418,10 @@ public class PCHouse : PCBuilding
         {
             houseWallRenderer.material.SetTexture("_MainTex", houseWallTexture);
             houseWallRenderer.material.SetTextureScale("_MainTex", new Vector2(0.25f, 1));
-            houseWallRenderer.material.SetTextureOffset("_MainTex", new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
+            houseWallRenderer.material.SetTextureOffset(
+                "_MainTex",
+                new Vector2(UnityEngine.Random.value, UnityEngine.Random.value)
+            );
             houseWallRenderer.material.SetColor("_Color", Color.white * colorDarkening);
         }
         else
@@ -903,9 +1430,5 @@ public class PCHouse : PCBuilding
         }
 
         roof.transform.SetParent(model.transform, false);
-
-
     }
-
-
 }

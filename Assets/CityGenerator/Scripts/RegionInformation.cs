@@ -2,7 +2,6 @@
 
 public class RegionInformation : MonoBehaviour
 {
-
     public float DistToCenter;
     public float Slope;
     public float WaterProximity;

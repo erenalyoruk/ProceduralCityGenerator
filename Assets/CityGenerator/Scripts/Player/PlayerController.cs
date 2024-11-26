@@ -3,8 +3,11 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [Header("Player Settings")]
-    [SerializeField] private float _speed = 4f;
-    [SerializeField] private float _sensitivity = 0.5f;
+    [SerializeField]
+    private float _speed = 4f;
+
+    [SerializeField]
+    private float _sensitivity = 0.5f;
 
     private PlayerInput _controls;
 

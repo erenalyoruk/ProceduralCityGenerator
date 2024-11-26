@@ -1,20 +1,30 @@
-﻿using UnityEngine;
+﻿using System;
 using System.Collections;
-using System;
+using UnityEngine;
 
 public class PCBedesten : PCBuilding
 {
-    float outerWallHeight, outerWallThickness, doorWidth, mainDoorWidth;
+    float outerWallHeight,
+        outerWallThickness,
+        doorWidth,
+        mainDoorWidth;
     Vector2 texOffset;
     GameObject anObject;
     private float windowWidth;
     Texture roofTexture;
 
-    public PCBedesten(Vector3 position, float size, float height, string buildingName) : base(buildingName)
-    {
-    }
+    public PCBedesten(Vector3 position, float size, float height, string buildingName)
+        : base(buildingName) { }
 
-    public PCBedesten(Vector3 position, float size, float height, string buildingName, Texture t, Texture roofTexture) : base(buildingName, t)
+    public PCBedesten(
+        Vector3 position,
+        float size,
+        float height,
+        string buildingName,
+        Texture t,
+        Texture roofTexture
+    )
+        : base(buildingName, t)
     {
         outerWallHeight = 5;
         outerWallThickness = 0.8f;
@@ -35,54 +45,138 @@ public class PCBedesten : PCBuilding
         //calculate necessary sizes and vectors
         float bedestenWidth = Mathf.Sqrt(size * size / ProceduralCityGenerator.GoldenRatio);
         float bedestenDepth = bedestenWidth * ProceduralCityGenerator.GoldenRatio;
-        Vector3 lowerLeft = -Vector3.right * bedestenWidth / 2 - Vector3.forward * bedestenDepth / 2;
-        Vector3 lowerRight = Vector3.right * bedestenWidth / 2 - Vector3.forward * bedestenDepth / 2;
-        Vector3 upperLeft = -Vector3.right * bedestenWidth / 2 + Vector3.forward * bedestenDepth / 2;
-        Vector3 upperRight = Vector3.right * bedestenWidth / 2 + Vector3.forward * bedestenDepth / 2;
+        Vector3 lowerLeft =
+            -Vector3.right * bedestenWidth / 2 - Vector3.forward * bedestenDepth / 2;
+        Vector3 lowerRight =
+            Vector3.right * bedestenWidth / 2 - Vector3.forward * bedestenDepth / 2;
+        Vector3 upperLeft =
+            -Vector3.right * bedestenWidth / 2 + Vector3.forward * bedestenDepth / 2;
+        Vector3 upperRight =
+            Vector3.right * bedestenWidth / 2 + Vector3.forward * bedestenDepth / 2;
 
         //build base
         HorizontalBuffer(lowerLeft, lowerRight, upperRight, upperLeft, 8);
-        HorizontalBuffer(lowerLeft - Vector3.right / 2 - Vector3.forward / 2 - Vector3.up / 4,
-                            lowerRight + Vector3.right / 2 - Vector3.forward / 2 - Vector3.up / 4,
-                            upperRight + Vector3.right / 2 + Vector3.forward / 2 - Vector3.up / 4,
-                            upperLeft - Vector3.right / 2 + Vector3.forward / 2 - Vector3.up / 4, 8);
-        HorizontalBuffer(lowerLeft - Vector3.right / 1 - Vector3.forward / 1 - Vector3.up / 2,
-                            lowerRight + Vector3.right / 1 - Vector3.forward / 1 - Vector3.up / 2,
-                            upperRight + Vector3.right / 1 + Vector3.forward / 1 - Vector3.up / 2,
-                            upperLeft - Vector3.right / 1 + Vector3.forward / 1 - Vector3.up / 2, 8);
+        HorizontalBuffer(
+            lowerLeft - Vector3.right / 2 - Vector3.forward / 2 - Vector3.up / 4,
+            lowerRight + Vector3.right / 2 - Vector3.forward / 2 - Vector3.up / 4,
+            upperRight + Vector3.right / 2 + Vector3.forward / 2 - Vector3.up / 4,
+            upperLeft - Vector3.right / 2 + Vector3.forward / 2 - Vector3.up / 4,
+            8
+        );
+        HorizontalBuffer(
+            lowerLeft - Vector3.right / 1 - Vector3.forward / 1 - Vector3.up / 2,
+            lowerRight + Vector3.right / 1 - Vector3.forward / 1 - Vector3.up / 2,
+            upperRight + Vector3.right / 1 + Vector3.forward / 1 - Vector3.up / 2,
+            upperLeft - Vector3.right / 1 + Vector3.forward / 1 - Vector3.up / 2,
+            8
+        );
 
         //build front wall including the main gate
         float spaceFront = 5;
-        Wall(lowerLeft + Vector3.right * 7 + Vector3.forward * spaceFront, lowerRight - Vector3.right * 7 + Vector3.forward * spaceFront, false, false, true);
+        Wall(
+            lowerLeft + Vector3.right * 7 + Vector3.forward * spaceFront,
+            lowerRight - Vector3.right * 7 + Vector3.forward * spaceFront,
+            false,
+            false,
+            true
+        );
         //build right part
-        Wall(lowerRight - Vector3.right * 7 + Vector3.forward * spaceFront, upperRight - Vector3.right * 7 - Vector3.forward * spaceFront);
-        ArcWall(lowerRight - Vector3.right * 4 + Vector3.forward * spaceFront, upperRight - Vector3.right * 4 - Vector3.forward * spaceFront, outerWallHeight, 0.5f, 2.5f, 3f);
+        Wall(
+            lowerRight - Vector3.right * 7 + Vector3.forward * spaceFront,
+            upperRight - Vector3.right * 7 - Vector3.forward * spaceFront
+        );
+        ArcWall(
+            lowerRight - Vector3.right * 4 + Vector3.forward * spaceFront,
+            upperRight - Vector3.right * 4 - Vector3.forward * spaceFront,
+            outerWallHeight,
+            0.5f,
+            2.5f,
+            3f
+        );
         //build left part
-        Wall(upperLeft + Vector3.right * 7 - Vector3.forward * spaceFront, lowerLeft + Vector3.right * 7 + Vector3.forward * spaceFront);
-        ArcWall(upperLeft + Vector3.right * 4 - Vector3.forward * spaceFront, lowerLeft + Vector3.right * 4 + Vector3.forward * spaceFront, outerWallHeight, 0.5f, 2.5f, 3f);
+        Wall(
+            upperLeft + Vector3.right * 7 - Vector3.forward * spaceFront,
+            lowerLeft + Vector3.right * 7 + Vector3.forward * spaceFront
+        );
+        ArcWall(
+            upperLeft + Vector3.right * 4 - Vector3.forward * spaceFront,
+            lowerLeft + Vector3.right * 4 + Vector3.forward * spaceFront,
+            outerWallHeight,
+            0.5f,
+            2.5f,
+            3f
+        );
         //build the opposite part
-        Wall(upperRight - Vector3.right * 7 - Vector3.forward * spaceFront, upperLeft + Vector3.right * 7 - Vector3.forward * spaceFront, false, false, true);
+        Wall(
+            upperRight - Vector3.right * 7 - Vector3.forward * spaceFront,
+            upperLeft + Vector3.right * 7 - Vector3.forward * spaceFront,
+            false,
+            false,
+            true
+        );
 
+        HorizontalBuffer(
+            lowerLeft
+                + Vector3.right * 4
+                + Vector3.forward * spaceFront
+                + Vector3.up * (outerWallHeight + 0.5f),
+            lowerLeft
+                + Vector3.right * 10
+                + Vector3.forward * spaceFront
+                + Vector3.up * (outerWallHeight + 0.5f),
+            upperLeft
+                + Vector3.right * 10
+                - Vector3.forward * spaceFront
+                + Vector3.up * (outerWallHeight + 0.5f),
+            upperLeft
+                + Vector3.right * 4
+                - Vector3.forward * spaceFront
+                + Vector3.up * (outerWallHeight + 0.5f),
+            0.5f
+        );
 
-        HorizontalBuffer(lowerLeft + Vector3.right * 4 + Vector3.forward * spaceFront + Vector3.up * (outerWallHeight + 0.5f),
-                         lowerLeft + Vector3.right * 10 + Vector3.forward * spaceFront + Vector3.up * (outerWallHeight + 0.5f),
-                         upperLeft + Vector3.right * 10 - Vector3.forward * spaceFront + Vector3.up * (outerWallHeight + 0.5f),
-                         upperLeft + Vector3.right * 4 - Vector3.forward * spaceFront + Vector3.up * (outerWallHeight + 0.5f), 0.5f);
-
-        HorizontalBuffer(lowerRight - Vector3.right * 10 + Vector3.forward * spaceFront + Vector3.up * (outerWallHeight + 0.5f),
-                         lowerRight - Vector3.right * 4 + Vector3.forward * spaceFront + Vector3.up * (outerWallHeight + 0.5f),
-                         upperRight - Vector3.right * 4 - Vector3.forward * spaceFront + Vector3.up * (outerWallHeight + 0.5f),
-                         upperRight - Vector3.right * 10 - Vector3.forward * spaceFront + Vector3.up * (outerWallHeight + 0.5f), 0.5f);
+        HorizontalBuffer(
+            lowerRight
+                - Vector3.right * 10
+                + Vector3.forward * spaceFront
+                + Vector3.up * (outerWallHeight + 0.5f),
+            lowerRight
+                - Vector3.right * 4
+                + Vector3.forward * spaceFront
+                + Vector3.up * (outerWallHeight + 0.5f),
+            upperRight
+                - Vector3.right * 4
+                - Vector3.forward * spaceFront
+                + Vector3.up * (outerWallHeight + 0.5f),
+            upperRight
+                - Vector3.right * 10
+                - Vector3.forward * spaceFront
+                + Vector3.up * (outerWallHeight + 0.5f),
+            0.5f
+        );
 
         float t = outerWallThickness;
 
         //make roof
-        Roof(lowerLeft + Vector3.right * 10 + Vector3.forward * (spaceFront + 3) + Vector3.up * (outerWallHeight + 0.5f),
-            lowerRight - Vector3.right * 10 + Vector3.forward * (spaceFront + 3) + Vector3.up * (outerWallHeight + 0.5f),
-            upperRight - Vector3.right * 10 - Vector3.forward * (spaceFront + 3) + Vector3.up * (outerWallHeight + 0.5f),
-            upperLeft + Vector3.right * 10 - Vector3.forward * (spaceFront + 3) + Vector3.up * (outerWallHeight + 0.5f));
+        Roof(
+            lowerLeft
+                + Vector3.right * 10
+                + Vector3.forward * (spaceFront + 3)
+                + Vector3.up * (outerWallHeight + 0.5f),
+            lowerRight
+                - Vector3.right * 10
+                + Vector3.forward * (spaceFront + 3)
+                + Vector3.up * (outerWallHeight + 0.5f),
+            upperRight
+                - Vector3.right * 10
+                - Vector3.forward * (spaceFront + 3)
+                + Vector3.up * (outerWallHeight + 0.5f),
+            upperLeft
+                + Vector3.right * 10
+                - Vector3.forward * (spaceFront + 3)
+                + Vector3.up * (outerWallHeight + 0.5f)
+        );
     }
-
 
     private void Roof(Vector3 bl, Vector3 br, Vector3 tr, Vector3 tl)
     {
@@ -139,24 +233,51 @@ public class PCBedesten : PCBuilding
         int[] faces = new int[18];
         if (uEdge.magnitude > vEdge.magnitude)
         {
-            faces[0] = 0; faces[2] = 1; faces[1] = 8;
-            faces[3] = 1; faces[5] = 9; faces[4] = 8;
-            faces[6] = 2; faces[8] = 3; faces[7] = 10;
-            faces[9] = 4; faces[11] = 5; faces[10] = 11;
-            faces[12] = 5; faces[14] = 12; faces[13] = 11;
-            faces[15] = 6; faces[17] = 7; faces[16] = 13;
+            faces[0] = 0;
+            faces[2] = 1;
+            faces[1] = 8;
+            faces[3] = 1;
+            faces[5] = 9;
+            faces[4] = 8;
+            faces[6] = 2;
+            faces[8] = 3;
+            faces[7] = 10;
+            faces[9] = 4;
+            faces[11] = 5;
+            faces[10] = 11;
+            faces[12] = 5;
+            faces[14] = 12;
+            faces[13] = 11;
+            faces[15] = 6;
+            faces[17] = 7;
+            faces[16] = 13;
         }
         else
         {
-            faces[0] = 0; faces[2] = 1; faces[1] = 8;
-            faces[3] = 2; faces[5] = 3; faces[4] = 9;
-            faces[6] = 3; faces[8] = 10; faces[7] = 9;
-            faces[9] = 4; faces[11] = 5; faces[10] = 11;
-            faces[12] = 6; faces[14] = 7; faces[13] = 12;
-            faces[15] = 7; faces[17] = 13; faces[16] = 12;
+            faces[0] = 0;
+            faces[2] = 1;
+            faces[1] = 8;
+            faces[3] = 2;
+            faces[5] = 3;
+            faces[4] = 9;
+            faces[6] = 3;
+            faces[8] = 10;
+            faces[7] = 9;
+            faces[9] = 4;
+            faces[11] = 5;
+            faces[10] = 11;
+            faces[12] = 6;
+            faces[14] = 7;
+            faces[13] = 12;
+            faces[15] = 7;
+            faces[17] = 13;
+            faces[16] = 12;
         }
         m.triangles = faces;
-        Vector3 n1, n2, n3, n4;
+        Vector3 n1,
+            n2,
+            n3,
+            n4;
         n1 = Vector3.Cross(vertices[1] - vertices[0], vertices[8] - vertices[0]);
         n2 = Vector3.Cross(vertices[3] - vertices[2], vertices[10] - vertices[2]);
         n3 = Vector3.Cross(vertices[5] - vertices[4], vertices[11] - vertices[4]);
@@ -205,14 +326,38 @@ public class PCBedesten : PCBuilding
 
         for (int i = 0; i < 14; i++)
         {
-            if ((uEdge.magnitude > vEdge.magnitude && (i == 0 || i == 1 || i == 8 || i == 9)) || (uEdge.magnitude <= vEdge.magnitude && (i == 0 || i == 1 || i == 8)))
-                texCoords[i] = new Vector2(vertices[i].x - vertices[0].x, vertices[i].z - vertices[0].z);
-            if ((uEdge.magnitude > vEdge.magnitude && (i == 4 || i == 5 || i == 11 || i == 12)) || (uEdge.magnitude <= vEdge.magnitude && (i == 4 || i == 5 || i == 11)))
-                texCoords[i] = new Vector2(vertices[5].x - vertices[i].x, vertices[5].z - vertices[i].z);
-            if ((uEdge.magnitude > vEdge.magnitude && (i == 2 || i == 3 || i == 10)) || (uEdge.magnitude <= vEdge.magnitude && (i == 2 || i == 3 || i == 9 || i == 10)))
-                texCoords[i] = new Vector2(vertices[5].z - vertices[i].z, vertices[5].x - vertices[i].x);
-            if ((uEdge.magnitude > vEdge.magnitude && (i == 6 || i == 7 || i == 13)) || (uEdge.magnitude <= vEdge.magnitude && (i == 6 || i == 7 || i == 12 || i == 13)))
-                texCoords[i] = new Vector2(vertices[i].z - vertices[0].z, vertices[i].x - vertices[0].x);
+            if (
+                (uEdge.magnitude > vEdge.magnitude && (i == 0 || i == 1 || i == 8 || i == 9))
+                || (uEdge.magnitude <= vEdge.magnitude && (i == 0 || i == 1 || i == 8))
+            )
+                texCoords[i] = new Vector2(
+                    vertices[i].x - vertices[0].x,
+                    vertices[i].z - vertices[0].z
+                );
+            if (
+                (uEdge.magnitude > vEdge.magnitude && (i == 4 || i == 5 || i == 11 || i == 12))
+                || (uEdge.magnitude <= vEdge.magnitude && (i == 4 || i == 5 || i == 11))
+            )
+                texCoords[i] = new Vector2(
+                    vertices[5].x - vertices[i].x,
+                    vertices[5].z - vertices[i].z
+                );
+            if (
+                (uEdge.magnitude > vEdge.magnitude && (i == 2 || i == 3 || i == 10))
+                || (uEdge.magnitude <= vEdge.magnitude && (i == 2 || i == 3 || i == 9 || i == 10))
+            )
+                texCoords[i] = new Vector2(
+                    vertices[5].z - vertices[i].z,
+                    vertices[5].x - vertices[i].x
+                );
+            if (
+                (uEdge.magnitude > vEdge.magnitude && (i == 6 || i == 7 || i == 13))
+                || (uEdge.magnitude <= vEdge.magnitude && (i == 6 || i == 7 || i == 12 || i == 13))
+            )
+                texCoords[i] = new Vector2(
+                    vertices[i].z - vertices[0].z,
+                    vertices[i].x - vertices[0].x
+                );
             texCoords[i] *= 0.5f;
         }
         m.uv = texCoords;
@@ -221,11 +366,16 @@ public class PCBedesten : PCBuilding
         Renderer houseWallRenderer = roof.GetComponent<Renderer>();
         houseWallRenderer.material.SetTexture("_MainTex", roofTexture);
         //houseWallRenderer.material.SetTextureScale("_MainTex", new Vector2((to - from).magnitude / 4f, 0.3f));
-        houseWallRenderer.material.SetTextureOffset("_MainTex", new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
-        houseWallRenderer.material.SetColor("_Color", Color.white * UnityEngine.Random.Range(0.6f, 1));
+        houseWallRenderer.material.SetTextureOffset(
+            "_MainTex",
+            new Vector2(UnityEngine.Random.value, UnityEngine.Random.value)
+        );
+        houseWallRenderer.material.SetColor(
+            "_Color",
+            Color.white * UnityEngine.Random.Range(0.6f, 1)
+        );
 
         roof.transform.SetParent(model.transform, false);
-
 
         GameObject underRoof = GameObject.CreatePrimitive(PrimitiveType.Cube);
 
@@ -233,15 +383,21 @@ public class PCBedesten : PCBuilding
         Renderer middleWallRenderer = underRoof.GetComponent<Renderer>();
         middleWallRenderer.material.SetTexture("_MainTex", texture);
         middleWallRenderer.material.SetTextureScale("_MainTex", new Vector2(0.1f, 0.1f));
-        middleWallRenderer.material.SetTextureOffset("_MainTex", new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
+        middleWallRenderer.material.SetTextureOffset(
+            "_MainTex",
+            new Vector2(UnityEngine.Random.value, UnityEngine.Random.value)
+        );
         middleWallRenderer.material.SetColor("_Color", Color.black);
 
         underRoof.transform.SetParent(model.transform, false);
-        underRoof.transform.localScale = new Vector3(0.05f, (vertices[1] - vertices[0]).magnitude, (vertices[3] - vertices[1]).magnitude);
+        underRoof.transform.localScale = new Vector3(
+            0.05f,
+            (vertices[1] - vertices[0]).magnitude,
+            (vertices[3] - vertices[1]).magnitude
+        );
         underRoof.transform.localPosition = (bl + br + tr + tl) / 4f;
         underRoof.transform.Rotate(Vector3.forward, 90);
     }
-
 
     private void InnerWall(Vector3 from, Vector3 to)
     {
@@ -253,8 +409,17 @@ public class PCBedesten : PCBuilding
 
         for (int i = 0; i < numRooms; i++)
         {
-            Wall(from + i * (to - from) / numRooms, from + (i + 0.5f) * (to - from) / numRooms, false, true);
-            Wall(from + (i + 0.5f) * (to - from) / numRooms, from + (i + 1f) * (to - from) / numRooms, true);
+            Wall(
+                from + i * (to - from) / numRooms,
+                from + (i + 0.5f) * (to - from) / numRooms,
+                false,
+                true
+            );
+            Wall(
+                from + (i + 0.5f) * (to - from) / numRooms,
+                from + (i + 1f) * (to - from) / numRooms,
+                true
+            );
         }
     }
 
@@ -270,12 +435,22 @@ public class PCBedesten : PCBuilding
         bottomWallRenderer.material.SetColor("_Color", Color.white * 0.6f);
 
         bottomWall.transform.SetParent(model.transform, false);
-        bottomWall.transform.localScale = new Vector3((br - bl).magnitude, thickness, (tr - br).magnitude);
-        bottomWall.transform.localPosition = (bl + br + tr + tl) / 4f + new Vector3(0, -thickness / 2, 0);
+        bottomWall.transform.localScale = new Vector3(
+            (br - bl).magnitude,
+            thickness,
+            (tr - br).magnitude
+        );
+        bottomWall.transform.localPosition =
+            (bl + br + tr + tl) / 4f + new Vector3(0, -thickness / 2, 0);
     }
 
-
-    private void Wall(Vector3 from, Vector3 to, bool door = false, bool windows = false, bool mainDoor = false)
+    private void Wall(
+        Vector3 from,
+        Vector3 to,
+        bool door = false,
+        bool windows = false,
+        bool mainDoor = false
+    )
     {
         Vector3 dir = to - from;
         dir.Normalize();
@@ -288,13 +463,24 @@ public class PCBedesten : PCBuilding
             //adjustTexture
             Renderer houseWallRenderer = wall.GetComponent<Renderer>();
             houseWallRenderer.material.SetTexture("_MainTex", texture);
-            houseWallRenderer.material.SetTextureScale("_MainTex", new Vector2((to - from).magnitude / 4f, outerWallHeight));
-            houseWallRenderer.material.SetTextureOffset("_MainTex", new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
+            houseWallRenderer.material.SetTextureScale(
+                "_MainTex",
+                new Vector2((to - from).magnitude / 4f, outerWallHeight)
+            );
+            houseWallRenderer.material.SetTextureOffset(
+                "_MainTex",
+                new Vector2(UnityEngine.Random.value, UnityEngine.Random.value)
+            );
             //houseWallRenderer.material.SetColor("_Color", Color.white * colorDarkening);
 
             wall.transform.SetParent(model.transform, false);
-            wall.transform.localScale = new Vector3((to - from).magnitude, outerWallHeight, outerWallThickness);
-            wall.transform.localPosition = (from + to + towardsIn * outerWallThickness + Vector3.up * outerWallHeight) / 2f;
+            wall.transform.localScale = new Vector3(
+                (to - from).magnitude,
+                outerWallHeight,
+                outerWallThickness
+            );
+            wall.transform.localPosition =
+                (from + to + towardsIn * outerWallThickness + Vector3.up * outerWallHeight) / 2f;
             wall.transform.Rotate(Vector3.up, Vector3.SignedAngle(dir, Vector3.right, Vector3.up));
         }
         else if (mainDoor)
@@ -307,7 +493,10 @@ public class PCBedesten : PCBuilding
             else
             {
                 //make a centered door
-                MainDoor((from + to - dir * mainDoorWidth) / 2, (from + to + dir * mainDoorWidth) / 2);
+                MainDoor(
+                    (from + to - dir * mainDoorWidth) / 2,
+                    (from + to + dir * mainDoorWidth) / 2
+                );
                 Wall(from, (from + to - dir * mainDoorWidth) / 2, false, windows);
                 Wall((from + to + dir * mainDoorWidth) / 2, to, false, windows);
             }
@@ -331,7 +520,10 @@ public class PCBedesten : PCBuilding
         {
             float sideLength = (to - from).magnitude;
             // how many windows fits
-            int windowsCount = Mathf.RoundToInt((sideLength - outerWallThickness * 2) / (2 * windowWidth * ProceduralCityGenerator.GoldenRatio));
+            int windowsCount = Mathf.RoundToInt(
+                (sideLength - outerWallThickness * 2)
+                    / (2 * windowWidth * ProceduralCityGenerator.GoldenRatio)
+            );
             //evenly distribute windows like -w-w-w-
             float intervalLength = (sideLength - windowsCount * windowWidth) / (windowsCount + 1f);
             Wall(from, from + dir * intervalLength);
@@ -342,7 +534,6 @@ public class PCBedesten : PCBuilding
                 windowFrom += dir * (windowWidth + intervalLength);
                 Wall(windowFrom - dir * intervalLength, windowFrom);
             }
-
         }
     }
 
@@ -350,35 +541,63 @@ public class PCBedesten : PCBuilding
     {
         GameObject underWindow = GameObject.CreatePrimitive(PrimitiveType.Cube);
         underWindow.transform.SetParent(model.transform, false);
-        underWindow.transform.localScale = new Vector3((to - from).magnitude, outerWallHeight / 3, outerWallThickness);
+        underWindow.transform.localScale = new Vector3(
+            (to - from).magnitude,
+            outerWallHeight / 3,
+            outerWallThickness
+        );
 
         //adjustTexture
         Renderer houseWallRenderer = underWindow.GetComponent<Renderer>();
         houseWallRenderer.material.SetTexture("_MainTex", texture);
-        houseWallRenderer.material.SetTextureScale("_MainTex", new Vector2((to - from).magnitude / 4f, 0.6f));
-        houseWallRenderer.material.SetTextureOffset("_MainTex", new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
+        houseWallRenderer.material.SetTextureScale(
+            "_MainTex",
+            new Vector2((to - from).magnitude / 4f, 0.6f)
+        );
+        houseWallRenderer.material.SetTextureOffset(
+            "_MainTex",
+            new Vector2(UnityEngine.Random.value, UnityEngine.Random.value)
+        );
         //houseWallRenderer.material.SetColor("_Color", Color.white * colorDarkening);
 
         Vector3 dir = to - from;
         dir.Normalize();
         Vector3 towardsIn = Vector3.Cross(dir, Vector3.up);
-        underWindow.transform.localPosition = (from + to + towardsIn * outerWallThickness + Vector3.up * outerWallHeight / 3f) / 2f;
-        underWindow.transform.Rotate(Vector3.up, Vector3.SignedAngle(dir, Vector3.right, Vector3.up));
-
+        underWindow.transform.localPosition =
+            (from + to + towardsIn * outerWallThickness + Vector3.up * outerWallHeight / 3f) / 2f;
+        underWindow.transform.Rotate(
+            Vector3.up,
+            Vector3.SignedAngle(dir, Vector3.right, Vector3.up)
+        );
 
         GameObject overWindow = GameObject.CreatePrimitive(PrimitiveType.Cube);
         overWindow.transform.SetParent(model.transform, false);
-        overWindow.transform.localScale = new Vector3((to - from).magnitude, outerWallHeight / 3, outerWallThickness);
+        overWindow.transform.localScale = new Vector3(
+            (to - from).magnitude,
+            outerWallHeight / 3,
+            outerWallThickness
+        );
 
         //adjustTexture
         houseWallRenderer = overWindow.GetComponent<Renderer>();
         houseWallRenderer.material.SetTexture("_MainTex", texture);
-        houseWallRenderer.material.SetTextureScale("_MainTex", new Vector2((to - from).magnitude / 4f, 0.6f));
-        houseWallRenderer.material.SetTextureOffset("_MainTex", new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
+        houseWallRenderer.material.SetTextureScale(
+            "_MainTex",
+            new Vector2((to - from).magnitude / 4f, 0.6f)
+        );
+        houseWallRenderer.material.SetTextureOffset(
+            "_MainTex",
+            new Vector2(UnityEngine.Random.value, UnityEngine.Random.value)
+        );
         //houseWallRenderer.material.SetColor("_Color", Color.white * colorDarkening);
 
-        overWindow.transform.localPosition = (from + to + towardsIn * outerWallThickness + 10f * Vector3.up * outerWallHeight / 6f) / 2f;
-        overWindow.transform.Rotate(Vector3.up, Vector3.SignedAngle(dir, Vector3.right, Vector3.up));
+        overWindow.transform.localPosition =
+            (from + to + towardsIn * outerWallThickness + 10f * Vector3.up * outerWallHeight / 6f)
+            / 2f;
+        overWindow.transform.Rotate(
+            Vector3.up,
+            Vector3.SignedAngle(dir, Vector3.right, Vector3.up)
+        );
 
         //make inner window
         Vector3 WindowCornersUpperLeft = from;
@@ -393,10 +612,26 @@ public class PCBedesten : PCBuilding
         MakeElongatedCube(WindowCornersUpperLeft, WindowCornersUpperRight, 0.15f);
         MakeElongatedCube(WindowCornersUpperLeft, WindowCornersLowerLeft, 0.15f);
         MakeElongatedCube(WindowCornersUpperRight, WindowCornersLowerRight, 0.15f);*/
-        MakeElongatedCube((2 * WindowCornersUpperRight + WindowCornersUpperLeft) / 3, (2 * WindowCornersLowerRight + WindowCornersLowerLeft) / 3, 0.05f);
-        MakeElongatedCube((WindowCornersUpperRight + 2 * WindowCornersUpperLeft) / 3, (WindowCornersLowerRight + 2 * WindowCornersLowerLeft) / 3, 0.05f);
-        MakeElongatedCube(WindowCornersLowerLeft / 3f + WindowCornersUpperLeft * 2f / 3, WindowCornersLowerRight / 3f + WindowCornersUpperRight * 2f / 3f, 0.05f);
-        MakeElongatedCube(WindowCornersLowerLeft * 2f / 3f + WindowCornersUpperLeft / 3f, WindowCornersLowerRight * 2f / 3f + WindowCornersUpperRight / 3f, 0.05f);
+        MakeElongatedCube(
+            (2 * WindowCornersUpperRight + WindowCornersUpperLeft) / 3,
+            (2 * WindowCornersLowerRight + WindowCornersLowerLeft) / 3,
+            0.05f
+        );
+        MakeElongatedCube(
+            (WindowCornersUpperRight + 2 * WindowCornersUpperLeft) / 3,
+            (WindowCornersLowerRight + 2 * WindowCornersLowerLeft) / 3,
+            0.05f
+        );
+        MakeElongatedCube(
+            WindowCornersLowerLeft / 3f + WindowCornersUpperLeft * 2f / 3,
+            WindowCornersLowerRight / 3f + WindowCornersUpperRight * 2f / 3f,
+            0.05f
+        );
+        MakeElongatedCube(
+            WindowCornersLowerLeft * 2f / 3f + WindowCornersUpperLeft / 3f,
+            WindowCornersLowerRight * 2f / 3f + WindowCornersUpperRight / 3f,
+            0.05f
+        );
     }
 
     private void MakeElongatedCube(Vector3 from, Vector3 to, float width)
@@ -406,8 +641,14 @@ public class PCBedesten : PCBuilding
         //adjustTexture
         Renderer houseWallRenderer = cube.GetComponent<Renderer>();
         houseWallRenderer.material.SetTexture("_MainTex", texture);
-        houseWallRenderer.material.SetTextureScale("_MainTex", new Vector2((to - from).magnitude / 4f, 1));
-        houseWallRenderer.material.SetTextureOffset("_MainTex", new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
+        houseWallRenderer.material.SetTextureScale(
+            "_MainTex",
+            new Vector2((to - from).magnitude / 4f, 1)
+        );
+        houseWallRenderer.material.SetTextureOffset(
+            "_MainTex",
+            new Vector2(UnityEngine.Random.value, UnityEngine.Random.value)
+        );
         houseWallRenderer.material.SetColor("_Color", Color.white * 0.5f);
 
         cube.transform.SetParent(model.transform, false);
@@ -415,11 +656,20 @@ public class PCBedesten : PCBuilding
         cube.transform.localPosition = (from + to) / 2f;
         Vector3 dir = to - from;
         dir.Normalize();
-        cube.transform.Rotate(Vector3.Cross(Vector3.right, dir), Vector3.SignedAngle(Vector3.right, dir, Vector3.Cross(Vector3.right, dir)));
-
+        cube.transform.Rotate(
+            Vector3.Cross(Vector3.right, dir),
+            Vector3.SignedAngle(Vector3.right, dir, Vector3.Cross(Vector3.right, dir))
+        );
     }
 
-    private void ArcWall(Vector3 from, Vector3 to2, float height, float thickness, float columnHeight, float depth)
+    private void ArcWall(
+        Vector3 from,
+        Vector3 to2,
+        float height,
+        float thickness,
+        float columnHeight,
+        float depth
+    )
     {
         Vector3 dir = to2 - from;
         dir.Normalize();
@@ -436,20 +686,35 @@ public class PCBedesten : PCBuilding
         for (int i = 0; i <= numUnits; i++)
         {
             if (i < numUnits)
-                ArcWallUnit(from + i * (to - from) / numUnits, from + (i + 1) * (to - from) / numUnits, height, thickness, columnHeight);
-            Wall(from + i * (to - from) / numUnits, from + i * (to - from) / numUnits + towardsIn * 3);
+                ArcWallUnit(
+                    from + i * (to - from) / numUnits,
+                    from + (i + 1) * (to - from) / numUnits,
+                    height,
+                    thickness,
+                    columnHeight
+                );
+            Wall(
+                from + i * (to - from) / numUnits,
+                from + i * (to - from) / numUnits + towardsIn * 3
+            );
         }
         outerWallThickness = wallt;
     }
 
-
-
-    private void ArcWallUnit(Vector3 from, Vector3 to, float height, float thickness, float columnHeight)
+    private void ArcWallUnit(
+        Vector3 from,
+        Vector3 to,
+        float height,
+        float thickness,
+        float columnHeight
+    )
     {
         Vector3 dir = to - from;
         dir.Normalize();
         Vector3 towardsIn = Vector3.Cross(dir, Vector3.up);
-        float arcRadius = Mathf.Sqrt(Mathf.Pow(((to - from).magnitude - thickness) / 2, 2) + Mathf.Pow(columnHeight / 2, 2));
+        float arcRadius = Mathf.Sqrt(
+            Mathf.Pow(((to - from).magnitude - thickness) / 2, 2) + Mathf.Pow(columnHeight / 2, 2)
+        );
 
         GameObject primitive = GameObject.CreatePrimitive(PrimitiveType.Plane);
         primitive.transform.SetParent(model.transform, true);
@@ -460,7 +725,6 @@ public class PCBedesten : PCBuilding
         arcWall.AddComponent<MeshFilter>();
         arcWall.AddComponent<MeshRenderer>();
         arcWall.GetComponent<Renderer>().sharedMaterial = diffuse;
-
 
         //make the front face
         Mesh m = arcWall.GetComponent<MeshFilter>().mesh;
@@ -486,7 +750,10 @@ public class PCBedesten : PCBuilding
 
         for (int i = 1; i <= arcSamples; i++)
         {
-            vertices[3 + i] = arcCenter + dir * Mathf.Cos(startAngle + i * angleStep) * arcRadius + Vector3.up * Mathf.Sin(startAngle + i * angleStep) * arcRadius;
+            vertices[3 + i] =
+                arcCenter
+                + dir * Mathf.Cos(startAngle + i * angleStep) * arcRadius
+                + Vector3.up * Mathf.Sin(startAngle + i * angleStep) * arcRadius;
         }
 
         for (int i = 0; i < 8 + arcSamples; i++)
@@ -620,7 +887,16 @@ public class PCBedesten : PCBuilding
         additional = 0;
         for (int i = 0; i < 15 + arcSamples; i++)
         {
-            if (i == 1 || i == 3 || i == 5 || i == arcSamples + 7 || i == arcSamples + 7 || i == arcSamples + 9 || i == arcSamples + 11 || i == arcSamples + 13)
+            if (
+                i == 1
+                || i == 3
+                || i == 5
+                || i == arcSamples + 7
+                || i == arcSamples + 7
+                || i == arcSamples + 9
+                || i == arcSamples + 11
+                || i == arcSamples + 13
+            )
             {
                 additional++;
                 continue;
@@ -641,12 +917,17 @@ public class PCBedesten : PCBuilding
         //adjustTexture
         Renderer houseWallRenderer = arcWall.GetComponent<Renderer>();
         houseWallRenderer.material.SetTexture("_MainTex", texture);
-        houseWallRenderer.material.SetTextureScale("_MainTex", new Vector2((to - from).magnitude / 4f, 3f));
-        houseWallRenderer.material.SetTextureOffset("_MainTex", new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
+        houseWallRenderer.material.SetTextureScale(
+            "_MainTex",
+            new Vector2((to - from).magnitude / 4f, 3f)
+        );
+        houseWallRenderer.material.SetTextureOffset(
+            "_MainTex",
+            new Vector2(UnityEngine.Random.value, UnityEngine.Random.value)
+        );
         //houseWallRenderer.material.SetColor("_Color", Color.white * UnityEngine.Random.Range(0.6f, 1));
 
         arcWall.transform.SetParent(model.transform, false);
-
     }
 
     private void MainDoor(Vector3 from, Vector3 to)
@@ -657,14 +938,20 @@ public class PCBedesten : PCBuilding
 
         Wall(from + towardsIn * 3, from - towardsIn * 1);
         Wall(to - towardsIn, to + towardsIn * 3);
-        HorizontalBuffer(from + towardsIn * 3.2f + Vector3.up * (outerWallHeight + 0.5f) - dir * 0.2f,
-                        from - towardsIn * 1.2f + Vector3.up * (outerWallHeight + 0.5f) - dir * 0.2f,
-                        to - towardsIn * 1.2f + Vector3.up * (outerWallHeight + 0.5f) + dir * 0.2f,
-                        to + towardsIn * 3.2f + Vector3.up * (outerWallHeight + 0.5f) + dir * 0.2f, 1);
+        HorizontalBuffer(
+            from + towardsIn * 3.2f + Vector3.up * (outerWallHeight + 0.5f) - dir * 0.2f,
+            from - towardsIn * 1.2f + Vector3.up * (outerWallHeight + 0.5f) - dir * 0.2f,
+            to - towardsIn * 1.2f + Vector3.up * (outerWallHeight + 0.5f) + dir * 0.2f,
+            to + towardsIn * 3.2f + Vector3.up * (outerWallHeight + 0.5f) + dir * 0.2f,
+            1
+        );
         ArcWallUnit(from + dir * outerWallThickness, to - dir * outerWallThickness, 3, 0.5f, 2);
-        OverTheDoor(from + dir * outerWallThickness + Vector3.up * 3,
-            to - dir * outerWallThickness + Vector3.up * 3, 2, outerWallHeight - 3);
-
+        OverTheDoor(
+            from + dir * outerWallThickness + Vector3.up * 3,
+            to - dir * outerWallThickness + Vector3.up * 3,
+            2,
+            outerWallHeight - 3
+        );
     }
 
     private void OverTheDoor(Vector3 from, Vector3 to, int depth, float height)
@@ -719,8 +1006,12 @@ public class PCBedesten : PCBuilding
         texCoords[voffset + 1] = new Vector2(depth / height, 0);
         texCoords[voffset + 2] = new Vector2(0, 1);
         texCoords[voffset + 3] = new Vector2(depth / height, 1);
-        faces[fc++] = voffset + 0; faces[fc++] = voffset + 2; faces[fc++] = voffset + 1;
-        faces[fc++] = voffset + 1; faces[fc++] = voffset + 2; faces[fc++] = voffset + 3;
+        faces[fc++] = voffset + 0;
+        faces[fc++] = voffset + 2;
+        faces[fc++] = voffset + 1;
+        faces[fc++] = voffset + 1;
+        faces[fc++] = voffset + 2;
+        faces[fc++] = voffset + 3;
 
         voffset += 4;
 
@@ -737,8 +1028,12 @@ public class PCBedesten : PCBuilding
         texCoords[voffset + 1] = new Vector2(depth / height, 0);
         texCoords[voffset + 2] = new Vector2(0, (to - from).magnitude / height);
         texCoords[voffset + 3] = new Vector2(depth / height, (to - from).magnitude / height);
-        faces[fc++] = voffset + 0; faces[fc++] = voffset + 2; faces[fc++] = voffset + 1;
-        faces[fc++] = voffset + 1; faces[fc++] = voffset + 2; faces[fc++] = voffset + 3;
+        faces[fc++] = voffset + 0;
+        faces[fc++] = voffset + 2;
+        faces[fc++] = voffset + 1;
+        faces[fc++] = voffset + 1;
+        faces[fc++] = voffset + 2;
+        faces[fc++] = voffset + 3;
 
         voffset += 4;
 
@@ -755,8 +1050,12 @@ public class PCBedesten : PCBuilding
         texCoords[voffset + 1] = new Vector2(depth / height, 0);
         texCoords[voffset + 2] = new Vector2(0, 1);
         texCoords[voffset + 3] = new Vector2(depth / height, 1);
-        faces[fc++] = voffset + 0; faces[fc++] = voffset + 2; faces[fc++] = voffset + 1;
-        faces[fc++] = voffset + 1; faces[fc++] = voffset + 2; faces[fc++] = voffset + 3;
+        faces[fc++] = voffset + 0;
+        faces[fc++] = voffset + 2;
+        faces[fc++] = voffset + 1;
+        faces[fc++] = voffset + 1;
+        faces[fc++] = voffset + 2;
+        faces[fc++] = voffset + 3;
 
         voffset += 4;
 
@@ -773,8 +1072,12 @@ public class PCBedesten : PCBuilding
         texCoords[voffset + 1] = new Vector2(1, 0);
         texCoords[voffset + 2] = new Vector2(0, 1);
         texCoords[voffset + 3] = new Vector2(1, 1);
-        faces[fc++] = voffset + 0; faces[fc++] = voffset + 1; faces[fc++] = voffset + 2;
-        faces[fc++] = voffset + 1; faces[fc++] = voffset + 3; faces[fc++] = voffset + 2;
+        faces[fc++] = voffset + 0;
+        faces[fc++] = voffset + 1;
+        faces[fc++] = voffset + 2;
+        faces[fc++] = voffset + 1;
+        faces[fc++] = voffset + 3;
+        faces[fc++] = voffset + 2;
 
         voffset += 4;
 
@@ -794,9 +1097,15 @@ public class PCBedesten : PCBuilding
         texCoords[voffset + 2] = new Vector2(1, 1);
         texCoords[voffset + 3] = new Vector2(1, 0);
         texCoords[voffset + 4] = new Vector2(0.5f, 0.0f);
-        faces[fc++] = voffset + 0; faces[fc++] = voffset + 1; faces[fc++] = voffset + 4;
-        faces[fc++] = voffset + 1; faces[fc++] = voffset + 2; faces[fc++] = voffset + 4;
-        faces[fc++] = voffset + 2; faces[fc++] = voffset + 3; faces[fc++] = voffset + 4;
+        faces[fc++] = voffset + 0;
+        faces[fc++] = voffset + 1;
+        faces[fc++] = voffset + 4;
+        faces[fc++] = voffset + 1;
+        faces[fc++] = voffset + 2;
+        faces[fc++] = voffset + 4;
+        faces[fc++] = voffset + 2;
+        faces[fc++] = voffset + 3;
+        faces[fc++] = voffset + 4;
 
         voffset += 5;
 
@@ -812,7 +1121,9 @@ public class PCBedesten : PCBuilding
         texCoords[voffset + 0] = new Vector2(0, 0);
         texCoords[voffset + 1] = new Vector2(0, 0.8f);
         texCoords[voffset + 2] = new Vector2(depth / height, 0);
-        faces[fc++] = voffset + 0; faces[fc++] = voffset + 1; faces[fc++] = voffset + 2;
+        faces[fc++] = voffset + 0;
+        faces[fc++] = voffset + 1;
+        faces[fc++] = voffset + 2;
 
         voffset += 3;
 
@@ -828,7 +1139,9 @@ public class PCBedesten : PCBuilding
         texCoords[voffset + 0] = new Vector2(0, 0);
         texCoords[voffset + 1] = new Vector2(depth / height, 0);
         texCoords[voffset + 2] = new Vector2(0, 0.8f);
-        faces[fc++] = voffset + 0; faces[fc++] = voffset + 1; faces[fc++] = voffset + 2;
+        faces[fc++] = voffset + 0;
+        faces[fc++] = voffset + 1;
+        faces[fc++] = voffset + 2;
 
         voffset += 3;
 
@@ -844,8 +1157,9 @@ public class PCBedesten : PCBuilding
         texCoords[voffset + 0] = new Vector2(0, 0);
         texCoords[voffset + 1] = new Vector2(0.5f, 0.8f);
         texCoords[voffset + 2] = new Vector2(1, 0);
-        faces[fc++] = voffset + 0; faces[fc++] = voffset + 1; faces[fc++] = voffset + 2;
-
+        faces[fc++] = voffset + 0;
+        faces[fc++] = voffset + 1;
+        faces[fc++] = voffset + 2;
 
         m.vertices = vertices;
         m.normals = normals;
@@ -854,8 +1168,14 @@ public class PCBedesten : PCBuilding
 
         Renderer houseWallRenderer = overTheDoor.GetComponent<Renderer>();
         houseWallRenderer.material.SetTexture("_MainTex", texture);
-        houseWallRenderer.material.SetTextureScale("_MainTex", new Vector2((to - from).magnitude / 4f, 3f));
-        houseWallRenderer.material.SetTextureOffset("_MainTex", new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
+        houseWallRenderer.material.SetTextureScale(
+            "_MainTex",
+            new Vector2((to - from).magnitude / 4f, 3f)
+        );
+        houseWallRenderer.material.SetTextureOffset(
+            "_MainTex",
+            new Vector2(UnityEngine.Random.value, UnityEngine.Random.value)
+        );
 
         overTheDoor.transform.SetParent(model.transform, false);
 
@@ -868,7 +1188,6 @@ public class PCBedesten : PCBuilding
         Renderer houseWallRenderer = anObject.GetComponent<Renderer>();
         houseWallRenderer.material.SetTextureOffset("_MainTex", texOffset);
         texOffset += new Vector2(0.001f, 0.01f);
-
     }
 
     private void Door(Vector3 from, Vector3 to)
@@ -879,16 +1198,26 @@ public class PCBedesten : PCBuilding
 
         GameObject overDoor = GameObject.CreatePrimitive(PrimitiveType.Cube);
         overDoor.transform.SetParent(model.transform, false);
-        overDoor.transform.localScale = new Vector3((to - from).magnitude, outerWallHeight / 3, outerWallThickness);
+        overDoor.transform.localScale = new Vector3(
+            (to - from).magnitude,
+            outerWallHeight / 3,
+            outerWallThickness
+        );
 
         Renderer houseWallRenderer = overDoor.GetComponent<Renderer>();
         houseWallRenderer.material.SetTexture("_MainTex", texture);
-        houseWallRenderer.material.SetTextureScale("_MainTex", new Vector2((to - from).magnitude / 4f, 0.6f));
-        houseWallRenderer.material.SetTextureOffset("_MainTex", new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
+        houseWallRenderer.material.SetTextureScale(
+            "_MainTex",
+            new Vector2((to - from).magnitude / 4f, 0.6f)
+        );
+        houseWallRenderer.material.SetTextureOffset(
+            "_MainTex",
+            new Vector2(UnityEngine.Random.value, UnityEngine.Random.value)
+        );
 
-        overDoor.transform.localPosition = (from + to + towardsIn * outerWallThickness + 10f * Vector3.up * outerWallHeight / 6f) / 2f;
+        overDoor.transform.localPosition =
+            (from + to + towardsIn * outerWallThickness + 10f * Vector3.up * outerWallHeight / 6f)
+            / 2f;
         overDoor.transform.Rotate(Vector3.up, Vector3.SignedAngle(dir, Vector3.right, Vector3.up));
-
     }
-
 }

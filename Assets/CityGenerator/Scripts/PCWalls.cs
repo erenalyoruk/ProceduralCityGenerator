@@ -1,8 +1,8 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using Unity.Collections;
 using Unity.IntegerTime;
+using UnityEngine;
 
 public class PCWalls : PCBuilding
 {
@@ -13,12 +13,12 @@ public class PCWalls : PCBuilding
     private float doorWidth = 4f / ProceduralCityGenerator.ScaleFactor;
     private float windowWidth = 0.5f / ProceduralCityGenerator.ScaleFactor;
 
-    public PCWalls(Vector2Int cmin, Vector2Int cmax, Texture t) : base("City Walls")
+    public PCWalls(Vector2Int cmin, Vector2Int cmax, Texture t)
+        : base("City Walls")
     {
         CityBoundaryMin = cmin;
         texture = t;
         GenerateModel();
-
     }
 
     /// <summary>
@@ -26,7 +26,8 @@ public class PCWalls : PCBuilding
     /// </summary>
     private void GenerateModel()
     {
-        ProceduralCityGenerator pcg = (ProceduralCityGenerator)GameObject.Find("CityBuilder").GetComponent(typeof(ProceduralCityGenerator));
+        ProceduralCityGenerator pcg = (ProceduralCityGenerator)
+            GameObject.Find("CityBuilder").GetComponent(typeof(ProceduralCityGenerator));
         List<Vector3> points = new List<Vector3>();
 
         // Loop through city grid to find occupied areas and sample terrain heights at the neighborhood points
@@ -37,12 +38,13 @@ public class PCWalls : PCBuilding
                 if (pcg.CityOccupation[i, j] == ProceduralCityGenerator.Occupation.Occupied)
                 {
                     // Generate 4 neighborhood points
-                    Vector3[] neighbors = {
-                    new Vector3(i + CityBoundaryMin.x - 1f, 0f, j + CityBoundaryMin.y - 1f),
-                    new Vector3(i + CityBoundaryMin.x - 1f, 0f, j + CityBoundaryMin.y + 1f),
-                    new Vector3(i + CityBoundaryMin.x + 1f, 0f, j + CityBoundaryMin.y - 1f),
-                    new Vector3(i + CityBoundaryMin.x + 1f, 0f, j + CityBoundaryMin.y + 1f)
-                };
+                    Vector3[] neighbors =
+                    {
+                        new Vector3(i + CityBoundaryMin.x - 1f, 0f, j + CityBoundaryMin.y - 1f),
+                        new Vector3(i + CityBoundaryMin.x - 1f, 0f, j + CityBoundaryMin.y + 1f),
+                        new Vector3(i + CityBoundaryMin.x + 1f, 0f, j + CityBoundaryMin.y - 1f),
+                        new Vector3(i + CityBoundaryMin.x + 1f, 0f, j + CityBoundaryMin.y + 1f),
+                    };
 
                     // Sample terrain height for each point
                     foreach (Vector3 neighbor in neighbors)
@@ -62,10 +64,10 @@ public class PCWalls : PCBuilding
             points.Sort((a, b) => a.z.CompareTo(b.z));
 
             List<Vector3> wallPoints = new List<Vector3>
-        {
-            points[0], // Add first two points for wall construction
-            points[1]
-        };
+            {
+                points[0], // Add first two points for wall construction
+                points[1],
+            };
 
             // Build the right-side walls by scanning from bottom to top
             BuildWalls(points, wallPoints, isRightWall: true);
@@ -99,10 +101,14 @@ public class PCWalls : PCBuilding
         {
             // Check the direction of the new segment relative to the last two wall points
             Vector3 newSegment = points[i] - wallPoints[wallPoints.Count - 1];
-            Vector3 lastSegment = wallPoints[wallPoints.Count - 1] - wallPoints[wallPoints.Count - 2];
+            Vector3 lastSegment =
+                wallPoints[wallPoints.Count - 1] - wallPoints[wallPoints.Count - 2];
 
             // Roll back until a left turn is found (when cross product is negative)
-            while (wallPoints.Count > 2 && newSegment.x * lastSegment.z - newSegment.z * lastSegment.x >= 0)
+            while (
+                wallPoints.Count > 2
+                && newSegment.x * lastSegment.z - newSegment.z * lastSegment.x >= 0
+            )
             {
                 wallPoints.RemoveAt(wallPoints.Count - 1); // Remove last point if not a valid turn
                 newSegment = points[i] - wallPoints[wallPoints.Count - 1]; // Recalculate segment
@@ -113,9 +119,8 @@ public class PCWalls : PCBuilding
         }
     }
 
-
     /// <summary>
-    /// Creates a wall segment for the house with optional doors and windows. 
+    /// Creates a wall segment for the house with optional doors and windows.
     /// It recursively divides the wall if necessary for creating door/window sections.
     /// </summary>
     /// <param name="from">Starting point of the wall segment</param>
@@ -168,14 +173,25 @@ public class PCWalls : PCBuilding
 
         // Apply texture and material
         houseWallRenderer.material.SetTexture("_MainTex", texture);
-        houseWallRenderer.material.SetTextureScale("_MainTex", new Vector2((to - from).magnitude / 4f, 1));
-        houseWallRenderer.material.SetTextureOffset("_MainTex", new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
+        houseWallRenderer.material.SetTextureScale(
+            "_MainTex",
+            new Vector2((to - from).magnitude / 4f, 1)
+        );
+        houseWallRenderer.material.SetTextureOffset(
+            "_MainTex",
+            new Vector2(UnityEngine.Random.value, UnityEngine.Random.value)
+        );
         houseWallRenderer.material.SetColor("_Color", Color.white * colorDarkening);
 
         // Set wall position and rotation
         houseWall.transform.SetParent(model.transform, false);
-        houseWall.transform.localScale = new Vector3((to - from).magnitude, houseWallHeight, houseWallThickness);
-        houseWall.transform.localPosition = (from + to + towardsIn * houseWallThickness + Vector3.up * houseWallHeight / 2f) / 2f;
+        houseWall.transform.localScale = new Vector3(
+            (to - from).magnitude,
+            houseWallHeight,
+            houseWallThickness
+        );
+        houseWall.transform.localPosition =
+            (from + to + towardsIn * houseWallThickness + Vector3.up * houseWallHeight / 2f) / 2f;
         houseWall.transform.Rotate(Vector3.up, Vector3.SignedAngle(Vector3.right, dir, Vector3.up));
     }
 
@@ -211,7 +227,10 @@ public class PCWalls : PCBuilding
     private void HandleWindowPlacement(Vector3 from, Vector3 to, Vector3 dir)
     {
         float sideLength = (to - from).magnitude;
-        int windowsCount = (int)((sideLength - houseWallThickness * 2) / (windowWidth * ProceduralCityGenerator.GoldenRatio));
+        int windowsCount = (int)(
+            (sideLength - houseWallThickness * 2)
+            / (windowWidth * ProceduralCityGenerator.GoldenRatio)
+        );
 
         // Calculate the spacing between windows
         float intervalLength = (sideLength - windowsCount * windowWidth) / (windowsCount + 1f);
@@ -226,7 +245,6 @@ public class PCWalls : PCBuilding
         }
     }
 
-
     /// <summary>
     /// Creates a window on a building wall by generating the necessary window elements
     /// (under window, over window, and inner window structure) and adjusting their textures.
@@ -240,8 +258,22 @@ public class PCWalls : PCBuilding
         float windowLength = (to - from).magnitude;
 
         // Create and position the window elements
-        CreateWindowElement(from, to, houseWallHeight / 3, houseWallThickness, windowLength, Vector3.up * houseWallHeight / 3f);
-        CreateWindowElement(from, to, houseWallHeight / 6, houseWallThickness, windowLength, Vector3.up * (houseWallHeight / 12f) + Vector3.up * houseWallHeight / 2f);
+        CreateWindowElement(
+            from,
+            to,
+            houseWallHeight / 3,
+            houseWallThickness,
+            windowLength,
+            Vector3.up * houseWallHeight / 3f
+        );
+        CreateWindowElement(
+            from,
+            to,
+            houseWallHeight / 6,
+            houseWallThickness,
+            windowLength,
+            Vector3.up * (houseWallHeight / 12f) + Vector3.up * houseWallHeight / 2f
+        );
 
         // Define window corners for the inner frame
         Vector3 upperLeft = from + Vector3.up * houseWallHeight / 3f;
@@ -265,7 +297,14 @@ public class PCWalls : PCBuilding
     /// <param name="thickness">Thickness of the wall</param>
     /// <param name="length">Length of the window element</param>
     /// <param name="offset">Offset to adjust the position of the window element</param>
-    private void CreateWindowElement(Vector3 from, Vector3 to, float height, float thickness, float length, Vector3 offset)
+    private void CreateWindowElement(
+        Vector3 from,
+        Vector3 to,
+        float height,
+        float thickness,
+        float length,
+        Vector3 offset
+    )
     {
         // Create the window element (cube)
         GameObject windowElement = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -279,7 +318,10 @@ public class PCWalls : PCBuilding
         Vector3 direction = (to - from).normalized;
         Vector3 towardsIn = Vector3.Cross(direction, Vector3.up);
         windowElement.transform.localPosition = (from + to + towardsIn * thickness + offset) / 2f;
-        windowElement.transform.Rotate(Vector3.up, Vector3.SignedAngle(direction, Vector3.right, Vector3.up));
+        windowElement.transform.Rotate(
+            Vector3.up,
+            Vector3.SignedAngle(direction, Vector3.right, Vector3.up)
+        );
     }
 
     /// <summary>
@@ -291,7 +333,10 @@ public class PCWalls : PCBuilding
     {
         renderer.material.SetTexture("_MainTex", texture);
         renderer.material.SetTextureScale("_MainTex", new Vector2(length / 4f, 0.3f));
-        renderer.material.SetTextureOffset("_MainTex", new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
+        renderer.material.SetTextureOffset(
+            "_MainTex",
+            new Vector2(UnityEngine.Random.value, UnityEngine.Random.value)
+        );
         renderer.material.SetColor("_Color", Color.white * colorDarkening);
     }
 
@@ -302,7 +347,12 @@ public class PCWalls : PCBuilding
     /// <param name="lowerLeft">The lower-left corner of the window</param>
     /// <param name="upperRight">The upper-right corner of the window</param>
     /// <param name="lowerRight">The lower-right corner of the window</param>
-    private void CreateWindowFrame(Vector3 upperLeft, Vector3 lowerLeft, Vector3 upperRight, Vector3 lowerRight)
+    private void CreateWindowFrame(
+        Vector3 upperLeft,
+        Vector3 lowerLeft,
+        Vector3 upperRight,
+        Vector3 lowerRight
+    )
     {
         // Create the top, bottom, left, and right frame bars
         MakeElongatedCube(lowerLeft, lowerRight, 0.15f); // Bottom bar
@@ -312,8 +362,16 @@ public class PCWalls : PCBuilding
 
         // Create inner window bars
         MakeElongatedCube((upperLeft + upperRight) / 2, (lowerLeft + lowerRight) / 2, 0.05f); // Vertical middle bar
-        MakeElongatedCube((upperLeft * 2f + upperRight) / 3, (lowerLeft * 2f + lowerRight) / 3, 0.05f); // Left inner bar
-        MakeElongatedCube((upperLeft + upperRight * 2f) / 3, (lowerLeft + lowerRight * 2f) / 3, 0.05f); // Right inner bar
+        MakeElongatedCube(
+            (upperLeft * 2f + upperRight) / 3,
+            (lowerLeft * 2f + lowerRight) / 3,
+            0.05f
+        ); // Left inner bar
+        MakeElongatedCube(
+            (upperLeft + upperRight * 2f) / 3,
+            (lowerLeft + lowerRight * 2f) / 3,
+            0.05f
+        ); // Right inner bar
     }
 
     /// <summary>
@@ -363,11 +421,33 @@ public class PCWalls : PCBuilding
         var towardsIn = Vector3.Cross(dir, Vector3.up);
         var doorLength = (to - from).magnitude;
 
-        var overDoor = CreateDoorElement(doorLength, houseWallHeight / 6, houseWallThickness, from, to, towardsIn, 22f, 1f);
+        var overDoor = CreateDoorElement(
+            doorLength,
+            houseWallHeight / 6,
+            houseWallThickness,
+            from,
+            to,
+            towardsIn,
+            22f,
+            1f
+        );
         SetDoorMaterial(overDoor.GetComponent<Renderer>(), doorLength);
 
-        var doorObject = CreateDoorElement(doorLength, 5f * houseWallHeight / 6, houseWallThickness * 0.25f, from, to, towardsIn, 10f, 1f);
-        SetDoorMaterial(doorObject.GetComponent<Renderer>(), doorLength, new Color(0.3f, 0.22f, 0.05f) * UnityEngine.Random.value);
+        var doorObject = CreateDoorElement(
+            doorLength,
+            5f * houseWallHeight / 6,
+            houseWallThickness * 0.25f,
+            from,
+            to,
+            towardsIn,
+            10f,
+            1f
+        );
+        SetDoorMaterial(
+            doorObject.GetComponent<Renderer>(),
+            doorLength,
+            new Color(0.3f, 0.22f, 0.05f) * UnityEngine.Random.value
+        );
 
         CreateDoorFrame(from, to, towardsIn, houseWallThickness);
     }
@@ -385,13 +465,26 @@ public class PCWalls : PCBuilding
     /// <param name="offsetY">The offset for vertical positioning of the door.</param>
     /// <param name="scaleMultiplier">Multiplier for scaling the door size.</param>
     /// <returns>A GameObject representing the door element.</returns>
-    private GameObject CreateDoorElement(float length, float height, float thickness, Vector3 from, Vector3 to, Vector3 towardsIn, float offsetY, float scaleMultiplier)
+    private GameObject CreateDoorElement(
+        float length,
+        float height,
+        float thickness,
+        Vector3 from,
+        Vector3 to,
+        Vector3 towardsIn,
+        float offsetY,
+        float scaleMultiplier
+    )
     {
         GameObject doorElement = GameObject.CreatePrimitive(PrimitiveType.Cube);
         doorElement.transform.SetParent(model.transform, false);
         doorElement.transform.localScale = new Vector3(length, height, thickness);
-        doorElement.transform.localPosition = (from + to + towardsIn * thickness + offsetY * Vector3.up * houseWallHeight / 12f) / 2f;
-        doorElement.transform.Rotate(Vector3.up, Vector3.SignedAngle(to - from, Vector3.right, Vector3.up));
+        doorElement.transform.localPosition =
+            (from + to + towardsIn * thickness + offsetY * Vector3.up * houseWallHeight / 12f) / 2f;
+        doorElement.transform.Rotate(
+            Vector3.up,
+            Vector3.SignedAngle(to - from, Vector3.right, Vector3.up)
+        );
 
         return doorElement;
     }
@@ -406,7 +499,10 @@ public class PCWalls : PCBuilding
     {
         renderer.material.SetTexture("_MainTex", texture);
         renderer.material.SetTextureScale("_MainTex", new Vector2(doorLength / 4f, 0.3f));
-        renderer.material.SetTextureOffset("_MainTex", new Vector2(UnityEngine.Random.value, UnityEngine.Random.value));
+        renderer.material.SetTextureOffset(
+            "_MainTex",
+            new Vector2(UnityEngine.Random.value, UnityEngine.Random.value)
+        );
         renderer.material.SetColor("_Color", color ?? Color.white * colorDarkening);
     }
 
@@ -421,11 +517,27 @@ public class PCWalls : PCBuilding
     private void CreateDoorFrame(Vector3 from, Vector3 to, Vector3 towardsIn, float thickness)
     {
         // Frame top and bottom
-        MakeElongatedCube(from + towardsIn * thickness * 0.25f, to + towardsIn * thickness * 0.25f, thickness * 0.4f);
-        MakeElongatedCube(from + Vector3.up * 5f * houseWallHeight / 6 + towardsIn * thickness * 0.25f, to + Vector3.up * 5f * houseWallHeight / 6 + towardsIn * thickness * 0.25f, thickness * 0.4f);
+        MakeElongatedCube(
+            from + towardsIn * thickness * 0.25f,
+            to + towardsIn * thickness * 0.25f,
+            thickness * 0.4f
+        );
+        MakeElongatedCube(
+            from + Vector3.up * 5f * houseWallHeight / 6 + towardsIn * thickness * 0.25f,
+            to + Vector3.up * 5f * houseWallHeight / 6 + towardsIn * thickness * 0.25f,
+            thickness * 0.4f
+        );
 
         // Frame sides
-        MakeElongatedCube(from + towardsIn * thickness * 0.25f, from + Vector3.up * 5f * houseWallHeight / 6 + towardsIn * thickness * 0.25f, thickness * 0.4f);
-        MakeElongatedCube(to + towardsIn * thickness * 0.25f, to + Vector3.up * 5f * houseWallHeight / 6 + towardsIn * thickness * 0.25f, thickness * 0.4f);
+        MakeElongatedCube(
+            from + towardsIn * thickness * 0.25f,
+            from + Vector3.up * 5f * houseWallHeight / 6 + towardsIn * thickness * 0.25f,
+            thickness * 0.4f
+        );
+        MakeElongatedCube(
+            to + towardsIn * thickness * 0.25f,
+            to + Vector3.up * 5f * houseWallHeight / 6 + towardsIn * thickness * 0.25f,
+            thickness * 0.4f
+        );
     }
 }
