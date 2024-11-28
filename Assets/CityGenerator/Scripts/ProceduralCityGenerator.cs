@@ -222,7 +222,6 @@ public class ProceduralCityGenerator : MonoBehaviour
             }
             //madrasah.updateTexture();
 
-
             float beginning = Time.realtimeSinceStartup;
             bool b;
             if (accommodated < InitialPopulation && failedAttempts < 10)
