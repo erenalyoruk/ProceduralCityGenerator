@@ -22,6 +22,9 @@ public class Wall
         Doors = doors;
     }
 
+    /// <summary>
+    /// Destroy the wall object.
+    /// </summary>
     public void Destroy()
     {
         if (WallObject == null)

@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class Window
 {
+    /// <summary>
+    /// Position of the window relative to the wall.
+    /// </summary>
     public Vector3 Position { get; private set; }
     public Vector2 Size { get; private set; }
 
