@@ -329,7 +329,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a712dd7d4aa8b0442bd402bfd035a0a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _wallBuilder: {fileID: 1948044150}
 --- !u!1 &1948044148
 GameObject:
   m_ObjectHideFlags: 0
@@ -371,10 +370,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1948044148}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 556b9eb93565b3c4eb022afb43f221c0, type: 3}
+  m_Script: {fileID: 11500000, guid: 04889f247d233aa45835967c15567fa7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _buildingWallPrefab: {fileID: 3085122762203083763, guid: 38beb71c020ddac41a1f0ceb7e0bb500,
+  _wallPrefab: {fileID: 3085122762203083763, guid: 38beb71c020ddac41a1f0ceb7e0bb500,
+    type: 3}
+  _windowPrefab: {fileID: 4707340522358273742, guid: fd494b0b8592d3d4184a1b723051bdfd,
+    type: 3}
+  _doorPrefab: {fileID: 6635087022771407198, guid: 4891155fd496d9f4d86837144703f77d,
     type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
