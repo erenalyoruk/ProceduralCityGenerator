@@ -26,6 +26,7 @@ public class WallBuilder : MonoBehaviour
         }
 
         Instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
     /// <summary>
@@ -39,8 +40,6 @@ public class WallBuilder : MonoBehaviour
     /// <param name="constrainDoorSize">Whether to constrain the door size.</param>
     /// <returns>Wall object.</returns>
     public Wall CreateWall(
-        Vector3 position,
-        Quaternion rotation,
         Vector3 size,
         int windowCount = 0,
         bool door = false,
@@ -101,8 +100,6 @@ public class WallBuilder : MonoBehaviour
         }
 
         var parentWall = new GameObject("Wall");
-        parentWall.transform.position = position;
-        parentWall.transform.rotation = rotation;
 
         float currentX = -wallWidth / 2;
         float topBottomHeight = (1 - _windowRatio.y) / 2 * wallHeight;
