@@ -9,6 +9,8 @@ public class Wall
 
     public Vector3 Size => WallObject.transform.localScale;
 
+    public Quaternion Rotation => WallObject.transform.rotation;
+
     public List<Window> Windows { get; private set; }
     public List<Door> Doors { get; private set; }
 
@@ -46,11 +48,31 @@ public class Wall
     public void SetPosition(Vector3 position)
     {
         WallObject.transform.position = position;
+
+        foreach (var window in Windows)
+        {
+            window.SetPosition(position);
+        }
+
+        foreach (var door in Doors)
+        {
+            door.SetPosition(position);
+        }
     }
 
-    public void Rotate(Quaternion rotation)
+    public void SetRotation(Quaternion rotation)
     {
         WallObject.transform.rotation = rotation;
+
+        foreach (var window in Windows)
+        {
+            window.SetRotation(rotation);
+        }
+
+        foreach (var door in Doors)
+        {
+            door.SetRotation(rotation);
+        }
     }
 
     public void SetSize(Vector3 size)
