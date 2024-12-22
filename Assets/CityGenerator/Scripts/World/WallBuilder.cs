@@ -28,7 +28,17 @@ public class WallBuilder : MonoBehaviour
         Instance = this;
     }
 
-    public GameObject CreateWall(
+    /// <summary>
+    /// Creates a wall with given parameters.
+    /// </summary>
+    /// <param name="position">Position of the wall.</param>
+    /// <param name="rotation">Rotation of the wall.</param>
+    /// <param name="size">Size of the wall.</param>
+    /// <param name="windowCount">Number of windows on the wall.</param>
+    /// <param name="door">Whether the wall has a door.</param>
+    /// <param name="constrainDoorSize">Whether to constrain the door size.</param>
+    /// <returns>Wall object.</returns>
+    public Wall CreateWall(
         Vector3 position,
         Quaternion rotation,
         Vector3 size,
@@ -101,6 +111,8 @@ public class WallBuilder : MonoBehaviour
         int segmentCount = (windowCount * 2) + (door ? 1 : 0) * 2 + 1;
 
         List<GameObject> wallObjects = new List<GameObject>();
+        List<Window> windows = new List<Window>();
+        List<Door> doors = new List<Door>();
 
         for (int i = 0; i < segmentCount; i++)
         {
@@ -124,7 +136,7 @@ public class WallBuilder : MonoBehaviour
                 );
 
                 wallObjects.Add(createdObject);
-
+                doors.Add(new Door(new Vector3(currentX - doorSize.x / 2, 0, 0), doorSize));
                 door = false;
             }
             else if (windowCount > 0 && i % 2 == 1) // Window segment (top and bottom)
@@ -138,15 +150,29 @@ public class WallBuilder : MonoBehaviour
 
                 wallObjects.AddRange(createdObjects);
 
+                windows.Add(
+                    new Window(
+                        new Vector3(currentX - windowSize.x / 2, topBottomHeight, 0),
+                        windowSize
+                    )
+                );
+
                 --windowCount;
             }
         }
 
         MergeWalls(parentWall, wallObjects.ToArray());
 
-        return parentWall;
+        return new Wall(parentWall, windows, doors);
     }
 
+    /// <summary>
+    /// Creates a wall segment.
+    /// </summary>
+    /// <param name="parent">Parent object of the wall segment.</param>
+    /// <param name="currentX">Current x position of the wall segment.</param>
+    /// <param name="size">Size of the wall segment.</param>
+    /// <returns>Wall segment object.</returns>
     private GameObject CreateWallSegment(GameObject parent, ref float currentX, Vector3 size)
     {
         var segment = Instantiate(_buildingWallPrefab, parent.transform);
@@ -158,6 +184,14 @@ public class WallBuilder : MonoBehaviour
         return segment;
     }
 
+    /// <summary>
+    /// Creates a window segment.
+    /// </summary>
+    /// <param name="parent">Parent object of the window segment.</param>
+    /// <param name="currentX">Current x position of the window segment.</param>
+    /// <param name="size">Size of the window segment.</param>
+    /// <param name="topPosition">Top position of the window segment.</param>
+    /// <returns>Window segment objects.</returns>
     private GameObject[] CreateWindowSegment(
         GameObject parent,
         ref float currentX,
@@ -178,6 +212,14 @@ public class WallBuilder : MonoBehaviour
         return new GameObject[] { topSegment, bottomSegment };
     }
 
+    /// <summary>
+    /// Creates a door segment.
+    /// </summary>
+    /// <param name="parent">Parent object of the door segment.</param>
+    /// <param name="currentX">Current x position of the door segment.</param>
+    /// <param name="size">Size of the door segment.</param>
+    /// <param name="topPosition">Top position of the door segment.</param>
+    /// <returns>Door segment object.</returns>
     private GameObject CreateDoorSegment(
         GameObject parent,
         ref float currentX,
@@ -194,7 +236,12 @@ public class WallBuilder : MonoBehaviour
         return doorTop;
     }
 
-    // TOOD: Fix texture coordinates
+    /// <summary>
+    /// Merges wall segments into a single wall.
+    /// </summary>
+    /// <param name="parentWall">Parent wall object.</param>
+    /// <param name="walls">Wall segments to merge.</param>
+    /// <returns>Merged wall object.</returns>
     private void MergeWalls(GameObject parentWall, GameObject[] walls)
     {
         MeshFilter parentMeshFilter;
