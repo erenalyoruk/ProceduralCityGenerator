@@ -5,11 +5,11 @@ public class WallBuilder : MonoBehaviour
 {
     public static WallBuilder Instance { get; private set; }
 
-    private static readonly Vector2 _maxDoorSize = new Vector2(1f, 2f);
-
-    private static readonly Vector2 _doorRatio = new Vector2(0.2f, 0.6f);
+    private static readonly Vector2 _doorRatio = new Vector2(0.3f, 0.7f);
+    private static readonly Vector2 _maxDoorSize = new Vector2(1f, 2.4f);
 
     private static readonly Vector2 _windowRatio = new Vector2(0.6f, 0.4f);
+    private static readonly Vector2 _maxWindowSize = new Vector2(1f, 1f);
 
     [SerializeField]
     private GameObject _wallPrefab;
@@ -29,6 +29,21 @@ public class WallBuilder : MonoBehaviour
         }
 
         Instance = this;
+
+        if (_wallPrefab == null)
+        {
+            Debug.LogError("Building wall prefab is not assigned.");
+        }
+
+        if (_windowPrefab == null)
+        {
+            Debug.LogError("Window prefab is not assigned.");
+        }
+
+        if (_doorPrefab == null)
+        {
+            Debug.LogError("Door prefab is not assigned.");
+        }
     }
 
     /// <summary>
@@ -41,7 +56,7 @@ public class WallBuilder : MonoBehaviour
     /// <param name="door">Whether the wall has a door.</param>
     /// <param name="constrainDoorSize">Whether to constrain the door size.</param>
     /// <returns>Wall object.</returns>
-    public Wall CreateWall(
+    public Wall BuildWall(
         Vector3 size,
         int windowCount = 0,
         bool addDoor = false,
@@ -93,6 +108,12 @@ public class WallBuilder : MonoBehaviour
                 wallThickness / 2f
             );
         }
+
+        windowSize = new Vector3(
+            Mathf.Min(_maxWindowSize.x, windowSize.x),
+            Mathf.Min(_maxWindowSize.y, windowSize.y),
+            windowSize.z
+        );
 
         var doorSize = new Vector3(
             size.x * _doorRatio.x,
