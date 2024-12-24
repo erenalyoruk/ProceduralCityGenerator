@@ -19,7 +19,7 @@ public class WorldBuilder : MonoBehaviour
 
     private void Start()
     {
-        HouseBuilder.Instance.BuildHouse(
+        var house = HouseBuilder.Instance.BuildHouse(
             new Vector3(4, 2.5f, 4),
             new FloorProperties[]
             {

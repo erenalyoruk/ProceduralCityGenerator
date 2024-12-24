@@ -38,21 +38,15 @@ public static class MeshUtils
 
             Mesh mesh = Object.Instantiate(meshFilter.sharedMesh);
 
-            // Adjust UVs for each mesh
-            Vector2[] uvs = mesh.uv;
-            for (int j = 0; j < uvs.Length; j++)
-            {
-                uvs[j] = uvs[j] * uvScale + uvOffset;
-            }
-            mesh.uv = uvs;
-
             combine[i].mesh = mesh;
             combine[i].transform = meshFilter.transform.localToWorldMatrix;
-
-            uvOffset.x += uvScale.x;
         }
 
-        combinedMesh.CombineMeshes(combine, true, true);
+        combinedMesh.CombineMeshes(combine, true, true, true);
+
+        combinedMesh.RecalculateNormals();
+        combinedMesh.RecalculateBounds();
+        combinedMesh.RecalculateTangents();
 
         parentMeshFilter.sharedMesh = combinedMesh;
         parentMeshRenderer.sharedMaterial = objectsToMerge[0]
