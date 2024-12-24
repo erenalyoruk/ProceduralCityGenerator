@@ -55,9 +55,13 @@ public class Floor : Building
 
         GroundObject = ground;
         GroundObject.transform.SetParent(Object.transform);
-        GroundObject.transform.localScale = new Vector3(size.x, size.z, groundThickness);
+        GroundObject.transform.localScale = new Vector3(
+            size.x - 0.0001f,
+            size.z - 0.0001f,
+            groundThickness
+        );
         GroundObject.transform.localRotation = Quaternion.Euler(-90, 0, 0);
-        GroundObject.transform.localPosition = new Vector3(0, -groundThickness / 2f, 0);
+        GroundObject.transform.localPosition = new Vector3(0, groundThickness / 2f, 0);
     }
 
     public new void Destroy()
